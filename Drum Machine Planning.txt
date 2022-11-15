@@ -1,0 +1,79 @@
+Parts list for Drum Machine
+
+CHECK WHAT POTS I HAVE/NEED
+
+
+
+Bass Drum Needs
+
+Maybe Trimmers
+	////100k
+	////1M
+
+Real Pots
+	////100k x 3
+	///470
+	////10k x 2
+	////1M
+	////47k
+
+
+Snare Drum Needs
+
+Maybe Trimmers
+	////100k
+
+Real Pots
+	/////10k x 2
+	////47k
+	////470k
+
+
+
+
+FIGURE OUT MEMORY STUFF
+	-SRAM for sample playback?
+		-or see if it can be fit into iternal ram ??
+	-Flash for sample storage
+
+	-23LC1024 (1024k SRAM SPI)
+		--Supported by teensy audio shield
+		-acccess time: 32ns
+
+	W25Q128JV (128Mbit NOR Flash SPI)
+		--dont rlly understand advantage of this over microSD card
+			--- i think NOR flash has higher read speeds
+
+	CY62128ELL (1024k SRAM PARALLEL)
+		-acccess time: 45ns
+
+FIGURE OUT AUDIO OUTPUT CHIP
+
+FIGURE OUT MICROCONTROLLER/PROGRAMMING ENVIRONMENT
+
+
+
+
+NEED TO ORDER
+
+2 x sp3t switch
+cynare pots
+other pots
+
+
+ORDERED
+560 ohm resistor
+CD4069UBM
+
+````Buttons - digikey 563-2304-ND
+````MMBT3906
+````18v Zener
+'''''CD4069
+''''maybe more 10uf smd 5x5.4mm (probably have enough tho tbh)
+````10k resistor
+````22k resistor
+````12k resistor
+````390k resistor
+````2k7 resistor
+````74hc595 shift register
+The weird transistor for 909 snare (2SD1469R)

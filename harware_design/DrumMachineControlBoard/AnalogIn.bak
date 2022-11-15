@@ -1,0 +1,809 @@
+EESchema Schematic File Version 4
+LIBS:DrumMachineControlBoard-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 5 18
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Analog_Switch:CD4051B U?
+U 1 1 63283C48
+P 1550 1450
+AR Path="/63283C48" Ref="U?"  Part="1" 
+AR Path="/63087759/63283C48" Ref="U?"  Part="1" 
+AR Path="/63273844/63283C48" Ref="U14"  Part="1" 
+F 0 "U14" H 1400 2250 50  0000 C CNN
+F 1 "CD4051B" H 1350 2150 50  0000 C CNN
+F 2 "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm" H 1700 700 50  0001 L CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4052b.pdf" H 1530 1550 50  0001 C CNN
+	1    1550 1450
+	1    0    0    -1  
+$EndComp
+Text GLabel 1050 1350 0    50   BiDi ~ 0
+MUX4_DAT
+$Comp
+L power:Earth #PWR?
+U 1 1 63283C4F
+P 1050 1450
+AR Path="/63283C4F" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/63283C4F" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63283C4F" Ref="#PWR0226"  Part="1" 
+F 0 "#PWR0226" H 1050 1200 50  0001 C CNN
+F 1 "Earth" H 1050 1300 50  0001 C CNN
+F 2 "" H 1050 1450 50  0001 C CNN
+F 3 "~" H 1050 1450 50  0001 C CNN
+	1    1050 1450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 63283C55
+P 1550 2150
+AR Path="/63283C55" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/63283C55" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63283C55" Ref="#PWR0227"  Part="1" 
+F 0 "#PWR0227" H 1550 1900 50  0001 C CNN
+F 1 "Earth" H 1550 2000 50  0001 C CNN
+F 2 "" H 1550 2150 50  0001 C CNN
+F 3 "~" H 1550 2150 50  0001 C CNN
+	1    1550 2150
+	1    0    0    -1  
+$EndComp
+Text GLabel 1050 950  0    50   BiDi ~ 0
+MUX_A
+Text GLabel 1050 1050 0    50   BiDi ~ 0
+MUX_B
+Text GLabel 1050 1150 0    50   BiDi ~ 0
+MUX_C
+Wire Wire Line
+	2050 1250 2750 1250
+Wire Wire Line
+	2050 1350 2650 1350
+Wire Wire Line
+	2650 1350 2650 1900
+Wire Wire Line
+	2650 1900 2750 1900
+Wire Wire Line
+	2750 2550 2600 2550
+Wire Wire Line
+	2600 2550 2600 1450
+Wire Wire Line
+	2600 1450 2050 1450
+Wire Wire Line
+	2750 3200 2550 3200
+Wire Wire Line
+	2550 3200 2550 1550
+Wire Wire Line
+	2550 1550 2050 1550
+Wire Wire Line
+	2750 3850 2500 3850
+Wire Wire Line
+	2500 3850 2500 1650
+Wire Wire Line
+	2500 1650 2050 1650
+Wire Wire Line
+	2750 4500 2450 4500
+Wire Wire Line
+	2450 4500 2450 1750
+Wire Wire Line
+	2450 1750 2050 1750
+Wire Wire Line
+	2750 5150 2400 5150
+Wire Wire Line
+	2400 5150 2400 1850
+Wire Wire Line
+	2400 1850 2050 1850
+Wire Wire Line
+	2750 5800 2350 5800
+Wire Wire Line
+	2350 5800 2350 1950
+Wire Wire Line
+	2350 1950 2050 1950
+$Comp
+L power:Earth #PWR0242
+U 1 1 63290718
+P 2900 5300
+F 0 "#PWR0242" H 2900 5050 50  0001 C CNN
+F 1 "Earth" H 2900 5150 50  0001 C CNN
+F 2 "" H 2900 5300 50  0001 C CNN
+F 3 "~" H 2900 5300 50  0001 C CNN
+	1    2900 5300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0240
+U 1 1 63290706
+P 2900 4000
+F 0 "#PWR0240" H 2900 3750 50  0001 C CNN
+F 1 "Earth" H 2900 3850 50  0001 C CNN
+F 2 "" H 2900 4000 50  0001 C CNN
+F 3 "~" H 2900 4000 50  0001 C CNN
+	1    2900 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0238
+U 1 1 632906F4
+P 2900 4650
+F 0 "#PWR0238" H 2900 4400 50  0001 C CNN
+F 1 "Earth" H 2900 4500 50  0001 C CNN
+F 2 "" H 2900 4650 50  0001 C CNN
+F 3 "~" H 2900 4650 50  0001 C CNN
+	1    2900 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0236
+U 1 1 6328CAB4
+P 2900 3350
+F 0 "#PWR0236" H 2900 3100 50  0001 C CNN
+F 1 "Earth" H 2900 3200 50  0001 C CNN
+F 2 "" H 2900 3350 50  0001 C CNN
+F 3 "~" H 2900 3350 50  0001 C CNN
+	1    2900 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0234
+U 1 1 6328CAA2
+P 2900 2700
+F 0 "#PWR0234" H 2900 2450 50  0001 C CNN
+F 1 "Earth" H 2900 2550 50  0001 C CNN
+F 2 "" H 2900 2700 50  0001 C CNN
+F 3 "~" H 2900 2700 50  0001 C CNN
+	1    2900 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0232
+U 1 1 6328A022
+P 2900 2050
+F 0 "#PWR0232" H 2900 1800 50  0001 C CNN
+F 1 "Earth" H 2900 1900 50  0001 C CNN
+F 2 "" H 2900 2050 50  0001 C CNN
+F 3 "~" H 2900 2050 50  0001 C CNN
+	1    2900 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0230
+U 1 1 6328773A
+P 2900 1400
+F 0 "#PWR0230" H 2900 1150 50  0001 C CNN
+F 1 "Earth" H 2900 1250 50  0001 C CNN
+F 2 "" H 2900 1400 50  0001 C CNN
+F 3 "~" H 2900 1400 50  0001 C CNN
+	1    2900 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV1
+U 1 1 63285E89
+P 2900 1250
+F 0 "RV1" H 2832 1204 50  0000 R CNN
+F 1 "100k" H 2832 1295 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 1250 50  0001 C CNN
+F 3 "~" H 2900 1250 50  0001 C CNN
+	1    2900 1250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV2
+U 1 1 634C9406
+P 2900 1900
+F 0 "RV2" H 2832 1854 50  0000 R CNN
+F 1 "100k" H 2832 1945 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 1900 50  0001 C CNN
+F 3 "~" H 2900 1900 50  0001 C CNN
+	1    2900 1900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV3
+U 1 1 634C9D2C
+P 2900 2550
+F 0 "RV3" H 2832 2504 50  0000 R CNN
+F 1 "100k" H 2832 2595 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 2550 50  0001 C CNN
+F 3 "~" H 2900 2550 50  0001 C CNN
+	1    2900 2550
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV4
+U 1 1 634CA468
+P 2900 3200
+F 0 "RV4" H 2832 3154 50  0000 R CNN
+F 1 "100k" H 2832 3245 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 3200 50  0001 C CNN
+F 3 "~" H 2900 3200 50  0001 C CNN
+	1    2900 3200
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV5
+U 1 1 634CAA00
+P 2900 4500
+F 0 "RV5" H 2832 4454 50  0000 R CNN
+F 1 "100k" H 2832 4545 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 4500 50  0001 C CNN
+F 3 "~" H 2900 4500 50  0001 C CNN
+	1    2900 4500
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV6
+U 1 1 634CAF52
+P 2900 3850
+F 0 "RV6" H 2832 3804 50  0000 R CNN
+F 1 "100k" H 2832 3895 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 3850 50  0001 C CNN
+F 3 "~" H 2900 3850 50  0001 C CNN
+	1    2900 3850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV7
+U 1 1 634CB481
+P 2900 5150
+F 0 "RV7" H 2832 5104 50  0000 R CNN
+F 1 "100k" H 2832 5195 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2900 5150 50  0001 C CNN
+F 3 "~" H 2900 5150 50  0001 C CNN
+	1    2900 5150
+	-1   0    0    -1  
+$EndComp
+Text Notes 3150 1300 0    50   ~ 0
+Digi1Param
+Text Notes 3200 2550 0    50   ~ 0
+Digi2Param
+Text Notes 3150 4450 0    50   ~ 0
+Digi3Param
+Text Notes 3150 1950 0    50   ~ 0
+Digi1Vol
+Text Notes 3150 3250 0    50   ~ 0
+Digi2Vol
+Text Notes 3200 3850 0    50   ~ 0
+Digi3Vol
+Text Notes 3200 5200 0    50   ~ 0
+BreakVol
+$Comp
+L Analog_Switch:CD4051B U?
+U 1 1 631027F4
+P 5100 1450
+AR Path="/631027F4" Ref="U?"  Part="1" 
+AR Path="/63087759/631027F4" Ref="U?"  Part="1" 
+AR Path="/63273844/631027F4" Ref="U15"  Part="1" 
+F 0 "U15" H 4950 2250 50  0000 C CNN
+F 1 "CD4051B" H 4900 2150 50  0000 C CNN
+F 2 "Package_SO:SOIC-16_3.9x9.9mm_P1.27mm" H 5250 700 50  0001 L CNN
+F 3 "http://www.ti.com/lit/ds/symlink/cd4052b.pdf" H 5080 1550 50  0001 C CNN
+	1    5100 1450
+	1    0    0    -1  
+$EndComp
+Text GLabel 4600 1350 0    50   BiDi ~ 0
+MUX5_DAT
+$Comp
+L power:Earth #PWR?
+U 1 1 631027FB
+P 4600 1450
+AR Path="/631027FB" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/631027FB" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/631027FB" Ref="#PWR0237"  Part="1" 
+F 0 "#PWR0237" H 4600 1200 50  0001 C CNN
+F 1 "Earth" H 4600 1300 50  0001 C CNN
+F 2 "" H 4600 1450 50  0001 C CNN
+F 3 "~" H 4600 1450 50  0001 C CNN
+	1    4600 1450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 63102801
+P 5100 2150
+AR Path="/63102801" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/63102801" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63102801" Ref="#PWR0239"  Part="1" 
+F 0 "#PWR0239" H 5100 1900 50  0001 C CNN
+F 1 "Earth" H 5100 2000 50  0001 C CNN
+F 2 "" H 5100 2150 50  0001 C CNN
+F 3 "~" H 5100 2150 50  0001 C CNN
+	1    5100 2150
+	1    0    0    -1  
+$EndComp
+Text GLabel 4600 950  0    50   BiDi ~ 0
+MUX_A
+Text GLabel 4600 1050 0    50   BiDi ~ 0
+MUX_B
+Text GLabel 4600 1150 0    50   BiDi ~ 0
+MUX_C
+Wire Wire Line
+	5600 1250 6300 1250
+Wire Wire Line
+	5600 1350 6200 1350
+Wire Wire Line
+	6200 1350 6200 1900
+Wire Wire Line
+	6200 1900 6300 1900
+Wire Wire Line
+	6300 2550 6150 2550
+Wire Wire Line
+	6150 2550 6150 1450
+Wire Wire Line
+	6150 1450 5600 1450
+Wire Wire Line
+	6300 3200 6100 3200
+Wire Wire Line
+	6100 3200 6100 1550
+Wire Wire Line
+	6100 1550 5600 1550
+Wire Wire Line
+	6300 3850 6050 3850
+Wire Wire Line
+	6050 3850 6050 1650
+Wire Wire Line
+	6050 1650 5600 1650
+Wire Wire Line
+	6000 4500 6000 1750
+Wire Wire Line
+	6000 1750 5600 1750
+Wire Wire Line
+	6300 5150 5950 5150
+Wire Wire Line
+	5950 5150 5950 1850
+Wire Wire Line
+	5950 1850 5600 1850
+Wire Wire Line
+	6300 5800 5900 5800
+Wire Wire Line
+	5900 5800 5900 1950
+Wire Wire Line
+	5900 1950 5600 1950
+$Comp
+L power:Earth #PWR0344
+U 1 1 63102856
+P 6450 4000
+F 0 "#PWR0344" H 6450 3750 50  0001 C CNN
+F 1 "Earth" H 6450 3850 50  0001 C CNN
+F 2 "" H 6450 4000 50  0001 C CNN
+F 3 "~" H 6450 4000 50  0001 C CNN
+	1    6450 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0345
+U 1 1 63102862
+P 6450 3350
+F 0 "#PWR0345" H 6450 3100 50  0001 C CNN
+F 1 "Earth" H 6450 3200 50  0001 C CNN
+F 2 "" H 6450 3350 50  0001 C CNN
+F 3 "~" H 6450 3350 50  0001 C CNN
+	1    6450 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0347
+U 1 1 6310287A
+P 6450 2050
+F 0 "#PWR0347" H 6450 1800 50  0001 C CNN
+F 1 "Earth" H 6450 1900 50  0001 C CNN
+F 2 "" H 6450 2050 50  0001 C CNN
+F 3 "~" H 6450 2050 50  0001 C CNN
+	1    6450 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0362
+U 1 1 63102886
+P 6450 1400
+F 0 "#PWR0362" H 6450 1150 50  0001 C CNN
+F 1 "Earth" H 6450 1250 50  0001 C CNN
+F 2 "" H 6450 1400 50  0001 C CNN
+F 3 "~" H 6450 1400 50  0001 C CNN
+	1    6450 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV9
+U 1 1 6310288C
+P 6450 1250
+F 0 "RV9" H 6382 1204 50  0000 R CNN
+F 1 "100k" H 6382 1295 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 6450 1250 50  0001 C CNN
+F 3 "~" H 6450 1250 50  0001 C CNN
+	1    6450 1250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV10
+U 1 1 63102892
+P 6450 1900
+F 0 "RV10" H 6382 1854 50  0000 R CNN
+F 1 "100k" H 6382 1945 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 6450 1900 50  0001 C CNN
+F 3 "~" H 6450 1900 50  0001 C CNN
+	1    6450 1900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV12
+U 1 1 6310289E
+P 6450 3200
+F 0 "RV12" H 6382 3154 50  0000 R CNN
+F 1 "100k" H 6382 3245 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 6450 3200 50  0001 C CNN
+F 3 "~" H 6450 3200 50  0001 C CNN
+	1    6450 3200
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_US RV13
+U 1 1 631028A4
+P 6450 3850
+F 0 "RV13" H 6382 3804 50  0000 R CNN
+F 1 "100k" H 6382 3895 50  0000 R CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 6450 3850 50  0001 C CNN
+F 3 "~" H 6450 3850 50  0001 C CNN
+	1    6450 3850
+	-1   0    0    -1  
+$EndComp
+Text Notes 6700 1300 0    50   ~ 0
+Break Chaos
+Text Notes 6700 1950 0    50   ~ 0
+Repeat
+Text Notes 6700 3250 0    50   ~ 0
+Break Pitch
+$Comp
+L power:+3.3V #PWR0363
+U 1 1 6322834C
+P 2900 1100
+F 0 "#PWR0363" H 2900 950 50  0001 C CNN
+F 1 "+3.3V" H 2915 1273 50  0000 C CNN
+F 2 "" H 2900 1100 50  0001 C CNN
+F 3 "" H 2900 1100 50  0001 C CNN
+	1    2900 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0364
+U 1 1 63228BC6
+P 2900 1750
+F 0 "#PWR0364" H 2900 1600 50  0001 C CNN
+F 1 "+3.3V" H 2915 1923 50  0000 C CNN
+F 2 "" H 2900 1750 50  0001 C CNN
+F 3 "" H 2900 1750 50  0001 C CNN
+	1    2900 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0365
+U 1 1 632290D7
+P 2900 2400
+F 0 "#PWR0365" H 2900 2250 50  0001 C CNN
+F 1 "+3.3V" H 2915 2573 50  0000 C CNN
+F 2 "" H 2900 2400 50  0001 C CNN
+F 3 "" H 2900 2400 50  0001 C CNN
+	1    2900 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0366
+U 1 1 632293C0
+P 2900 3050
+F 0 "#PWR0366" H 2900 2900 50  0001 C CNN
+F 1 "+3.3V" H 2915 3223 50  0000 C CNN
+F 2 "" H 2900 3050 50  0001 C CNN
+F 3 "" H 2900 3050 50  0001 C CNN
+	1    2900 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0367
+U 1 1 632299A0
+P 2900 4350
+F 0 "#PWR0367" H 2900 4200 50  0001 C CNN
+F 1 "+3.3V" H 2915 4523 50  0000 C CNN
+F 2 "" H 2900 4350 50  0001 C CNN
+F 3 "" H 2900 4350 50  0001 C CNN
+	1    2900 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0368
+U 1 1 6322A07D
+P 2900 3700
+F 0 "#PWR0368" H 2900 3550 50  0001 C CNN
+F 1 "+3.3V" H 2915 3873 50  0000 C CNN
+F 2 "" H 2900 3700 50  0001 C CNN
+F 3 "" H 2900 3700 50  0001 C CNN
+	1    2900 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0369
+U 1 1 6322A5BC
+P 2900 5000
+F 0 "#PWR0369" H 2900 4850 50  0001 C CNN
+F 1 "+3.3V" H 2915 5173 50  0000 C CNN
+F 2 "" H 2900 5000 50  0001 C CNN
+F 3 "" H 2900 5000 50  0001 C CNN
+	1    2900 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0372
+U 1 1 6322BB61
+P 6450 1750
+F 0 "#PWR0372" H 6450 1600 50  0001 C CNN
+F 1 "+3.3V" H 6465 1923 50  0000 C CNN
+F 2 "" H 6450 1750 50  0001 C CNN
+F 3 "" H 6450 1750 50  0001 C CNN
+	1    6450 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0374
+U 1 1 6322C441
+P 6450 3050
+F 0 "#PWR0374" H 6450 2900 50  0001 C CNN
+F 1 "+3.3V" H 6465 3223 50  0000 C CNN
+F 2 "" H 6450 3050 50  0001 C CNN
+F 3 "" H 6450 3050 50  0001 C CNN
+	1    6450 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0375
+U 1 1 6322C8C8
+P 6450 3700
+F 0 "#PWR0375" H 6450 3550 50  0001 C CNN
+F 1 "+3.3V" H 6465 3873 50  0000 C CNN
+F 2 "" H 6450 3700 50  0001 C CNN
+F 3 "" H 6450 3700 50  0001 C CNN
+	1    6450 3700
+	1    0    0    -1  
+$EndComp
+Text Notes 6650 3700 0    50   ~ 0
+Swing
+$Comp
+L power:+3.3V #PWR0177
+U 1 1 6318BC1F
+P 1650 750
+F 0 "#PWR0177" H 1650 600 50  0001 C CNN
+F 1 "+3.3V" H 1665 923 50  0000 C CNN
+F 2 "" H 1650 750 50  0001 C CNN
+F 3 "" H 1650 750 50  0001 C CNN
+	1    1650 750 
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0371
+U 1 1 6322AF6A
+P 6450 1100
+F 0 "#PWR0371" H 6450 950 50  0001 C CNN
+F 1 "+3.3V" H 6465 1273 50  0000 C CNN
+F 2 "" H 6450 1100 50  0001 C CNN
+F 3 "" H 6450 1100 50  0001 C CNN
+	1    6450 1100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0178
+U 1 1 6318C7C0
+P 5200 750
+F 0 "#PWR0178" H 5200 600 50  0001 C CNN
+F 1 "+3.3V" H 5215 923 50  0000 C CNN
+F 2 "" H 5200 750 50  0001 C CNN
+F 3 "" H 5200 750 50  0001 C CNN
+	1    5200 750 
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 63329B70
+P 8750 4750
+AR Path="/633A1785/63329B70" Ref="R?"  Part="1" 
+AR Path="/63273844/63329B70" Ref="R187"  Part="1" 
+F 0 "R187" V 8545 4750 50  0000 C CNN
+F 1 "10k" V 8636 4750 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8790 4740 50  0001 C CNN
+F 3 "~" H 8750 4750 50  0001 C CNN
+	1    8750 4750
+	0    -1   1    0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 63329B76
+P 8250 4300
+AR Path="/633A1785/63329B76" Ref="R?"  Part="1" 
+AR Path="/63273844/63329B76" Ref="R186"  Part="1" 
+F 0 "R186" H 8182 4254 50  0000 R CNN
+F 1 "10k" H 8182 4345 50  0000 R CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8290 4290 50  0001 C CNN
+F 3 "~" H 8250 4300 50  0001 C CNN
+	1    8250 4300
+	1    0    0    1   
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 63329B7D
+P 8250 4950
+AR Path="/633A1785/63329B7D" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63329B7D" Ref="#PWR027"  Part="1" 
+F 0 "#PWR027" H 8250 4700 50  0001 C CNN
+F 1 "Earth" H 8250 4800 50  0001 C CNN
+F 2 "" H 8250 4950 50  0001 C CNN
+F 3 "~" H 8250 4950 50  0001 C CNN
+	1    8250 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:D_Small D?
+U 1 1 63329B90
+P 8550 4900
+AR Path="/633A1785/63329B90" Ref="D?"  Part="1" 
+AR Path="/63273844/63329B90" Ref="D27"  Part="1" 
+F 0 "D27" V 8504 4968 50  0000 L CNN
+F 1 "D_Small" V 8595 4968 50  0000 L CNN
+F 2 "Diode_SMD:D_SOD-123" V 8550 4900 50  0001 C CNN
+F 3 "~" V 8550 4900 50  0001 C CNN
+	1    8550 4900
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	8550 4800 8550 4750
+Wire Wire Line
+	8600 4750 8550 4750
+Connection ~ 8550 4750
+$Comp
+L power:Earth #PWR?
+U 1 1 63329B99
+P 8550 5000
+AR Path="/633A1785/63329B99" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63329B99" Ref="#PWR028"  Part="1" 
+F 0 "#PWR028" H 8550 4750 50  0001 C CNN
+F 1 "Earth" H 8550 4850 50  0001 C CNN
+F 2 "" H 8550 5000 50  0001 C CNN
+F 3 "~" H 8550 5000 50  0001 C CNN
+	1    8550 5000
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 63329B9F
+P 8250 4150
+AR Path="/633A1785/63329B9F" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/63329B9F" Ref="#PWR026"  Part="1" 
+F 0 "#PWR026" H 8250 4000 50  0001 C CNN
+F 1 "+3.3V" H 8265 4323 50  0000 C CNN
+F 2 "" H 8250 4150 50  0001 C CNN
+F 3 "" H 8250 4150 50  0001 C CNN
+	1    8250 4150
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J142
+U 1 1 6332C3B0
+P 9100 4750
+F 0 "J142" H 9128 4776 50  0000 L CNN
+F 1 "Clock_In" H 9128 4685 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 9100 4750 50  0001 C CNN
+F 3 "~" H 9100 4750 50  0001 C CNN
+	1    9100 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Transistor_BJT:MMBT3904 Q14
+U 1 1 634BF98E
+P 8350 4750
+F 0 "Q14" H 8541 4796 50  0000 L CNN
+F 1 "MMBT3904" H 8541 4705 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23" H 8550 4675 50  0001 L CIN
+F 3 "https://www.fairchildsemi.com/datasheets/2N/2N3904.pdf" H 8350 4750 50  0001 L CNN
+	1    8350 4750
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 6363418E
+P 5000 2150
+AR Path="/6363418E" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/6363418E" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/6363418E" Ref="#PWR0229"  Part="1" 
+F 0 "#PWR0229" H 5000 1900 50  0001 C CNN
+F 1 "Earth" H 5000 2000 50  0001 C CNN
+F 2 "" H 5000 2150 50  0001 C CNN
+F 3 "~" H 5000 2150 50  0001 C CNN
+	1    5000 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 636343E0
+P 1450 2150
+AR Path="/636343E0" Ref="#PWR?"  Part="1" 
+AR Path="/63087759/636343E0" Ref="#PWR?"  Part="1" 
+AR Path="/63273844/636343E0" Ref="#PWR0243"  Part="1" 
+F 0 "#PWR0243" H 1450 1900 50  0001 C CNN
+F 1 "Earth" H 1450 2000 50  0001 C CNN
+F 2 "" H 1450 2150 50  0001 C CNN
+F 3 "~" H 1450 2150 50  0001 C CNN
+	1    1450 2150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6000 4500 6300 4500
+Wire Wire Line
+	8250 4450 8250 4500
+Wire Wire Line
+	8250 4500 7600 4500
+Connection ~ 8250 4500
+Wire Wire Line
+	8250 4500 8250 4550
+Text GLabel 7600 4500 0    50   BiDi ~ 0
+CLOCK_IN
+$Comp
+L Connector:Conn_01x01_Female J61
+U 1 1 636AE226
+P 2950 5800
+F 0 "J61" H 2978 5826 50  0000 L CNN
+F 1 "AN_IN_AUX_1" H 2978 5735 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 2950 5800 50  0001 C CNN
+F 3 "~" H 2950 5800 50  0001 C CNN
+	1    2950 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J62
+U 1 1 636AEC41
+P 6500 2550
+F 0 "J62" H 6528 2576 50  0000 L CNN
+F 1 "AN_IN_AUX_2" H 6528 2485 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 6500 2550 50  0001 C CNN
+F 3 "~" H 6500 2550 50  0001 C CNN
+	1    6500 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J65
+U 1 1 636AFA1D
+P 6500 4500
+F 0 "J65" H 6528 4526 50  0000 L CNN
+F 1 "AN_IN_AUX_3" H 6528 4435 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 6500 4500 50  0001 C CNN
+F 3 "~" H 6500 4500 50  0001 C CNN
+	1    6500 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J67
+U 1 1 636B02BF
+P 6500 5150
+F 0 "J67" H 6528 5176 50  0000 L CNN
+F 1 "AN_IN_AUX_4" H 6528 5085 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 6500 5150 50  0001 C CNN
+F 3 "~" H 6500 5150 50  0001 C CNN
+	1    6500 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J68
+U 1 1 636B0637
+P 6500 5800
+F 0 "J68" H 6528 5826 50  0000 L CNN
+F 1 "AN_IN_AUX_5" H 6528 5735 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 6500 5800 50  0001 C CNN
+F 3 "~" H 6500 5800 50  0001 C CNN
+	1    6500 5800
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

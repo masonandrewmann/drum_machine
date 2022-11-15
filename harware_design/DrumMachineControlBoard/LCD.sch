@@ -1,0 +1,136 @@
+EESchema Schematic File Version 4
+LIBS:DrumMachineControlBoard-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 12 18
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L modular_synth:Nokia5110 U24
+U 1 1 631C42EA
+P 4150 1600
+F 0 "U24" H 4928 1438 50  0000 L CNN
+F 1 "Nokia5110" H 4928 1347 50  0000 L CNN
+F 2 "mason_parts:Nokia5110Breakout" H 4150 1600 50  0001 C CNN
+F 3 "" H 4150 1600 50  0001 C CNN
+	1    4150 1600
+	1    0    0    -1  
+$EndComp
+Text GLabel 4250 2050 3    50   BiDi ~ 0
+MEM_MOSI
+Text GLabel 4050 2050 3    50   BiDi ~ 0
+MEM_SCK
+Text GLabel 4650 2050 3    50   BiDi ~ 0
+LCD_CS
+$Comp
+L Device:R_US R177
+U 1 1 631CF5FE
+P 3650 2250
+F 0 "R177" H 3500 2250 50  0000 L CNN
+F 1 "220" H 3450 2150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 3690 2240 50  0001 C CNN
+F 3 "~" H 3650 2250 50  0001 C CNN
+	1    3650 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR07
+U 1 1 631D047E
+P 3650 2400
+F 0 "#PWR07" H 3650 2250 50  0001 C CNN
+F 1 "+3.3V" H 3665 2573 50  0000 C CNN
+F 2 "" H 3650 2400 50  0001 C CNN
+F 3 "" H 3650 2400 50  0001 C CNN
+	1    3650 2400
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+3.3V #PWR08
+U 1 1 631D1233
+P 3850 2050
+F 0 "#PWR08" H 3850 1900 50  0001 C CNN
+F 1 "+3.3V" H 3865 2223 50  0000 C CNN
+F 2 "" H 3850 2050 50  0001 C CNN
+F 3 "" H 3850 2050 50  0001 C CNN
+	1    3850 2050
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:Earth #PWR06
+U 1 1 631D18C8
+P 3450 2050
+F 0 "#PWR06" H 3450 1800 50  0001 C CNN
+F 1 "Earth" H 3450 1900 50  0001 C CNN
+F 2 "" H 3450 2050 50  0001 C CNN
+F 3 "~" H 3450 2050 50  0001 C CNN
+	1    3450 2050
+	1    0    0    -1  
+$EndComp
+Text GLabel 4850 2050 3    50   BiDi ~ 0
+LCD_RST
+Text GLabel 4450 2050 3    50   BiDi ~ 0
+LCD_DC
+$Comp
+L Connector:Conn_01x08_Female J145
+U 1 1 6374FE67
+P 4150 2900
+F 0 "J145" V 4315 2830 50  0000 C CNN
+F 1 "Conn_01x08_Female" V 4224 2830 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x08_P2.54mm_Vertical" H 4150 2900 50  0001 C CNN
+F 3 "~" H 4150 2900 50  0001 C CNN
+	1    4150 2900
+	0    -1   -1   0   
+$EndComp
+Text GLabel 4550 3100 3    50   BiDi ~ 0
+LCD_RST
+Text GLabel 4450 3100 3    50   BiDi ~ 0
+LCD_CS
+Text GLabel 4350 3100 3    50   BiDi ~ 0
+LCD_DC
+Text GLabel 4250 3100 3    50   BiDi ~ 0
+MEM_MOSI
+Text GLabel 4150 3100 3    50   BiDi ~ 0
+MEM_SCK
+$Comp
+L power:+3.3V #PWR083
+U 1 1 63752B83
+P 4050 3100
+F 0 "#PWR083" H 4050 2950 50  0001 C CNN
+F 1 "+3.3V" H 4065 3273 50  0000 C CNN
+F 2 "" H 4050 3100 50  0001 C CNN
+F 3 "" H 4050 3100 50  0001 C CNN
+	1    4050 3100
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:Earth #PWR082
+U 1 1 637533BE
+P 3850 3100
+F 0 "#PWR082" H 3850 2850 50  0001 C CNN
+F 1 "Earth" H 3850 2950 50  0001 C CNN
+F 2 "" H 3850 3100 50  0001 C CNN
+F 3 "~" H 3850 3100 50  0001 C CNN
+	1    3850 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3650 2100 3650 2050
+Wire Wire Line
+	3650 2100 3750 2100
+Wire Wire Line
+	3750 2100 3750 3300
+Wire Wire Line
+	3750 3300 3950 3300
+Wire Wire Line
+	3950 3300 3950 3100
+Connection ~ 3650 2100
+$EndSCHEMATC

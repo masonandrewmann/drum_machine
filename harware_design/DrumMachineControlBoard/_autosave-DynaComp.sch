@@ -1,0 +1,165 @@
+EESchema Schematic File Version 4
+LIBS:DrumMachineControlBoard-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 18 18
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Amplifier_Operational:CA3080 U?
+U 1 1 634F8BF8
+P 3400 2700
+F 0 "U?" H 3744 2746 50  0000 L CNN
+F 1 "CA3080" H 3744 2655 50  0000 L CNN
+F 2 "" H 3400 2700 50  0001 C CNN
+F 3 "http://www.intersil.com/content/dam/Intersil/documents/ca30/ca3080-a.pdf" H 3400 2800 50  0001 C CNN
+	1    3400 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 634F9644
+P 2900 3050
+F 0 "C?" H 2992 3096 50  0000 L CNN
+F 1 "10n" H 2992 3005 50  0000 L CNN
+F 2 "" H 2900 3050 50  0001 C CNN
+F 3 "~" H 2900 3050 50  0001 C CNN
+	1    2900 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 634F9EF5
+P 2550 3050
+F 0 "R?" H 2618 3096 50  0000 L CNN
+F 1 "15k" H 2618 3005 50  0000 L CNN
+F 2 "" V 2590 3040 50  0001 C CNN
+F 3 "~" H 2550 3050 50  0001 C CNN
+	1    2550 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1_Small C?
+U 1 1 634FAE43
+P 2750 3450
+F 0 "C?" H 2841 3496 50  0000 L CNN
+F 1 "1u" H 2841 3405 50  0000 L CNN
+F 2 "" H 2750 3450 50  0001 C CNN
+F 3 "~" H 2750 3450 50  0001 C CNN
+	1    2750 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 634FB237
+P 2750 3550
+F 0 "#PWR?" H 2750 3300 50  0001 C CNN
+F 1 "Earth" H 2750 3400 50  0001 C CNN
+F 2 "" H 2750 3550 50  0001 C CNN
+F 3 "~" H 2750 3550 50  0001 C CNN
+	1    2750 3550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 3350 2750 3300
+Wire Wire Line
+	2750 3300 2900 3300
+Wire Wire Line
+	2900 3300 2900 3150
+Wire Wire Line
+	2750 3300 2550 3300
+Wire Wire Line
+	2550 3300 2550 3200
+Connection ~ 2750 3300
+Wire Wire Line
+	3100 2800 2900 2800
+Wire Wire Line
+	2550 2800 2550 2900
+Wire Wire Line
+	2900 2800 2900 2950
+Connection ~ 2900 2800
+Wire Wire Line
+	2900 2800 2550 2800
+$Comp
+L power:-12V #PWR?
+U 1 1 634FC1FE
+P 3300 3000
+F 0 "#PWR?" H 3300 3100 50  0001 C CNN
+F 1 "-12V" H 3315 3173 50  0000 C CNN
+F 2 "" H 3300 3000 50  0001 C CNN
+F 3 "" H 3300 3000 50  0001 C CNN
+	1    3300 3000
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 634FC7A0
+P 3300 2400
+F 0 "#PWR?" H 3300 2250 50  0001 C CNN
+F 1 "+12V" H 3315 2573 50  0000 C CNN
+F 2 "" H 3300 2400 50  0001 C CNN
+F 3 "" H 3300 2400 50  0001 C CNN
+	1    3300 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 634FCB3C
+P 2200 3050
+F 0 "R?" H 2268 3096 50  0000 L CNN
+F 1 "1M" H 2268 3005 50  0000 L CNN
+F 2 "" V 2240 3040 50  0001 C CNN
+F 3 "~" H 2200 3050 50  0001 C CNN
+	1    2200 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR?
+U 1 1 634FCE56
+P 2200 3200
+F 0 "#PWR?" H 2200 2950 50  0001 C CNN
+F 1 "Earth" H 2200 3050 50  0001 C CNN
+F 2 "" H 2200 3200 50  0001 C CNN
+F 3 "~" H 2200 3200 50  0001 C CNN
+	1    2200 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2200 2900 2200 2800
+Wire Wire Line
+	2200 2800 2550 2800
+Connection ~ 2550 2800
+$Comp
+L Device:R_POT_TRIM_US RV?
+U 1 1 634FD74D
+P 1750 2800
+F 0 "RV?" V 1545 2800 50  0000 C CNN
+F 1 "R_POT_TRIM_US" V 1636 2800 50  0000 C CNN
+F 2 "" H 1750 2800 50  0001 C CNN
+F 3 "~" H 1750 2800 50  0001 C CNN
+	1    1750 2800
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 634FDFC7
+P 1750 3200
+F 0 "R?" H 1818 3246 50  0000 L CNN
+F 1 "1M" H 1818 3155 50  0000 L CNN
+F 2 "" V 1790 3190 50  0001 C CNN
+F 3 "~" H 1750 3200 50  0001 C CNN
+	1    1750 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1750 3050 1750 2950
+$EndSCHEMATC

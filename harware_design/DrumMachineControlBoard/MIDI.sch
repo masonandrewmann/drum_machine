@@ -1,0 +1,376 @@
+EESchema Schematic File Version 4
+LIBS:DrumMachineControlBoard-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 10 18
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Connector:DIN-5_180degree J13
+U 1 1 6308C0FD
+P 1600 4050
+F 0 "J13" H 1600 3683 50  0000 C CNN
+F 1 "MIDI OUT" H 1600 3774 50  0000 C CNN
+F 2 "mason_parts:DIN5_MIDI" H 1600 4050 50  0001 C CNN
+F 3 "http://www.mouser.com/ds/2/18/40_c091_abd_e-75918.pdf" H 1600 4050 50  0001 C CNN
+	1    1600 4050
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:DIN-5_180degree J12
+U 1 1 6308CF81
+P 1600 2450
+F 0 "J12" H 1600 2083 50  0000 C CNN
+F 1 "MIDI THRU" H 1600 2174 50  0000 C CNN
+F 2 "mason_parts:DIN5_MIDI" H 1600 2450 50  0001 C CNN
+F 3 "http://www.mouser.com/ds/2/18/40_c091_abd_e-75918.pdf" H 1600 2450 50  0001 C CNN
+	1    1600 2450
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_US R160
+U 1 1 6308E97B
+P 2350 1150
+F 0 "R160" V 2145 1150 50  0000 C CNN
+F 1 "220" V 2236 1150 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 2390 1140 50  0001 C CNN
+F 3 "~" H 2350 1150 50  0001 C CNN
+	1    2350 1150
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:D_Small D20
+U 1 1 6308F7B3
+P 2550 1450
+F 0 "D20" V 2504 1518 50  0000 L CNN
+F 1 "1N4148" V 2595 1518 50  0000 L CNN
+F 2 "Diode_SMD:D_SOD-123" V 2550 1450 50  0001 C CNN
+F 3 "~" V 2550 1450 50  0001 C CNN
+	1    2550 1450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:Earth #PWR0350
+U 1 1 6308FC48
+P 1600 1350
+F 0 "#PWR0350" H 1600 1100 50  0001 C CNN
+F 1 "Earth" H 1600 1200 50  0001 C CNN
+F 2 "" H 1600 1350 50  0001 C CNN
+F 3 "~" H 1600 1350 50  0001 C CNN
+	1    1600 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 1150 1250 1150
+Wire Wire Line
+	1250 1150 1250 1600
+Wire Wire Line
+	1250 1600 2550 1600
+Wire Wire Line
+	2550 1600 2550 1550
+Wire Wire Line
+	2550 1350 2550 1150
+Wire Wire Line
+	2550 1150 2500 1150
+$Comp
+L Device:R_US R159
+U 1 1 6309809C
+P 2200 4150
+F 0 "R159" V 1995 4150 50  0000 C CNN
+F 1 "220" V 2086 4150 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 2240 4140 50  0001 C CNN
+F 3 "~" H 2200 4150 50  0001 C CNN
+	1    2200 4150
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2400 4100 2400 4150
+Wire Wire Line
+	2400 4150 2350 4150
+$Comp
+L Device:R_US R158
+U 1 1 6309A584
+P 1900 4650
+F 0 "R158" V 1695 4650 50  0000 C CNN
+F 1 "220" V 1786 4650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 1940 4640 50  0001 C CNN
+F 3 "~" H 1900 4650 50  0001 C CNN
+	1    1900 4650
+	0    1    1    0   
+$EndComp
+$Comp
+L power:Earth #PWR0352
+U 1 1 6309B030
+P 1600 4350
+F 0 "#PWR0352" H 1600 4100 50  0001 C CNN
+F 1 "Earth" H 1600 4200 50  0001 C CNN
+F 2 "" H 1600 4350 50  0001 C CNN
+F 3 "~" H 1600 4350 50  0001 C CNN
+	1    1600 4350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1250 4650 1250 4150
+Wire Wire Line
+	1250 4150 1300 4150
+$Comp
+L 74xx:74LS04 U21
+U 1 1 6309DFA1
+P 3000 4650
+F 0 "U21" H 3000 4333 50  0000 C CNN
+F 1 "74LS04" H 3000 4424 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3000 4650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3000 4650 50  0001 C CNN
+	1    3000 4650
+	-1   0    0    1   
+$EndComp
+$Comp
+L 74xx:74LS04 U21
+U 2 1 630A035C
+P 2400 4650
+F 0 "U21" H 2400 4333 50  0000 C CNN
+F 1 "74LS04" H 2400 4424 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 2400 4650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 2400 4650 50  0001 C CNN
+	2    2400 4650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1750 4650 1250 4650
+Wire Wire Line
+	2100 4650 2050 4650
+Wire Wire Line
+	2550 1150 3200 1150
+Connection ~ 2550 1150
+Wire Wire Line
+	3200 1350 3050 1350
+Wire Wire Line
+	3050 1350 3050 1600
+Wire Wire Line
+	3050 1600 2550 1600
+Connection ~ 2550 1600
+$Comp
+L Device:R_US R162
+U 1 1 630AB2EA
+P 3850 950
+F 0 "R162" H 3782 904 50  0000 R CNN
+F 1 "1k" H 3782 995 50  0000 R CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 3890 940 50  0001 C CNN
+F 3 "~" H 3850 950 50  0001 C CNN
+	1    3850 950 
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:Earth #PWR0354
+U 1 1 630ABE27
+P 3800 1350
+F 0 "#PWR0354" H 3800 1100 50  0001 C CNN
+F 1 "Earth" H 3800 1200 50  0001 C CNN
+F 2 "" H 3800 1350 50  0001 C CNN
+F 3 "~" H 3800 1350 50  0001 C CNN
+	1    3800 1350
+	1    0    0    -1  
+$EndComp
+Text GLabel 3900 1150 2    50   BiDi ~ 0
+MIDI_IN
+NoConn ~ 1300 1050
+NoConn ~ 1900 1050
+NoConn ~ 1300 4050
+NoConn ~ 1900 4050
+NoConn ~ 1900 2450
+Text GLabel 3300 4650 2    50   BiDi ~ 0
+MIDI_OUT
+Wire Wire Line
+	3850 1100 3850 1150
+Wire Wire Line
+	3850 1150 3800 1150
+Wire Wire Line
+	3850 1150 3900 1150
+Connection ~ 3850 1150
+$Comp
+L 74xx:74LS04 U21
+U 3 1 630C3162
+P 3400 3100
+F 0 "U21" H 3400 2783 50  0000 C CNN
+F 1 "74LS04" H 3400 2874 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 3400 3100 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 3400 3100 50  0001 C CNN
+	3    3400 3100
+	-1   0    0    1   
+$EndComp
+$Comp
+L 74xx:74LS04 U21
+U 4 1 630C4830
+P 2800 3100
+F 0 "U21" H 2800 2783 50  0000 C CNN
+F 1 "74LS04" H 2800 2874 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 2800 3100 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 2800 3100 50  0001 C CNN
+	4    2800 3100
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_US R161
+U 1 1 630C56BD
+P 2350 3100
+F 0 "R161" V 2145 3100 50  0000 C CNN
+F 1 "220" V 2236 3100 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 2390 3090 50  0001 C CNN
+F 3 "~" H 2350 3100 50  0001 C CNN
+	1    2350 3100
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2200 3100 1250 3100
+Wire Wire Line
+	1250 3100 1250 2550
+Wire Wire Line
+	1250 2550 1300 2550
+NoConn ~ 1300 2450
+$Comp
+L power:Earth #PWR0355
+U 1 1 630C7D9A
+P 1600 2750
+F 0 "#PWR0355" H 1600 2500 50  0001 C CNN
+F 1 "Earth" H 1600 2600 50  0001 C CNN
+F 2 "" H 1600 2750 50  0001 C CNN
+F 3 "~" H 1600 2750 50  0001 C CNN
+	1    1600 2750
+	1    0    0    -1  
+$EndComp
+Text Notes 1050 600  0    50   ~ 0
+TRIPLE CHECK PINOUT!!!
+Wire Wire Line
+	3700 3100 3850 3100
+Text Notes 4000 1900 0    50   ~ 0
+IDK if any of these circuits work lmao 
+Text Notes 2300 650  0    50   ~ 0
+ALSO LOGIC LEVVELS!
+NoConn ~ -2950 -2400
+NoConn ~ 350  -850
+NoConn ~ 1900 2550
+$Comp
+L Isolator:PC817 U22
+U 1 1 634F87A1
+P 3500 1250
+F 0 "U22" H 3500 1575 50  0000 C CNN
+F 1 "PC817" H 3500 1484 50  0000 C CNN
+F 2 "Package_DIP:DIP-4_W7.62mm" H 3300 1050 50  0001 L CIN
+F 3 "http://www.soselectronic.cz/a_info/resource/d/pc817.pdf" H 3500 1250 50  0001 L CNN
+	1    3500 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U21
+U 7 1 6349E1FB
+P 6000 3350
+F 0 "U21" H 6230 3396 50  0000 L CNN
+F 1 "74LS04" H 6230 3305 50  0000 L CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 6000 3350 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 6000 3350 50  0001 C CNN
+	7    6000 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U21
+U 5 1 6349FE34
+P 5300 4600
+F 0 "U21" H 5300 4917 50  0000 C CNN
+F 1 "74LS04" H 5300 4826 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 5300 4600 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 5300 4600 50  0001 C CNN
+	5    5300 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74xx:74LS04 U21
+U 6 1 634A04D5
+P 5300 5150
+F 0 "U21" H 5300 5467 50  0000 C CNN
+F 1 "74LS04" H 5300 5376 50  0000 C CNN
+F 2 "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm" H 5300 5150 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74LS04" H 5300 5150 50  0001 C CNN
+	6    5300 5150
+	1    0    0    -1  
+$EndComp
+NoConn ~ 5000 4600
+NoConn ~ 5600 4600
+NoConn ~ 5600 5150
+NoConn ~ 5000 5150
+$Comp
+L power:Earth #PWR018
+U 1 1 634A2F38
+P 6000 3850
+F 0 "#PWR018" H 6000 3600 50  0001 C CNN
+F 1 "Earth" H 6000 3700 50  0001 C CNN
+F 2 "" H 6000 3850 50  0001 C CNN
+F 3 "~" H 6000 3850 50  0001 C CNN
+	1    6000 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR017
+U 1 1 634A4257
+P 6000 2850
+F 0 "#PWR017" H 6000 2700 50  0001 C CNN
+F 1 "+5V" H 6015 3023 50  0000 C CNN
+F 2 "" H 6000 2850 50  0001 C CNN
+F 3 "" H 6000 2850 50  0001 C CNN
+	1    6000 2850
+	1    0    0    -1  
+$EndComp
+Text Notes 2000 800  0    50   ~ 0
+Its not pulling down enough with this resistor
+Text Notes 2000 900  0    50   ~ 0
+but does when i short it\n
+Wire Wire Line
+	3850 3100 3850 1150
+$Comp
+L power:+5V #PWR0199
+U 1 1 633D0225
+P 2400 4100
+F 0 "#PWR0199" H 2400 3950 50  0001 C CNN
+F 1 "+5V" H 2415 4273 50  0000 C CNN
+F 2 "" H 2400 4100 50  0001 C CNN
+F 3 "" H 2400 4100 50  0001 C CNN
+	1    2400 4100
+	1    0    0    -1  
+$EndComp
+Text Notes 4100 1000 0    50   ~ 0
+works better with 220ohm pullup\n
+$Comp
+L power:+5V #PWR0198
+U 1 1 63616CF0
+P 3850 800
+F 0 "#PWR0198" H 3850 650 50  0001 C CNN
+F 1 "+5V" H 3865 973 50  0000 C CNN
+F 2 "" H 3850 800 50  0001 C CNN
+F 3 "" H 3850 800 50  0001 C CNN
+	1    3850 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:DIN-5_180degree J11
+U 1 1 6308B6C8
+P 1600 1050
+F 0 "J11" H 1600 683 50  0000 C CNN
+F 1 "MIDI IN" H 1600 774 50  0000 C CNN
+F 2 "mason_parts:DIN5_MIDI" H 1600 1050 50  0001 C CNN
+F 3 "http://www.mouser.com/ds/2/18/40_c091_abd_e-75918.pdf" H 1600 1050 50  0001 C CNN
+	1    1600 1050
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1900 1150 2200 1150
+Wire Wire Line
+	1900 4150 2050 4150
+$EndSCHEMATC

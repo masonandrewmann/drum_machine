@@ -1,0 +1,31 @@
+DRUM MACHINE TO DO:
+
+
+--------------------PCB DESIGN ---------------------------
+double check all electrolytic cap sizes / which ones i have / jlcpcb fab
+triple check all pots
+choose jlcpcb parts
+silkscreen?
+double check with inkscape layout drawing/paper drawing
+
+--------------------HARDWARE ---------------------------
+debug ssi2144 filter
+stress-test midi : maybe build midi knob bank for microkorg as a test project
+
+
+
+
+
+
+--------------------SOFTWARE ---------------------------
+
+
+
+
+
+
+
+
+--------------------Enclosure ---------------------------
+
+

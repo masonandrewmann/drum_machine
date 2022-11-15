@@ -1,0 +1,13 @@
+DRUM MACHINE PROGRAMMING NOTES
+
+
+
+PCD8544 can use hardware spi: frequency between 10kHz and 100kHz
+	u8g2 library with custom callbacks worked!
+	PCD8544_Teensy_SW_SPI is the file where I got it working (filename is a lie, it uses HW SPI);
+
+SPI transmission may cause other pins (MISO, etc) to do things during transfer, double check this!!!!
+
+^^^ this is all for default SPI, butttt default spi is being used by the memory chip so on my board i put it onto SPI1. Not sure how to use those though
+
+^^^ okokok it seems really hard to swap between spi buses with the u8g2 library. it might be better to just keep them on the same spi bus as audio/memory stuff. 

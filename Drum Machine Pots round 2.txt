@@ -1,0 +1,51 @@
+Drum Machine Pots needed
+
+
+NEED TO FIGURE OUT
+
+level pots for cynares
+
+
+
+
+
+SIDE PANEL
+
+500k linear x 12
+
+
+
+
+
+
+FRONT PANEL
+
+1M audio x 1 ::::: YES - D-shaft
+
+100k linear x 19 :::: too short + knurled + horizontal [[[[[[[[[[ ORDERED FROM THONK
+
+100k audio x 1 :::: [[[[[[[[ ORDERED FROM TTHONK
+
+10k linear x 4 - too short - knurled shaft, internal D??? [[[[[[[ ORDERED FROM THONK
+
+1k linear x 2 :::: [[[[[[[[ ORDERED FROM THONK
+
+20k linear x 2 :::: [[[[[[[ ORDERED FROM THONK
+
+500k linear x 1 :::: [[[[[[ ORDERED FROM THONK
+
+50k linear x 1 ::: stem is too short [[[[ ORDERED FROM THONK
+
+500R linear x 1 ::: not even pcb mount
+
+
+^^ that is all for the voices,, not extra parameters
+
+100k filter cutoff
+100R filter resonance
+100k final output volume
+100k break vol
+100k break chaos
+100k repeat
+100k break pitch
+100k swing

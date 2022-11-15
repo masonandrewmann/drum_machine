@@ -1,0 +1,228 @@
+EESchema Schematic File Version 4
+LIBS:DrumMachineControlBoard-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 15 18
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L modular_synth:NJM2073S U28
+U 1 1 6346770B
+P 4050 1550
+F 0 "U28" H 4100 1183 50  0000 C CNN
+F 1 "NJM2073S" H 4100 1274 50  0000 C CNN
+F 2 "Package_SIP:SIP-9_21.54x3mm_P2.54mm" H 4150 1450 50  0001 C CNN
+F 3 "" H 4050 1450 50  0001 C CNN
+	1    4050 1550
+	1    0    0    1   
+$EndComp
+$Comp
+L modular_synth:NJM2073S U28
+U 2 1 634679D3
+P 4100 2350
+F 0 "U28" H 4150 1983 50  0000 C CNN
+F 1 "NJM2073S" H 4150 2074 50  0000 C CNN
+F 2 "Package_SIP:SIP-9_21.54x3mm_P2.54mm" H 4200 2250 50  0001 C CNN
+F 3 "" H 4100 2250 50  0001 C CNN
+	2    4100 2350
+	1    0    0    1   
+$EndComp
+$Comp
+L modular_synth:NJM2073S U28
+U 3 1 63467D0B
+P 3450 6150
+F 0 "U28" H 3628 6196 50  0000 L CNN
+F 1 "NJM2073S" H 3628 6105 50  0000 L CNN
+F 2 "Package_SIP:SIP-9_21.54x3mm_P2.54mm" H 3550 6050 50  0001 C CNN
+F 3 "" H 3450 6050 50  0001 C CNN
+	3    3450 6150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR062
+U 1 1 6346A6F1
+P 3850 2250
+F 0 "#PWR062" H 3850 2000 50  0001 C CNN
+F 1 "Earth" H 3850 2100 50  0001 C CNN
+F 2 "" H 3850 2250 50  0001 C CNN
+F 3 "~" H 3850 2250 50  0001 C CNN
+	1    3850 2250
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:CP1_Small C24
+U 1 1 6346B740
+P 3600 1950
+F 0 "C24" H 3691 1996 50  0000 L CNN
+F 1 "10u" H 3691 1905 50  0000 L CNN
+F 2 "Capacitor_SMD:CP_Elec_4x4.5" H 3600 1950 50  0001 C CNN
+F 3 "~" H 3600 1950 50  0001 C CNN
+	1    3600 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 1850 3600 1650
+Wire Wire Line
+	3600 1650 3800 1650
+Wire Wire Line
+	3600 2050 3600 2450
+Wire Wire Line
+	3600 2450 3850 2450
+$Comp
+L Device:C_Small C25
+U 1 1 6346C438
+P 3600 2600
+F 0 "C25" H 3692 2646 50  0000 L CNN
+F 1 "100n" H 3692 2555 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 3600 2600 50  0001 C CNN
+F 3 "~" H 3600 2600 50  0001 C CNN
+	1    3600 2600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 2500 3600 2450
+Connection ~ 3600 2450
+$Comp
+L power:Earth #PWR061
+U 1 1 6346CD22
+P 3600 2700
+F 0 "#PWR061" H 3600 2450 50  0001 C CNN
+F 1 "Earth" H 3600 2550 50  0001 C CNN
+F 2 "" H 3600 2700 50  0001 C CNN
+F 3 "~" H 3600 2700 50  0001 C CNN
+	1    3600 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R180
+U 1 1 6346D693
+P 3200 1600
+F 0 "R180" H 3132 1554 50  0000 R CNN
+F 1 "10k" H 3132 1645 50  0000 R CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 3240 1590 50  0001 C CNN
+F 3 "~" H 3200 1600 50  0001 C CNN
+	1    3200 1600
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:Earth #PWR060
+U 1 1 6346E3F5
+P 3200 1750
+F 0 "#PWR060" H 3200 1500 50  0001 C CNN
+F 1 "Earth" H 3200 1600 50  0001 C CNN
+F 2 "" H 3200 1750 50  0001 C CNN
+F 3 "~" H 3200 1750 50  0001 C CNN
+	1    3200 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_TRIM_US RV16
+U 1 1 6346EA78
+P 2700 1450
+F 0 "RV16" V 2587 1450 50  0000 C CNN
+F 1 "1M" V 2496 1450 50  0000 C CNN
+F 2 "Potentiometer_THT:Potentiometer_Runtron_RM-065_Vertical" H 2700 1450 50  0001 C CNN
+F 3 "~" H 2700 1450 50  0001 C CNN
+	1    2700 1450
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2550 1450 2550 1300
+Wire Wire Line
+	2550 1300 2700 1300
+Wire Wire Line
+	2850 1450 3200 1450
+Wire Wire Line
+	3200 1450 3800 1450
+Connection ~ 3200 1450
+$Comp
+L Connector:Conn_01x02_Male J16
+U 1 1 63470BA0
+P 4850 1950
+F 0 "J16" H 4822 1832 50  0000 R CNN
+F 1 "spk_Conn" H 4822 1923 50  0000 R CNN
+F 2 "Connector_JST:JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical" H 4850 1950 50  0001 C CNN
+F 3 "~" H 4850 1950 50  0001 C CNN
+	1    4850 1950
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4650 1850 4650 1550
+Wire Wire Line
+	4650 1550 4400 1550
+Wire Wire Line
+	4650 1950 4650 2350
+Wire Wire Line
+	4650 2350 4450 2350
+Text GLabel 1050 1550 0    50   BiDi ~ 0
+LINE_OUT
+$Comp
+L power:Earth #PWR0351
+U 1 1 634A484A
+P 3350 6400
+F 0 "#PWR0351" H 3350 6150 50  0001 C CNN
+F 1 "Earth" H 3350 6250 50  0001 C CNN
+F 2 "" H 3350 6400 50  0001 C CNN
+F 3 "~" H 3350 6400 50  0001 C CNN
+	1    3350 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:Earth #PWR0353
+U 1 1 634A4D39
+P 3550 6400
+F 0 "#PWR0353" H 3550 6150 50  0001 C CNN
+F 1 "Earth" H 3550 6250 50  0001 C CNN
+F 2 "" H 3550 6400 50  0001 C CNN
+F 3 "~" H 3550 6400 50  0001 C CNN
+	1    3550 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR0378
+U 1 1 634A76F4
+P 3450 5900
+F 0 "#PWR0378" H 3450 5750 50  0001 C CNN
+F 1 "+12V" H 3465 6073 50  0000 C CNN
+F 2 "" H 3450 5900 50  0001 C CNN
+F 3 "" H 3450 5900 50  0001 C CNN
+	1    3450 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_SPDT SW33
+U 1 1 63705149
+P 1750 1450
+F 0 "SW33" H 1750 1125 50  0000 C CNN
+F 1 "SW_SPDT" H 1750 1216 50  0000 C CNN
+F 2 "mason_parts:one-pole-switch" H 1750 1450 50  0001 C CNN
+F 3 "~" H 1750 1450 50  0001 C CNN
+	1    1750 1450
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	1550 1550 1050 1550
+Wire Wire Line
+	2550 1450 1950 1450
+Connection ~ 2550 1450
+$Comp
+L power:Earth #PWR0396
+U 1 1 6370AE51
+P 1550 1350
+F 0 "#PWR0396" H 1550 1100 50  0001 C CNN
+F 1 "Earth" H 1550 1200 50  0001 C CNN
+F 2 "" H 1550 1350 50  0001 C CNN
+F 3 "~" H 1550 1350 50  0001 C CNN
+	1    1550 1350
+	0    1    1    0   
+$EndComp
+$EndSCHEMATC
