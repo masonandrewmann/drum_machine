@@ -5,6 +5,8 @@
 #include <SerialFlash.h>
 #include <LinkedList.h>
 #include <CSV_Parser.h>
+#include <TeensyVariablePlayback.h>
+
 
 // GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav5;     //xy=166,407
@@ -13,6 +15,7 @@ AudioPlaySdWav           playSdWav3;     //xy=168,301
 AudioPlaySdWav           playSdWav4;     //xy=169,355
 AudioPlaySdWav           playSdWav1;     //xy=170,189
 AudioPlaySdWav           playSdWav2;     //xy=170,246
+AudioPlaySdResmp         playSdWav7;     //xy=324,457
 AudioAmplifier           amp5;           //xy=313,410
 AudioAmplifier           amp6;           //xy=313,467
 AudioAmplifier           amp4;           //xy=315,357
@@ -37,6 +40,7 @@ AudioConnection          patchCord12(amp3, 0, mixer1, 2);
 AudioConnection          patchCord13(mixer1, 0, mixer2, 0);
 AudioConnection          patchCord14(mixer2, 0, i2s1, 0);
 AudioConnection          patchCord15(mixer2, 0, i2s1, 1);
+AudioConnection          patchCord16(playSdWav7, 0, mixer2, 3);
 AudioControlSGTL5000     sgtl5000_1;     //xy=631,613
 // GUItool: end automatically generated code
 
@@ -45,6 +49,48 @@ enum playStates{
   Playing,
   Paused,
 };
+
+
+class MasterSettings {
+  public:
+    float volume = 1.0; // master volume adjustment
+    float tempo = 120; // tempo in Beats per Minute
+    float swing = 0.5; // swing amount from 0.5 to 0.75: delays second eigth note on every beat
+    bool beatHalf = false; // keeps track of which half of beat we are in for swing. false is first half, true is second
+    unsigned long currStepTime = 0;
+    unsigned long nextStepTime = 0;
+    int stepLen = 10;
+    int firstHalfLen = 10;
+    int secondHalfLen = 10;
+
+    MasterSettings(){
+    };
+
+    ///**************************************************************************************************
+// * Method changeTempo
+// * -------------------------------------------------------------------------------------------------
+// * Overview: writes tempo to global tempo variable and calculates subdivisions
+// * Input:
+// *    float newTempo : desired tempo in BPM
+// * Output: Nothing
+// **************************************************************************************************/
+void changeTempo(float newTempo){
+  tempo = newTempo;
+  float quarterLen = (60.0 / tempo) * 1000;
+  float eigthLen = quarterLen / 2;
+  float sixteenthLen = quarterLen / 4;
+  stepLen = sixteenthLen;
+  firstHalfLen = eigthLen * swing;
+  secondHalfLen = eigthLen * (1-swing);
+}
+
+void changeSwing(float newSwing){
+  swing = newSwing;
+  firstHalfLen = stepLen * 2 * swing;
+  secondHalfLen = stepLen * 2 * (1-swing);
+}
+};
+
 
 class Pattern {
   public:
@@ -82,7 +128,7 @@ class Pattern {
     Pattern(){
     }
 
-    void readFromSD(const char* path){
+    void readFromSD(const char* path){ // READS PATTERN FROM CSV ON SD CARD
 //      if (!SD.begin(sdChipSelect)) {
 //        Serial.println("Card failed, or not present");
 //      }
@@ -101,7 +147,7 @@ class Pattern {
         memcpy(pattern[5],(int32_t*)cp["d1"], 64);
         memcpy(pattern[6],(int32_t*)cp["d2"], 64);
         memcpy(pattern[7],(int32_t*)cp["d3"], 64);
-    
+
       // copy velocities to internal memory
         memcpy(velocity[0],(int32_t*)cp["kv"], 64);
         memcpy(velocity[1],(int32_t*)cp["sv"], 64);
@@ -111,7 +157,7 @@ class Pattern {
         memcpy(velocity[5],(int32_t*)cp["d1v"], 64);
         memcpy(velocity[6],(int32_t*)cp["d2v"], 64);
         memcpy(velocity[7],(int32_t*)cp["d3v"], 64);
-    
+
       // copy digital voice parameters to internal memory
         memcpy(parameter[0],(int32_t*)cp["d1p"], 64);
         memcpy(parameter[1],(int32_t*)cp["d1pp"], 64);
@@ -121,10 +167,10 @@ class Pattern {
         memcpy(parameter[5],(int32_t*)cp["d3pp"], 64);
       }
 
-      
+
     }
 
-    void printPattern(){
+    void printPattern(){ // PRINTS PATTERN TO SERIAL MONITOR
 //      //print out the pattern
       for (int i = 0 ; i < 16; i++){
         for (int j = 0; j < 8; j++){
@@ -133,16 +179,16 @@ class Pattern {
         }
         Serial.println(" ");
       }
-  
+
       //print out the velocities
       for (int i = 0 ; i < 16; i++){
         for (int j = 0; j < 8; j++){
           Serial.print(velocity[j][i]);
-          Serial.print(" "); 
+          Serial.print(" ");
         }
         Serial.println(" ");
       }
-//  
+//
 //      //print out the digital voice parameters
       for (int i = 0 ; i < 16; i++){
         for (int j = 0; j < 6; j++){
@@ -161,25 +207,25 @@ bool currButtons[4][8];
     // MUX 1 : steps 9 - 16
     // MUX 2 :
         // 0 - inst sel
-        // 1 - save 
+        // 1 - save
         // 2 - shift
         // 3 - song
         // 4 - pattern
         // 5 - bank
         // 6 - play/pause
         // 7 - stop
-    // MUX 3 : 
+    // MUX 3 :
         // 0 - pattern back
         // 1 - pattern forwards
-        // 2 - 
-        // 3 - 
-        // 4 - 
-        // 5 - 
-        // 6 - 
-        // 7 - 
+        // 2 -
+        // 3 -
+        // 4 -
+        // 5 -
+        // 6 -
+        // 7 -
 
-int analogMux[8];        
-    // MUX 4 : 
+int analogMux[8];
+    // MUX 4 :
         // 0 - Voice 5 Parameter
         // 1 - Voice 6 Parameter
         // 2 - Voice 7 Parameter
@@ -196,24 +242,24 @@ byte muxDataPins[4] = {3, 4, 5, 6};
 bool ledStates[4][8];
   // SR1 : steps 1 - 8
   // SR2 : steps 9 - 16
-  // SR3 :         
-        // 0 - 
-        // 1 - 
-        // 2 - 
-        // 3 - 
-        // 4 - 
-        // 5 - 
-        // 6 - 
-        // 7 - 
-  // SR4 :         
-        // 0 - 
-        // 1 - 
-        // 2 - 
-        // 3 - 
-        // 4 - 
-        // 5 - 
-        // 6 - 
-        // 7 - 
+  // SR3 :
+        // 0 -
+        // 1 -
+        // 2 -
+        // 3 -
+        // 4 -
+        // 5 -
+        // 6 -
+        // 7 -
+  // SR4 :
+        // 0 -
+        // 1 -
+        // 2 -
+        // 3 -
+        // 4 -
+        // 5 -
+        // 6 -
+        // 7 -
 
 byte trigOutPins[8];
 
@@ -233,10 +279,9 @@ Pattern MyPattern;
 
 float tempo = 120;
 unsigned int stepLen = 0;
-unsigned int currStep = 0;
-unsigned long currStepTime = 0;
 int pulseLength = 20; // 10 ms pulses
 int playState = Playing;
+int currStep = 15;
 
 int currInst = 0;
   // 0 : Kick
@@ -259,7 +304,13 @@ class Pulse {
     unsigned long endTime;
 };
 
+//breakbeat testing
+char* _filename = "BREAKS/AMEN175.WAV";
+
+
+
 LinkedList <Pulse*> myPulseList = LinkedList<Pulse*>();
+MasterSettings MySettings = MasterSettings();
 
 void setup() {
 
@@ -290,7 +341,7 @@ void setup() {
    for (int i = 0; i < sizeof(muxAdrPins) / sizeof(byte); i++){
       pinMode(muxAdrPins, OUTPUT);
    }
-   
+
 // set up the multiplexer data pins
    for (int i = 0; i < sizeof(muxDataPins) / sizeof(byte); i++){
       pinMode(muxDataPins, INPUT);
@@ -310,27 +361,35 @@ void setup() {
   mixer1.gain(1, 0.5);
   mixer1.gain(2, 0.5);
   mixer1.gain(3, 0.5);
-  
+
   mixer2.gain(0, 0.5);
   mixer2.gain(1, 0.5);
   mixer2.gain(2, 0.5);
   mixer2.gain(3, 0.5);
 
-  amp1.gain(1.0);
-  amp2.gain(1.0);
-  amp3.gain(1.0);
-  amp4.gain(1.0);
-  amp5.gain(1.0);
-  amp6.gain(1.0);
+  amp1.gain(0.5);
+  amp2.gain(0.5);
+  amp3.gain(0.5);
+  amp4.gain(0.5);
+  amp5.gain(0.5);
+  amp6.gain(0.5);
 
-  
+
   delay(1000);
-  changeTempo(120);
+  MySettings.changeTempo(120);
 
   MyPattern.readFromSD("/PATTERNS/TESTDRUMPATTERN.CSV");
   MyPattern.printPattern();
 
   writePatternToSD(MyPattern, "PATTERNS/TESTDRUMPATTERN_COPY.TXT");
+
+  //set up breakbeat playback
+    playSdWav7.enableInterpolation(true);
+//    int newsensorValue = analogRead(analogInPin);
+    float breakRatio = 120.0/175.0;
+    playSdWav7.setPlaybackRate(breakRatio);
+
+   AudioProcessorUsageMaxReset(); 
 }
 
 void loop() {
@@ -342,36 +401,54 @@ void loop() {
 
   // steps
   if(playState == Playing){
-    if (millis() > (currStepTime  + stepLen)){ // new step has been reached
+    patternStep();
+  }
+
+//  if (!playSdWav7.isPlaying()) {
+//    playSdWav7.playWav(_filename);
+//  }
+
+}
+
+///**************************************************************************************************
+// * Function patternStep
+// * -------------------------------------------------------------------------------------------------
+// * Overview: handles stepping through current pattern; playing notes etc
+// * Input: Nothing
+// * Output: Nothing
+// **************************************************************************************************/
+void patternStep(){
+    if (millis() > MySettings.nextStepTime){ // new step has been reached 
       currStep = (currStep + 1) % 16; // move step pointer to next step
 //      clockOutput(); //send clock signal out external output
+      if(currStep == 0){
+        int seed = rand()%3;
+        if(seed == 0){
+              float breakRatio = 120.0/175.0 * 0.5;
+    playSdWav7.setPlaybackRate(breakRatio);
+        } else {
+              float breakRatio = 120.0/175.0;
+    playSdWav7.setPlaybackRate(breakRatio);
+        }
+        playSdWav7.playWav(_filename);
+      }
       for(int i = 0; i < sizeof(MyPattern.pattern[0])/sizeof(MyPattern.pattern[0][0]); i++){ //send triggers of all instruments to be played at this step
         if(MyPattern.pattern[i][currStep]){
           trigNote(i, MyPattern.velocity[i][currStep]/127.0);
         }
       }
-  
-      currStepTime = millis();
+      MySettings.currStepTime = millis();
+      if (MySettings.beatHalf){
+        MySettings.nextStepTime = MySettings.currStepTime + MySettings.firstHalfLen;
+      } else {
+        MySettings.nextStepTime = MySettings.currStepTime + MySettings.secondHalfLen;
+      }
+
+      MySettings.beatHalf = !MySettings.beatHalf;
     }
-  }
-
 }
 
-///**************************************************************************************************
-// * Function changeTempo
-// * -------------------------------------------------------------------------------------------------
-// * Overview: moves contents of currButtons[][] array to lastButtons[][]
-// * Input: 
-// *    float newTempo : tempo to update to
-// * Output: Nothing
-// **************************************************************************************************/
-void changeTempo(float newTempo){
-  tempo = newTempo;
-  float quarterLen = (60.0 / tempo) * 1000;
-  float eigthLen = quarterLen / 2;
-  float sixteenthLen = quarterLen / 4;
-  stepLen = sixteenthLen;
-}
+
 
 
 
@@ -379,7 +456,7 @@ void changeTempo(float newTempo){
 // * Function trigNote
 // * -------------------------------------------------------------------------------------------------
 // * Overview: prints to serial monitor when an note is triggered
-// * Input: 
+// * Input:
 // *    int instNum : number of the instrument being triggered
 // * Output: Nothing
 // **************************************************************************************************/
@@ -390,45 +467,56 @@ void trigNote(int instNum, float velocity){
 //  Serial.println(instNum);
 
 switch(instNum){
-  case 0: 
-//    Serial.println("KICK");
-    playSdWav1.play("DRUMS/KICK.WAV");
+  case 0:
+//    playSdWav1.play("DRUMS/KICK.WAV");
     amp1.gain(velocity);
     break;
-  
+
   case 1:
-//    Serial.println("HAT");
-    playSdWav2.play("DRUMS/SNARE.WAV");
+  Serial.println("sanre");
+//    playSdWav2.play("DRUMS/SNARE.WAV");
     amp2.gain(velocity);
     break;
 
   case 2:
-//    Serial.println("SNARE");
-    playSdWav3.play("DRUMS/CH.WAV");
-    amp3.gain(velocity);
+//    playSdWav3.play("DRUMS/CH.WAV");
+//playSdWav7.playWav("DRUMS/CH.WAV");
+//    amp3.gain(velocity);
     break;
 
   case 3:
-//    Serial.print("OH ");
-//    Serial.println(velocity);
-    playSdWav4.play("DRUMS/ee.WAV");
-    amp4.gain(velocity);
+//    playSdWav4.play("DRUMS/ee.WAV");
+//    amp4.gain(velocity);
     break;
 
-  case 4: 
-//    Serial.println("KICK");
-    playSdWav5.play("DRUMS/ee.WAV");
-    amp1.gain(velocity);
+  case 4:
+//    playSdWav5.play("DRUMS/ee.WAV");
+//    amp1.gain(velocity);
     break;
-  
+
   case 5:
-//    Serial.println("HAT");
-    playSdWav6.play("DRUMS/CH.WAV");
-    amp2.gain(velocity);
+     Serial.println("CH");
+//    playSdWav6.play("DRUMS/CH.WAV");
+//   amp2.gain(velocity);
+    break;
+
+    case 6:
+//     Serial.println("CH");
+//    playSdWav6.play("DRUMS/CH.WAV");
+//playSdWav7.playWav(_filename);
+////   amp2.gain(velocity);
+    break;
+
+    case 7:
+
+    break;
+
+    case 8:
+
     break;
 
 }
-  
+
 }
 
 
@@ -459,7 +547,7 @@ void selectMuxPin(byte address) {
 // * Output: Nothing
 // **************************************************************************************************/
 void readAllMux(bool printEn){
-  
+
   for (int i = 0; i < 8; i = i){ //loop through all MUX addresses
     selectMuxPin(i);
     delay(2); // give time for signal to propogate through mux before reading
@@ -469,8 +557,8 @@ void readAllMux(bool printEn){
     analogMux[i] = analogRead(analogMuxAdr);
     i++;
   }
-  
-  if (printEn){ // print 
+
+  if (printEn){ // print
     for (int i = 0; i < sizeof(muxDataPins)/sizeof(int); i++){
       for (int j = 0; j < 8; j++){
         Serial.print(currButtons[i][j]);
@@ -505,12 +593,12 @@ void updateButtonArray(){
 // * Output: Nothing
 // **************************************************************************************************/
 void checkButtonPress(){
-  for (int i = 0; i < 2; i++){ // check the step buttons 
+  for (int i = 0; i < 2; i++){ // check the step buttons
     for (int j = 0; j < 8; j++){
       if (currButtons[i][j] =! lastButtons[i][j]){ // check if button changed states
         if(currButtons[i][j] == true){ //button pressed
 
-          //check modifiers 
+          //check modifiers
           if (currButtons[2][0]){ // instrument select modifier
             if (i == 0){
               currInst = j;
@@ -560,7 +648,7 @@ void checkButtonPress(){
 //                        }
 //                        currStepTime = millis();
 //                  }
-//                  
+//
                   break;
 
                 case 7: // stop
@@ -570,12 +658,12 @@ void checkButtonPress(){
               }
 
           }
-          
+
         }
           } else if (currButtons[i][j] == false){ //button released
             //insert button released code
           }
-        } 
+        }
       }
   }
 
@@ -611,9 +699,9 @@ void writeAllLEDs(){
   byte byte1 = 0;
   byte byte2 = 0;
   byte byte3 = 0;
-  
+
   digitalWrite(ST_CP, LOW);
-  
+
   //prepare byte for first shift register
   bool ledStates[4][8];
   for (int i = 7;i > -1; i--){
@@ -626,7 +714,7 @@ void writeAllLEDs(){
   shiftOut(DS, SH_CP, MSBFIRST, byte1);
   shiftOut(DS, SH_CP, MSBFIRST, byte2);
   shiftOut(DS, SH_CP, MSBFIRST, byte3);
-  
+
   digitalWrite(ST_CP, HIGH);
 }
 
@@ -634,11 +722,11 @@ void writeAllLEDs(){
 // * Function clockOutput
 // * -------------------------------------------------------------------------------------------------
 // * Overview: prints to serial monitor when an clock step is reached
-// * Input: 
+// * Input:
 // * Output: Nothing
 // **************************************************************************************************/
 void clockOutput(){
-  Serial.println("CLOCK STEP");
+//  Serial.println("CLOCK STEP");
 }
 
 // how to write all LEDs
@@ -653,13 +741,13 @@ void clockOutput(){
 // * Function startPulse
 // * -------------------------------------------------------------------------------------------------
 // * Overview: Begin an output pulse on specified pin
-// * Input: 
+// * Input:
 // *        byte pinNumber : pin to send ouput pulse on
-// * Output: 
+// * Output:
 // **************************************************************************************************/
 void startPulse(byte pinNumber){
   digitalWrite(pinNumber, HIGH);
-  
+
   Pulse *myPulse = new Pulse();
   myPulse -> pinNum = pinNumber;
   myPulse -> endTime = millis() + pulseLength;
@@ -672,13 +760,13 @@ void startPulse(byte pinNumber){
 // * Function checkPulses
 // * -------------------------------------------------------------------------------------------------
 // * Overview: Check if any output triggers are high and check if they should be lowered
-// * Input: 
-// * Output: 
+// * Input:
+// * Output:
 // **************************************************************************************************/
 void checkPulses(){
   Pulse *myPulse;
   int i;
-  
+
   if (myPulseList.size() > 0){
     for (i = 0; i < myPulseList.size(); i++){
       myPulse = myPulseList.get(i);
@@ -688,7 +776,7 @@ void checkPulses(){
         break;
       }
     }
-    myPulseList.remove(i); 
+    myPulseList.remove(i);
   }
 }
 
@@ -696,20 +784,20 @@ void checkPulses(){
 // * Function writePatternToSD
 // * -------------------------------------------------------------------------------------------------
 // * Overview: Writes a Pattern object to a csv file on SD card
-// * Input: 
+// * Input:
 //          patt: Pattern object to be written to SD Card
 //          path: path on SD card to write object to ( in format 'FILEPATH/NAME.TXT'
-// * Output: 
+// * Output:
 // **************************************************************************************************/
 void writePatternToSD(Pattern &patt, const char* path)
 {
   //clear out old data file
-  if (SD.exists(path)) 
+  if (SD.exists(path))
   {
     Serial.println("Removing old csv");
     SD.remove(path);
     Serial.println("Done");
-  } 
+  }
 
   //create new file
   File myFile = SD.open(path, FILE_WRITE);
@@ -724,27 +812,27 @@ void writePatternToSD(Pattern &patt, const char* path)
       myFile.print(",");
       myFile.print(patt.velocity[0][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[1][i]); //SNARE
       myFile.print(",");
       myFile.print(patt.velocity[1][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[2][i]); //CYNARE 1
       myFile.print(",");
       myFile.print(patt.velocity[2][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[3][i]); //CCYNARE 2
       myFile.print(",");
       myFile.print(patt.velocity[3][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[4][i]); // GLITCH
       myFile.print(",");
       myFile.print(patt.velocity[4][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[5][i]); // DIGITAL VOICE 1
       myFile.print(",");
       myFile.print(patt.velocity[5][i]);
@@ -753,7 +841,7 @@ void writePatternToSD(Pattern &patt, const char* path)
       myFile.print(",");
       myFile.print(patt.parameter[1][i]);
       myFile.print(",");
-      
+
       myFile.print(patt.pattern[6][i]); // DIGITAL VOICE 2
       myFile.print(",");
       myFile.print(patt.velocity[6][i]);
@@ -772,6 +860,6 @@ void writePatternToSD(Pattern &patt, const char* path)
       myFile.println(patt.parameter[5][i]);
   }
 
-  myFile.close(); 
+  myFile.close();
 }
 }

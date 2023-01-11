@@ -9,9 +9,9 @@
 // Rotary encoder push button pin, active low
 static const int pushPin = 16;
 // Rotary encoder phase A pin
-static const int rotBPin = 28;
+static const int rotBPin =34;
 // Rotary encoder phase B pin
-static const int rotAPin = 29;
+static const int rotAPin = 35;
  
 #define DEMO 1
  

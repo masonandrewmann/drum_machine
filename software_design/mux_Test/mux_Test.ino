@@ -1,58 +1,34 @@
-bool inputs[8];
-int addressPins[3] = {15, 16, 17};
-int mux1Data = 3;
-int mux2Data = 4;
-float tempo = 120;
-unsigned long pattern_start_time = 0;
-unsigned long curr_step_time = 0;
-unsigned int currStep = 0;
-unsigned int stepLen = 0;
+// NOTE NOTE NOTE NOTE NOTE
+//need to split the reads between digitalRead and analogRead
+
+int inputs[8][8];
+int muxAddressPins[3] = {15, 16, 17};
+int muxDataPins[7] = {14, 39, 38, 33, 40, 41, 22};
 
 void setup() {
-  //initialize pattern array
-  for (int i = 0; i < sizeof(inputs)/sizeof(bool); i++){
-    inputs[i] = false;
+
+  //initialize MUX address pins
+  for (int i = 0; i < sizeof(muxAddressPins)/sizeof(muxAddressPins[0]); i++){
+    pinMode(muxAddressPins[i], OUTPUT);
   }
 
-  //initialize MUX pins
-  for (int i = 0; i < 3; i++){
-    pinMode(i, OUTPUT);
+  //initialize MUX data pins
+  for (int i = 0; i < sizeof(muxDataPins)/sizeof(muxDataPins[0]); i++){
+    pinMode(muxDataPins[i], INPUT);
   }
-  pinMode(mux1Data, INPUT);
-  pinMode(mux2Data, OUTPUT);
 
   //initialize serial communication
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.print("Hellooo: ");
 
-  //initialize tempo
-  changeTempo(120.0);
 
-  readMux1(true);
-  
-  //start pattern
-      if(inputs[currStep] == true){
-      trigNote();
-    }
-    curr_step_time = millis();
 }
 
 void loop() {
 
 // read from MUX and print results
-  readMux1(true);
-//  writeMux2();
-
-//  //steps
-//  if(millis() > curr_step_time + stepLen){
-//    currStep = (currStep+1)%8;
-//    
-//    if(inputs[currStep] == 1){
-//      trigNote();
-//    }
-//    curr_step_time = millis();
-//    
-//  }
+  readMux(true);
+  delay(100);
 }
 
 
@@ -60,48 +36,30 @@ void loop() {
 void selectMuxPin(int pin) {
   for (int i = 0; i < 3; i++) {
     if (pin & (1 << i))
-      digitalWrite(addressPins[i],  HIGH);
+      digitalWrite(muxAddressPins[i],  HIGH);
     else
-      digitalWrite(addressPins[i],  LOW);
+      digitalWrite(muxAddressPins[i],  LOW);
   }
 }
 
-void changeTempo(float newTempo){
-  tempo = newTempo;
-  float quarterLen = (60.0 / tempo) * 1000;
-  float eigthLen = quarterLen / 2;
-  float sixteenthLen = quarterLen / 4;
-  stepLen = quarterLen;
-}
 
-void readMux1(bool printEn){
-  for (int i = 0; i < 8; i = i){
+void readMux(bool printEn){
+  for (int i = 0; i < 8; i++){
     selectMuxPin(i);
     delay(2); // give time for signal to propogate through mux before reading
-    inputs[i] = digitalRead(3);
-    if (printEn){
-      Serial.print(inputs[i]);
-      Serial.print(" ");
+    for (int j = 0; j < 8; j++){
+      inputs[j][i] = digitalRead(muxDataPins[j]);
     }
-    i++;
   }
   if (printEn){
+    for (int i = 0; i < 8; i++){
+      for (int j = 0; j < 8; j++){
+        Serial.print(inputs[i][j]);
+        Serial.print(" ");
+      }
+      Serial.println(" ");
+    }
+    Serial.println(" ");
     Serial.println(" ");
   }
-}
-
-void writeMux2(){
-    for (int i = 0; i < 8; i = i){
-    selectMuxPin(i);
-//    delay(2); // give time for signal to propogate through mux before reading
-    digitalWrite(mux2Data, !inputs[i]);
-    delay(2);
-    i++;
-  }
-}
-
-void trigNote(){
-  Serial.print(currStep);
-  Serial.print(": ");
-  Serial.println("KICK");
 }

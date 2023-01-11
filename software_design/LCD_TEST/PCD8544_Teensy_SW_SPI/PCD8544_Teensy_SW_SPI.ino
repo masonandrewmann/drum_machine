@@ -12,7 +12,7 @@
 
 // End of constructor list
 
-U8G2_PCD8544_84X48_F_4W_HW_SPI u8g2(U8G2_R0, LCD_CS, LCD_DC, LCD_RST);
+U8G2_PCD8544_84X48_F_4W_HW_SPI u8g2(U8G2_R2, LCD_CS, LCD_DC, LCD_RST);
 
 
 //u8g2_t u8g2;

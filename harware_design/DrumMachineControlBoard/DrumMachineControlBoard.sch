@@ -126,16 +126,12 @@ Text GLabel 1850 1950 0    50   BiDi ~ 0
 A_TO_T
 Text GLabel 1850 1750 0    50   BiDi ~ 0
 MEM_CS
-Text GLabel 1850 2250 0    50   BiDi ~ 0
+Text GLabel 1800 2250 0    50   BiDi ~ 0
 MEM_MOSI
 Text GLabel 4050 2350 2    50   BiDi ~ 0
 MEM_SCK
 Text GLabel 1850 2150 0    50   BiDi ~ 0
 LCD_CS
-Text GLabel 950  2750 0    50   BiDi ~ 0
-LCD_MOSI
-Text GLabel 950  2850 0    50   BiDi ~ 0
-LCD_SCK
 Text GLabel 1850 3350 0    50   BiDi ~ 0
 LED_LATCH
 Text GLabel 1850 3150 0    50   BiDi ~ 0
@@ -225,58 +221,12 @@ Text GLabel 1850 2550 0    50   BiDi ~ 0
 LCD_RST
 Text GLabel 1850 2650 0    50   BiDi ~ 0
 LCD_DC
-Text GLabel 1850 2350 0    50   BiDi ~ 0
+Text GLabel 1800 2350 0    50   BiDi ~ 0
 MEM_MISO
-$Comp
-L power:Earth #PWR0221
-U 1 1 63208D90
-P 2350 5100
-F 0 "#PWR0221" H 2350 4850 50  0001 C CNN
-F 1 "Earth" H 2350 4950 50  0001 C CNN
-F 2 "" H 2350 5100 50  0001 C CNN
-F 3 "~" H 2350 5100 50  0001 C CNN
-	1    2350 5100
-	0    1    1    0   
-$EndComp
-NoConn ~ 3450 5500
-Text GLabel 2300 5800 0    50   BiDi ~ 0
-MEM_CS
-Text GLabel 2300 6300 0    50   BiDi ~ 0
-MEM_MOSI
-Text GLabel 2300 6400 0    50   BiDi ~ 0
-MEM_MISO
-Text GLabel 3600 6400 2    50   BiDi ~ 0
-MEM_SCK
-Text GLabel 2300 5900 0    50   BiDi ~ 0
-T_TO_A
-Text GLabel 2300 6000 0    50   BiDi ~ 0
-A_TO_T
-NoConn ~ 2450 6100
-NoConn ~ 2450 6200
-NoConn ~ 2450 5700
-NoConn ~ 2450 5600
-NoConn ~ 2450 5500
-NoConn ~ 2450 5400
-NoConn ~ 2450 5300
-NoConn ~ 2450 5200
-NoConn ~ 3450 6000
-NoConn ~ 3450 6100
-NoConn ~ 3450 6200
-NoConn ~ 3450 6300
-NoConn ~ 2450 6800
-NoConn ~ 2450 6950
-NoConn ~ 2450 7100
-NoConn ~ 3450 7000
-NoConn ~ 3450 7100
-NoConn ~ 3450 7200
-NoConn ~ 3450 7500
-NoConn ~ 3450 7300
 Text GLabel 5100 7200 2    50   BiDi ~ 0
 D_Aud_R
 Text GLabel 5100 7400 2    50   BiDi ~ 0
 D_Aud_L
-NoConn ~ 3100 4850
-NoConn ~ 2900 4850
 $Comp
 L teensy:Teensy4.1 U5
 U 1 1 630E849F
@@ -320,8 +270,6 @@ F 3 "~" H 1650 2750 50  0001 C CNN
 	1    1650 2750
 	-1   0    0    1   
 $EndComp
-NoConn ~ 950  2750
-NoConn ~ 950  2850
 $Sheet
 S 9400 3450 550  300 
 U 6370FEA3
@@ -362,95 +310,6 @@ F 3 "~" H 4900 7200 50  0001 C CNN
 	1    4900 7200
 	-1   0    0    1   
 $EndComp
-NoConn ~ 3450 6700
-NoConn ~ 3450 6800
-NoConn ~ 3450 6900
-NoConn ~ 3450 7400
-NoConn ~ 2450 5800
-NoConn ~ 2300 5800
-NoConn ~ 2300 5900
-NoConn ~ 2300 6000
-NoConn ~ 2300 6300
-NoConn ~ 2300 6400
-NoConn ~ 2450 6400
-NoConn ~ 2450 6300
-NoConn ~ 2450 6000
-NoConn ~ 2450 5900
-NoConn ~ 2450 5100
-NoConn ~ 2350 5100
-$Comp
-L power:+5V #PWR024
-U 1 1 632B3794
-P 3600 5100
-F 0 "#PWR024" H 3600 4950 50  0001 C CNN
-F 1 "+5V" V 3615 5228 50  0000 L CNN
-F 2 "" H 3600 5100 50  0001 C CNN
-F 3 "" H 3600 5100 50  0001 C CNN
-	1    3600 5100
-	0    1    1    0   
-$EndComp
-Text GLabel 3600 5900 2    50   BiDi ~ 0
-AUD_SDA
-Text GLabel 3600 5800 2    50   BiDi ~ 0
-AUD_SCL
-Text GLabel 3600 5700 2    50   BiDi ~ 0
-AUD_LRCLK
-Text GLabel 3600 5600 2    50   BiDi ~ 0
-AUD_BCLK
-Text GLabel 3600 5400 2    50   BiDi ~ 0
-AUD_MCLK
-$Comp
-L power:+3.3V #PWR0222
-U 1 1 6320BBAF
-P 3600 5300
-F 0 "#PWR0222" H 3600 5150 50  0001 C CNN
-F 1 "+3.3V" V 3615 5428 50  0000 L CNN
-F 2 "" H 3600 5300 50  0001 C CNN
-F 3 "" H 3600 5300 50  0001 C CNN
-	1    3600 5300
-	0    1    1    0   
-$EndComp
-$Comp
-L power:Earth #PWR0220
-U 1 1 6320854A
-P 3600 5200
-F 0 "#PWR0220" H 3600 4950 50  0001 C CNN
-F 1 "Earth" H 3600 5050 50  0001 C CNN
-F 2 "" H 3600 5200 50  0001 C CNN
-F 3 "~" H 3600 5200 50  0001 C CNN
-	1    3600 5200
-	0    -1   -1   0   
-$EndComp
-$Comp
-L modular_synth:Teensy_Audio_Shield U25
-U 1 1 631EAD29
-P 3000 6300
-F 0 "U25" H 2937 4977 50  0000 C CNN
-F 1 "Teensy_Audio_Shield" H 2937 4886 50  0000 C CNN
-F 2 "" H 3000 6950 50  0001 C CNN
-F 3 "" H 3000 6950 50  0001 C CNN
-	1    3000 6300
-	1    0    0    -1  
-$EndComp
-NoConn ~ 3850 5200
-NoConn ~ 3450 5100
-NoConn ~ 3450 5200
-NoConn ~ 3450 5300
-NoConn ~ 3450 5400
-NoConn ~ 3450 5600
-NoConn ~ 3450 5700
-NoConn ~ 3450 5800
-NoConn ~ 3450 5900
-NoConn ~ 3600 5100
-NoConn ~ 3600 5200
-NoConn ~ 3600 5300
-NoConn ~ 3600 5400
-NoConn ~ 3600 5600
-NoConn ~ 3600 5700
-NoConn ~ 3600 5800
-NoConn ~ 3600 5900
-NoConn ~ 3450 6400
-NoConn ~ 3600 6400
 $Comp
 L Connector:Conn_01x01_Female J54
 U 1 1 636C4AD8
@@ -474,4 +333,89 @@ U 63A851CD
 F0 "JackPanel" 50
 F1 "JackPanel.sch" 50
 $EndSheet
+NoConn ~ 3450 5500
+Text GLabel 2300 5800 0    50   BiDi ~ 0
+MEM_CS
+Text GLabel 3600 6400 2    50   BiDi ~ 0
+MEM_SCK
+Text GLabel 2300 5900 0    50   BiDi ~ 0
+T_TO_A
+Text GLabel 2300 6000 0    50   BiDi ~ 0
+A_TO_T
+NoConn ~ 2450 6100
+NoConn ~ 2450 6200
+NoConn ~ 2450 5700
+NoConn ~ 2450 5600
+NoConn ~ 2450 5500
+NoConn ~ 2450 5400
+NoConn ~ 2450 5300
+NoConn ~ 2450 5200
+NoConn ~ 3450 6000
+NoConn ~ 3450 6100
+NoConn ~ 3450 6200
+NoConn ~ 3450 6300
+NoConn ~ 2450 6800
+NoConn ~ 2450 6950
+NoConn ~ 2450 7100
+NoConn ~ 3450 7000
+NoConn ~ 3450 7100
+NoConn ~ 3450 7200
+NoConn ~ 3450 7500
+NoConn ~ 3450 7300
+NoConn ~ 3100 4850
+NoConn ~ 2900 4850
+NoConn ~ 3450 6700
+NoConn ~ 3450 6800
+NoConn ~ 3450 6900
+NoConn ~ 3450 7400
+NoConn ~ 2450 5800
+NoConn ~ 2300 5800
+NoConn ~ 2300 5900
+NoConn ~ 2300 6000
+NoConn ~ 2450 6400
+NoConn ~ 2450 6300
+NoConn ~ 2450 6000
+NoConn ~ 2450 5900
+NoConn ~ 2450 5100
+Text GLabel 3600 5900 2    50   BiDi ~ 0
+AUD_SDA
+Text GLabel 3600 5800 2    50   BiDi ~ 0
+AUD_SCL
+Text GLabel 3600 5700 2    50   BiDi ~ 0
+AUD_LRCLK
+Text GLabel 3600 5600 2    50   BiDi ~ 0
+AUD_BCLK
+Text GLabel 3600 5400 2    50   BiDi ~ 0
+AUD_MCLK
+NoConn ~ 3450 5100
+NoConn ~ 3450 5200
+NoConn ~ 3450 5300
+NoConn ~ 3450 5400
+NoConn ~ 3450 5600
+NoConn ~ 3450 5700
+NoConn ~ 3450 5800
+NoConn ~ 3450 5900
+NoConn ~ 3600 5400
+NoConn ~ 3600 5600
+NoConn ~ 3600 5700
+NoConn ~ 3600 5800
+NoConn ~ 3600 5900
+NoConn ~ 3450 6400
+$Comp
+L modular_synth:Teensy_Audio_Shield U25
+U 1 1 631EAD29
+P 3000 6300
+F 0 "U25" H 2937 4977 50  0000 C CNN
+F 1 "Teensy_Audio_Shield" H 2937 4886 50  0000 C CNN
+F 2 "" H 3000 6950 50  0001 C CNN
+F 3 "" H 3000 6950 50  0001 C CNN
+	1    3000 6300
+	1    0    0    -1  
+$EndComp
+Text GLabel 2300 6300 0    50   BiDi ~ 0
+MEM_MOSI
+Text GLabel 2300 6400 0    50   BiDi ~ 0
+MEM_MISO
+NoConn ~ 1850 2250
+NoConn ~ 1850 2350
 $EndSCHEMATC

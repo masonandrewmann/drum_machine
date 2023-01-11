@@ -1,0 +1,12 @@
+Pattern Information:
+	- on/off for each voice
+	- velocity for each voice
+	- filter cutoff
+	- param 1 & 2 for digital voices
+	- breakbeat on/off + sample pointer
+	- breakbeat vel
+	- chopping parameters (??? don't know how many)
+	- 
+
+Want a format that can easily be expanded to include more parameters
+	-csv??

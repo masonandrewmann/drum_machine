@@ -22,21 +22,21 @@ FRONT PANEL
 
 1M audio x 1 ::::: YES - D-shaft
 
-100k linear x 19 :::: too short + knurled + horizontal [[[[[[[[[[ ORDERED FROM THONK
+yy100k linear x 19 :::: too short + knurled + horizontal [[[[[[[[[[ ORDERED FROM THONK
 
-100k audio x 1 :::: [[[[[[[[ ORDERED FROM TTHONK
+yy100k audio x 1 :::: [[[[[[[[ ORDERED FROM TTHONK
 
-10k linear x 4 - too short - knurled shaft, internal D??? [[[[[[[ ORDERED FROM THONK
+yy10k linear x 4 - too short - knurled shaft, internal D??? [[[[[[[ ORDERED FROM THONK
 
-1k linear x 2 :::: [[[[[[[[ ORDERED FROM THONK
+yy1k linear x 2 :::: [[[[[[[[ ORDERED FROM THONK
 
-20k linear x 2 :::: [[[[[[[ ORDERED FROM THONK
+yy20k linear x 2 :::: [[[[[[[ ORDERED FROM THONK
 
-500k linear x 1 :::: [[[[[[ ORDERED FROM THONK
+yy500k linear x 1 :::: [[[[[[ ORDERED FROM THONK
 
-50k linear x 1 ::: stem is too short [[[[ ORDERED FROM THONK
+yy50k linear x 1 ::: stem is too short [[[[ ORDERED FROM THONK
 
-500R linear x 1 ::: not even pcb mount
+yy500R linear x 1 ::: not even pcb mount
 
 
 ^^ that is all for the voices,, not extra parameters

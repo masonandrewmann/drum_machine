@@ -2,9 +2,7 @@ DRUM MACHINE TO DO:
 
 
 --------------------PCB DESIGN ---------------------------
-double check all electrolytic cap sizes / which ones i have / jlcpcb fab
-triple check all pots
-choose jlcpcb parts
+redo jlcpcb parts
 silkscreen?
 double check with inkscape layout drawing/paper drawing
 
@@ -18,6 +16,17 @@ stress-test midi : maybe build midi knob bank for microkorg as a test project
 
 
 --------------------SOFTWARE ---------------------------
+add pattern programming 
+add pattern storage
+add pattern chaining/song storage
+add menu to choose samples for digital voices
+add tempo adjust encoder
+add parameter adjust encoder
+breakbeat tempo match
+breakbeat chopping
+breakbeat pitching
+breakbeat delay
+
 
 
 

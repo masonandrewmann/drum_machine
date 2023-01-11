@@ -1,4 +1,4 @@
-15997103947090293
+15998773247196293
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -49112,6 +49112,13 @@ AD1933_THT_ADAPTER
 64
 64
 mason_parts
+Amphenol_Trimpot
+
+
+0
+3
+3
+mason_parts
 AUDIOSHIELD-REVD
 
 
@@ -49138,7 +49145,7 @@ DIN5_MIDI
 
 0
 9
-6
+5
 mason_parts
 DIP-10_w0.6in
 

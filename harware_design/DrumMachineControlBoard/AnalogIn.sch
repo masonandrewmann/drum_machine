@@ -615,7 +615,7 @@ AR Path="/633A1785/63329B70" Ref="R?"  Part="1"
 AR Path="/63273844/63329B70" Ref="R187"  Part="1" 
 F 0 "R187" V 8545 4750 50  0000 C CNN
 F 1 "10k" V 8636 4750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8790 4740 50  0001 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 8790 4740 50  0001 C CNN
 F 3 "~" H 8750 4750 50  0001 C CNN
 	1    8750 4750
 	0    -1   1    0   
@@ -628,7 +628,7 @@ AR Path="/633A1785/63329B76" Ref="R?"  Part="1"
 AR Path="/63273844/63329B76" Ref="R186"  Part="1" 
 F 0 "R186" H 8182 4254 50  0000 R CNN
 F 1 "10k" H 8182 4345 50  0000 R CNN
-F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 8290 4290 50  0001 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 8290 4290 50  0001 C CNN
 F 3 "~" H 8250 4300 50  0001 C CNN
 	1    8250 4300
 	1    0    0    1   

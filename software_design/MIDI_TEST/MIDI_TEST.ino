@@ -12,15 +12,15 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 void setup() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
-  Serial.begin(57600);
-  Serial.println("MIDI Input Test");
+//  Serial.begin(115200);
+//  Serial.println("MIDI Input Test");
 }
 
 unsigned long t=0;
 bool switcher = false;
 
 void loop() {
-  int type, note, velocity, channel, d1, d2;
+//  int type, note, velocity, channel, d1, d2;
 //  if (MIDI.read()) {                    // Is there a MIDI message incoming ?
 //    byte type = MIDI.getType();
 //    switch (type) {
@@ -43,32 +43,32 @@ void loop() {
 //      default:
 //        d1 = MIDI.getData1();
 //        d2 = MIDI.getData2();
-//        Serial.println(String("Message, type=") + type + ", data = " + d1 + " " + d2);
+////        Serial.println(String("Message, type=") + type + ", data = " + d1 + " " + d2);
 //    }
 ////    t = millis();
 //  }
-//  if (millis() - t > 10000) {
-//    t += 10000;
-//    Serial.println("(inactivity)");
+////  if (millis() - t > 10000) {
+////    t += 10000;
+////    Serial.println("(inactivity)");
+////  }
+//
+//
+//  if (millis() - t > 100) {
+//    t += 100;
+//    if (switcher){
+//      MIDI.sendNoteOn(40, 127, 1);
+//    Serial.println("(note on)");
+//    switcher = false;
+//    } else {
+//      MIDI.sendNoteOff(40, 127, 1);
+//      switcher = true;
+//      Serial.println("(note off)");
+//    }
 //  }
-
-
-  if (millis() - t > 1000) {
-    t += 1000;
-    if (switcher){
-      MIDI.sendNoteOn(40, 127, 1);
-    Serial.println("(note on)");
-    switcher = false;
-    } else {
-      MIDI.sendNoteOff(40, 127, 1);
-      switcher = true;
-      Serial.println("(note off)");
-    }
-  }
-//  MIDI.sendNoteOn(40, 127, 1);
+  MIDI.sendNoteOn(40, 127, 1);
 //  Serial.println("++++note on");
-////  delay(1000);
+  delay(100);
 //  Serial.println("----note off");
-//  MIDI.sendNoteOff(40, 127, 1);
-//  delay(1000);
+  MIDI.sendNoteOff(40, 127, 1);
+  delay(100);
 }

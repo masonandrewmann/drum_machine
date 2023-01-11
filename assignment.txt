@@ -1,0 +1,9 @@
+CAPACITORS I NEED
+
+47uF  8x6.3
+1uf   4x4.3
+10uF  5x5.3
+4u7   4x4.3
+
+
+RESISTORS I NEED

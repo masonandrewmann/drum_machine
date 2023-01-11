@@ -401,7 +401,7 @@ U 1 1 631628C2
 P 6100 1250
 F 0 "RV59" V 5987 1250 50  0000 C CNN
 F 1 "470" V 5896 1250 50  0000 C CNN
-F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 6100 1250 50  0001 C CNN
+F 2 "mason_parts:Amphenol_Trimpot" H 6100 1250 50  0001 C CNN
 F 3 "~" H 6100 1250 50  0001 C CNN
 	1    6100 1250
 	0    -1   -1   0   
@@ -1044,4 +1044,92 @@ Wire Wire Line
 Wire Wire Line
 	5950 2450 5900 2450
 Connection ~ 5950 2450
+$Comp
+L Device:R_POT_US RV54
+U 1 1 6381F021
+P 2250 6700
+F 0 "RV54" V 2137 6700 50  0000 C CNN
+F 1 "100k" V 2046 6700 50  0000 C CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 2250 6700 50  0001 C CNN
+F 3 "~" H 2250 6700 50  0001 C CNN
+	1    2250 6700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J148
+U 1 1 6381F027
+P 2600 6700
+F 0 "J148" H 2628 6726 50  0000 L CNN
+F 1 "AuxPot2" H 2450 6650 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 2600 6700 50  0001 C CNN
+F 3 "~" H 2600 6700 50  0001 C CNN
+	1    2600 6700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J147
+U 1 1 6381F02D
+P 2250 6350
+F 0 "J147" V 2188 6262 50  0000 R CNN
+F 1 "AuxPot2" V 2097 6262 50  0000 R CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 2250 6350 50  0001 C CNN
+F 3 "~" H 2250 6350 50  0001 C CNN
+	1    2250 6350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J146
+U 1 1 6381F033
+P 1900 6700
+F 0 "J146" H 1792 6475 50  0000 C CNN
+F 1 "AuxPot1" H 1792 6566 50  0000 C CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 1900 6700 50  0001 C CNN
+F 3 "~" H 1900 6700 50  0001 C CNN
+	1    1900 6700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_POT_US RV55
+U 1 1 638202BE
+P 3350 6700
+F 0 "RV55" V 3237 6700 50  0000 C CNN
+F 1 "100k" V 3146 6700 50  0000 C CNN
+F 2 "mason_parts:masonsPotentiometer_Alpha_RD901F-40-00D_Single_Vertical" H 3350 6700 50  0001 C CNN
+F 3 "~" H 3350 6700 50  0001 C CNN
+	1    3350 6700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J151
+U 1 1 638202C4
+P 3700 6700
+F 0 "J151" H 3728 6726 50  0000 L CNN
+F 1 "AuxPot2A" H 3550 6650 50  0000 L CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 3700 6700 50  0001 C CNN
+F 3 "~" H 3700 6700 50  0001 C CNN
+	1    3700 6700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J150
+U 1 1 638202CA
+P 3350 6350
+F 0 "J150" V 3288 6262 50  0000 R CNN
+F 1 "AuxPot2A" V 3197 6262 50  0000 R CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 3350 6350 50  0001 C CNN
+F 3 "~" H 3350 6350 50  0001 C CNN
+	1    3350 6350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x01_Female J149
+U 1 1 638202D0
+P 3000 6700
+F 0 "J149" H 2892 6475 50  0000 C CNN
+F 1 "AuxPot1A" H 2892 6566 50  0000 C CNN
+F 2 "Connector_Wire:SolderWirePad_1x01_Drill1mm" H 3000 6700 50  0001 C CNN
+F 3 "~" H 3000 6700 50  0001 C CNN
+	1    3000 6700
+	-1   0    0    1   
+$EndComp
 $EndSCHEMATC

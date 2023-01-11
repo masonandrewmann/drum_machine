@@ -1,0 +1,28 @@
+drum machine programming::
+
+buffer pitch shifting:
+	can't vary sample rate so i will have to do reinterpolation. looks like someone has done smth like that here: https://github.com/newdigate/teensy-variable-playback#code-structure
+
+
+
+
+goals: 
+	1. automated breakbeat sample chopping
+	2. normal sample playback/manipulation
+
+research:
+	-look at features of elektron samplers
+
+thoughts:
+	1. for breakbeat chopping i want
+		a.  pitch shifting (granular algorithm)
+			don't really need to do anything for this other than control algoritthm.
+		b.  pitch/tempo shifting (resampling)
+			https://github.com/newdigate/teensy-variable-playback#code-structure
+`			this has been kinda working with some caveats. it seems like the SD card or maybe internal processor isnt fast enough to do this as well as playing three samples. maybe experiment with using flash chip or smth!
+		c.  digital delay?? (already in audio library)
+			just control algorithm
+		d.  beat repeat & radomization(need to chop sample into tempo quantized segments)
+			im thinking maybe i just manually chop up the break into 16th notes and load them one at a time when they need to be played. alternatively i can embed the tempo into an info file (whicch will probably need to be done anyway) and equally divide the sample in code.
+		e. match sample to tempo of song
+			- will need to resample entire sample; note that if i pre-chop the sample, this will need to be done dynamically evvery 16th note. or not, i could actually just do this:: 1. pre-chop sample.   2. load up every chop into memory   3. resample every chop  3. unload original samples from memory

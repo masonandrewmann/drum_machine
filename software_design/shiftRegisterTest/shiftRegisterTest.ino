@@ -28,11 +28,19 @@ void loop() {
   digitalWrite(ST_CP, LOW);
   shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
   shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
   digitalWrite(ST_CP, HIGH);
   delay(500);
 
   digitalWrite(ST_CP, LOW);
   shiftOut(DS, SH_CP, MSBFIRST, 0b11001100);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
+  shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
   shiftOut(DS, SH_CP, MSBFIRST, 0b00110011);
   digitalWrite(ST_CP, HIGH);
   delay(500);

@@ -18,16 +18,18 @@ AudioConnection          patchCord3(playSdWav2, 0, mixer1, 1);
 AudioConnection          patchCord4(playSdWav2, 1, mixer2, 1);
 AudioConnection          patchCord5(playSdWav1, 0, mixer1, 0);
 AudioConnection          patchCord6(playSdWav1, 1, mixer2, 0);
-AudioConnection          patchCord7(mixer1, granular1);
-AudioConnection          patchCord8(granular1, 0, i2s1, 0);
-AudioConnection          patchCord9(granular1, 0, i2s1, 1);
+AudioConnection          patchCord7(mixer1, 0, i2s1, 0);
+AudioConnection          patchCord8(mixer1, 0, i2s1, 1);
+
+//AudioConnection          patchCord8(granular1, 0, i2s1, 0);
+//AudioConnection          patchCord9(granular1, 0, i2s1, 1);
 AudioControlSGTL5000     sgtl5000_1;     //xy=495,408
 // GUItool: end automatically generated code
 
 
 // Use these with the Teensy 3.5 & 3.6 SD card
-//#define SDCARD_CS_PIN    BUILTIN_SDCARD
-#define SDCARD_CS_PIN    6
+#define SDCARD_CS_PIN    BUILTIN_SDCARD
+//#define SDCARD_CS_PIN    6
 //#define SDCARD_MOSI_PIN  11  // not actually used
 //#define SDCARD_SCK_PIN   13  // not actually used
 
@@ -66,9 +68,9 @@ void setup() {
   delay(1000);
 
     // the Granular effect requires memory to operate
-  granular1.begin(granularMemory, GRANULAR_MEMORY_SIZE);
-  granular1.setSpeed(4);
-  granular1.beginPitchShift(5);
+//  granular1.begin(granularMemory, GRANULAR_MEMORY_SIZE);
+//  granular1.setSpeed(4);
+//  granular1.beginPitchShift(5);
 }
 
 void loop() {
@@ -86,7 +88,7 @@ void loop() {
 
     if (playSdWav3.isPlaying() == false){
     Serial.println("Start playing 3");
-    playSdWav3.play("HAT.WAV");
+    playSdWav3.play("BREAKS/AMEN175.WAV");
     delay(10);
   }
 
