@@ -400,4 +400,17 @@ void writePatternToSD(const char* path)
   myFile.close();
   }
 }
+
+void clearPattern(){
+  for (int i = 0; i < 16; i++){
+    for( int j = 0; j < 16; j++){
+      pattern[j][i] = 0;
+      velocity[j][i] = 0;
+    }
+
+    for(int j = 0; j < 14; j++){
+      parameter[j][i] = 0;
+    }
+  }
+}
 };
