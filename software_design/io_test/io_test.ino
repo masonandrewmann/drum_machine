@@ -23,37 +23,42 @@
 
 
 enum instruments{
-  bd,
-  sd,
-  cyn1,
-  cyn2,
-  glitch,
-  digi1,
-  digi2,
-  digi3,
+  INST_BD,
+  INST_SD,
+  INST_CYN1,
+  INST_CYN2,
+  INST_GLITCH,
+  INST_DIGI1,
+  INST_DIGI2,
+  INST_DIGI3,
   
-  digi4, 
-  digi5,
-  digi6, 
-  digi7,
-  digi8,
-  digi9,
-  digi10,
-  digi11
+  INST_DIGI4, 
+  INST_DIGI5,
+  INST_DIGI6, 
+  INST_DIGI7,
+  INST_DIGI8,
+  INST_DIGI9,
+  INST_DIGI10,
+  INST_DIGI11
 };
 
 enum transportStates{
-  Stopped,
-  Playing,
-  Paused,
+  STOPPED,
+  PLAYING,
+  PAUSED,
 };
 
 enum controlStates{
-  StepSel,
-  InstSel,
-  PatternSel,
-  SongSel,
-  BankSel
+  STEP_SEL,
+  INST_SEL,
+  PATTERN_SEL,
+  SONG_SEL,
+  BANK_SEL
+};
+
+enum ledDisplayStates{
+  DISP_STEPS,
+  DISP_PATTERNS
 };
 
 
@@ -72,32 +77,41 @@ int patternQueueIndex = 0;
 int patternQueueWriteIndex = 0;
 
 // GUItool: begin automatically generated code
-AudioPlaySdWav           playSdWav5;     //xy=107,246
-AudioPlaySdWav           playSdWav4;     //xy=111,188
-AudioPlaySdWav           playSdWav6;     //xy=115,294
-AudioPlaySdWav           playSdWav7;     //xy=115,341
-AudioPlaySdWav           playSdWav3;     //xy=116,145
-AudioPlaySdWav           playSdWav2;     //xy=119,105
-AudioPlaySdWav           playSdWav8;     //xy=119,392
-AudioPlaySdWav           playSdWav1;     //xy=125,57
-AudioMixer4              mixer1;         //xy=335,99
-AudioMixer4              mixer2;         //xy=340,248
-AudioMixer4              mixer3;         //xy=527,207
-AudioOutputI2S           i2s1;           //xy=653,209
-AudioConnection          patchCord1(playSdWav5, 0, mixer2, 0);
-AudioConnection          patchCord2(playSdWav4, 0, mixer1, 3);
-AudioConnection          patchCord3(playSdWav6, 0, mixer2, 1);
-AudioConnection          patchCord4(playSdWav7, 0, mixer2, 2);
-AudioConnection          patchCord5(playSdWav3, 0, mixer1, 2);
-AudioConnection          patchCord6(playSdWav2, 0, mixer1, 1);
-AudioConnection          patchCord7(playSdWav8, 0, mixer2, 3);
-AudioConnection          patchCord8(playSdWav1, 0, mixer1, 0);
-AudioConnection          patchCord9(mixer1, 0, mixer3, 0);
-AudioConnection          patchCord10(mixer2, 0, mixer3, 1);
-AudioConnection          patchCord11(mixer3, 0, i2s1, 0);
-AudioConnection          patchCord12(mixer3, 0, i2s1, 1);
-AudioControlSGTL5000     sgtl5000_1;     //xy=742,269
+AudioSynthSimpleDrum     drum3;          //xy=123,598
+AudioSynthSimpleDrum     drum2;          //xy=126,556
+AudioSynthSimpleDrum     drum1;          //xy=133,508
+AudioPlaySdWav           playSdWav5;     //xy=180,303
+AudioPlaySdWav           playSdWav4;     //xy=184,245
+AudioPlaySdWav           playSdWav6;     //xy=188,351
+AudioPlaySdWav           playSdWav7;     //xy=188,398
+AudioPlaySdWav           playSdWav3;     //xy=189,202
+AudioPlaySdWav           playSdWav2;     //xy=192,162
+AudioPlaySdWav           playSdWav8;     //xy=192,449
+AudioPlaySdWav           playSdWav1;     //xy=198,114
+AudioMixer4              mixer4;         //xy=309,560
+AudioMixer4              mixer1;         //xy=408,156
+AudioMixer4              mixer2;         //xy=413,305
+AudioMixer4              mixer3;         //xy=600,264
+AudioOutputI2S           i2s1;           //xy=726,266
+AudioConnection          patchCord1(drum3, 0, mixer4, 2);
+AudioConnection          patchCord2(drum2, 0, mixer4, 1);
+AudioConnection          patchCord3(drum1, 0, mixer4, 0);
+AudioConnection          patchCord4(playSdWav5, 0, mixer2, 0);
+AudioConnection          patchCord5(playSdWav4, 0, mixer1, 3);
+AudioConnection          patchCord6(playSdWav6, 0, mixer2, 1);
+AudioConnection          patchCord7(playSdWav7, 0, mixer2, 2);
+AudioConnection          patchCord8(playSdWav3, 0, mixer1, 2);
+AudioConnection          patchCord9(playSdWav2, 0, mixer1, 1);
+AudioConnection          patchCord10(playSdWav8, 0, mixer2, 3);
+AudioConnection          patchCord11(playSdWav1, 0, mixer1, 0);
+AudioConnection          patchCord12(mixer4, 0, mixer3, 2);
+AudioConnection          patchCord13(mixer1, 0, mixer3, 0);
+AudioConnection          patchCord14(mixer2, 0, mixer3, 1);
+AudioConnection          patchCord15(mixer3, 0, i2s1, 0);
+AudioConnection          patchCord16(mixer3, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=815,326
 // GUItool: end automatically generated code
+
 
 //transport variables
 float tempo = 120;
@@ -105,9 +119,10 @@ unsigned int stepLen = 0;
 unsigned int currStep = 0;
 unsigned long currStepTime = 0;
 
-int transportState = Playing;
-int currInst = bd;
-int controlState = StepSel;
+int transportState = PLAYING;
+int currInst = INST_BD;
+int controlState = STEP_SEL;
+int ledDisplayState = DISP_STEPS;
 
 //Contact SH_CP - Clock
 int SH_CP = 31;
@@ -126,6 +141,8 @@ int stepButtonsPrev[16];
 
 int controlButtons[16];
 int controlButtonsPrev[16];
+
+float controlPots[16];
 
 
 bool sr0LED[8];
@@ -207,7 +224,23 @@ void setup() {
   mixer2.gain(0, 0.2);
   mixer2.gain(1, 0.2);
   mixer2.gain(2, 0.2);
-   
+
+  //digital drum initialization
+  drum1.frequency(60);
+  drum1.length(1500);
+  drum1.secondMix(0.0);
+  drum1.pitchMod(0.55);
+
+  drum2.frequency(60);
+  drum2.length(300);
+  drum2.secondMix(0.0);
+  drum2.pitchMod(1.0);
+  
+  drum3.frequency(550);
+  drum3.length(400);
+  drum3.secondMix(1.0);
+  drum3.pitchMod(0.5);
+  
   //initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins)/sizeof(muxAddressPins[0]); i++){
     pinMode(muxAddressPins[i], OUTPUT);
@@ -227,6 +260,7 @@ void setup() {
     outPulseTimes[i] = 0;
     stepLEDs[i] = 1;
     patternQueue[i] = 0;
+    controlPots[i] = 0;
   }
 
   for (int i = 0; i < 8; i ++){
@@ -278,6 +312,7 @@ void setup() {
 
     
   currPattern = &PatternStorage[0][0];
+  patternNum = 0;
 //  MyPattern.readFromSD("/PATTERNS/SIXTEENPATTERNTEST.CSV");
 //  MyPattern.printPattern();
 //  MyPattern.writePatternToSD("/PATTERNS/MYTESTWRITE.CSV");
@@ -317,11 +352,12 @@ void loop() {
   readMux(false);
   
   // steps
-  if(transportState == Playing){
+  if(transportState == PLAYING){
     if (millis() > (currStepTime  + stepLen)){ // new step has been reached
       if(currStep == 15){
         patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;
         currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
+        patternNum = patternQueue[patternQueueIndex];
       }
       currStep = (currStep + 1) % 16; // move step pointer to next step
       
@@ -459,6 +495,25 @@ void readMux(bool printEn){
     controlButtons[13] = inputs[6][3]; // stop
     controlButtons[14] = inputs[6][5]; // forwards
     controlButtons[15] = inputs[6][6]; // back
+
+    //grab analog values and place in array
+    controlPots[0] = inputs[4][0]; //digi 1 param
+    controlPots[1] = inputs[4][1]; //digi 1 vol
+    controlPots[2] = inputs[4][2]; //digi 2 param
+    controlPots[3] = inputs[4][3]; //digi 2 vol
+    controlPots[4] = inputs[4][5]; //digi 3 param
+    controlPots[5] = inputs[4][4]; //digi 3 vol
+    controlPots[6] = inputs[4][6]; //break vol
+    controlPots[7] = inputs[5][0]; //break chaos
+    controlPots[8] = inputs[5][3]; //break pitch
+    controlPots[9] = inputs[5][1]; //repeat
+    controlPots[10] = inputs[5][4]; //swing
+    controlPots[11] = inputs[4][7]; //analog aux in 1
+    controlPots[12] = inputs[5][2]; //analog aux in 2
+    controlPots[13] = inputs[5][5]; //analog aux in 3
+    controlPots[14] = inputs[5][6]; //analog aux in 4
+    controlPots[15] = inputs[5][7]; //analog aux in 5
+    
   
   
   
@@ -468,9 +523,9 @@ void readMux(bool printEn){
         switch(i) {
           case 0: //inst sel
             if (controlButtons[i] == LOW){ //inst sel PRESSED
-              controlState = InstSel;
+              controlState = INST_SEL;
             } else { //inst sel RELEASED
-              controlState = StepSel;
+              controlState = STEP_SEL;
             }
           break;
   
@@ -507,78 +562,6 @@ void readMux(bool printEn){
                 PatternStorage[0][13].writePatternToSD("/PATTERNS/A/14.CSV");
                 PatternStorage[0][14].writePatternToSD("/PATTERNS/A/15.CSV");
                 PatternStorage[0][15].writePatternToSD("/PATTERNS/A/16.CSV");
-
-
-                
-//                currPattern->writePatternToSD("/PATTERNS/A/1.CSV");
-//                
-//                
-//                currPattern->writePatternToSD("/PATTERNS/A/2.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/3.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/4.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/5.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/6.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/7.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/8.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/9.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/10.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/11.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/12.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/13.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/14.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/15.CSV");
-//                currPattern->writePatternToSD("/PATTERNS/A/16.CSV");
-                
-  //            switch(patternNum){
-  //              case 0:
-  //                currPattern->writePatternToSD("/PATTERNS/A/1.CSV");
-  //                break;
-  //              case 1:
-  //                currPattern->writePatternToSD("/PATTERNS/A/2.CSV");
-  //                break;
-  //              case 2:
-  //                currPattern->writePatternToSD("/PATTERNS/A/3.CSV");
-  //                break;
-  //              case 3:
-  //                currPattern->writePatternToSD("/PATTERNS/A/4.CSV");
-  //                break;
-  //              case 4:
-  //                currPattern->writePatternToSD("/PATTERNS/A/5.CSV");
-  //                break;
-  //              case 5:
-  //                currPattern->writePatternToSD("/PATTERNS/A/6.CSV");
-  //                break;
-  //              case 6:
-  //                currPattern->writePatternToSD("/PATTERNS/A/7.CSV");
-  //                break;
-  //              case 7:
-  //                currPattern->writePatternToSD("/PATTERNS/A/8.CSV");
-  //                break;
-  //              case 8:
-  //                currPattern->writePatternToSD("/PATTERNS/A/9.CSV");
-  //                break;
-  //              case 9:
-  //                currPattern->writePatternToSD("/PATTERNS/A/10.CSV");
-  //                break;
-  //              case 10:
-  //                currPattern->writePatternToSD("/PATTERNS/A/11.CSV");
-  //                break;
-  //              case 11:
-  //                currPattern->writePatternToSD("/PATTERNS/A/12.CSV");
-  //                break;
-  //              case 12:
-  //                currPattern->writePatternToSD("/PATTERNS/A/13.CSV");
-  //                break;
-  //              case 13:
-  //                currPattern->writePatternToSD("/PATTERNS/A/14.CSV");
-  //                break;
-  //              case 14:
-  //                currPattern->writePatternToSD("/PATTERNS/A/15.CSV");
-  //                break;
-  //              case 15:
-  //                currPattern->writePatternToSD("/PATTERNS/A/16.CSV");
-  //                break;
-  //            }
             } else { //save RELEASED
               
             }
@@ -610,13 +593,15 @@ void readMux(bool printEn){
   
           case 5: //pattern
             if (controlButtons[i] == LOW){ //pattern PRESSED
-              controlState = PatternSel;
+              controlState = PATTERN_SEL;
               patternQueueWriteIndex = 0;
               patternQueueLen = 1;
+              ledDisplayState = DISP_PATTERNS;
             } else { //pattern RELEASED
-              controlState = StepSel;
+              controlState = STEP_SEL;
               patternQueueIndex = 0;
               currPattern = &PatternStorage[0][patternQueue[0]];
+              ledDisplayState = DISP_STEPS;
             }
           break;
   
@@ -670,12 +655,12 @@ void readMux(bool printEn){
   
           case 12: //playpause
             if (controlButtons[i] == LOW){ //playpause PRESSED
-              if(transportState == Playing){
-                transportState = Paused;
+              if(transportState == PLAYING){
+                transportState = PAUSED;
                 sr1LED[1] = 0;
                 Serial.println("Paused!");
               } else { 
-                transportState = Playing;
+                transportState = PLAYING;
                 sr1LED[2] = 0;
                 sr1LED[1] = 1;
                 currStepTime = millis();
@@ -691,7 +676,7 @@ void readMux(bool printEn){
             if (controlButtons[i] == LOW){ //stop PRESSED
               sr1LED[2] = 1;
               sr1LED[1] = 0;
-              transportState = Stopped;
+              transportState = STOPPED;
               currStep = -1;
               Serial.println("Stopped!");
             } else { //stop RELEASED
@@ -722,7 +707,7 @@ void readMux(bool printEn){
   // CONTROL STRUCTURE
   
     switch(controlState){
-      case StepSel:
+      case STEP_SEL:
         for (int i = 0; i < 16; i++){
           if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){
             currPattern->pattern[currInst][i] = !currPattern->pattern[currInst][i];
@@ -730,7 +715,7 @@ void readMux(bool printEn){
         }
       break;
   
-      case InstSel:
+      case INST_SEL:
         for(int i = 0; i < 16; i++){
           if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){
             currInst = i;
@@ -738,7 +723,7 @@ void readMux(bool printEn){
         }
       break;
   
-      case PatternSel:
+      case PATTERN_SEL:
         for(int i = 0; i < 16; i++){
           if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){
   //          currPattern = &PatternStorage[0][i];
@@ -746,22 +731,38 @@ void readMux(bool printEn){
               if(patternQueueWriteIndex > 0) patternQueueLen++;
               patternQueue[patternQueueWriteIndex++] = i;
   
-              if (transportState != Playing){
+              if (transportState != PLAYING){
                 patternQueueIndex = 0;
                 currPattern = &PatternStorage[0][i];
+                patternNum = i;
               }
   
           }
         }
       break;
   
-      case SongSel:
+      case SONG_SEL:
       break;
   
-      case BankSel:
+      case BANK_SEL:
       break;
     }
-  
+
+    //handle potentiometer updates
+    
+//      controlPots[0] = inputs[4][0] //digi 1 param
+//    controlPots[1] = inputs[4][1] //digi 1 vol
+//    controlPots[2] = inputs[4][2] //digi 2 param
+//    controlPots[3] = inputs[4][3] //digi 2 vol
+//    controlPots[4] = inputs[4][5] //digi 3 param
+//    controlPots[5] = inputs[4][4] //digi 3 vol
+    drum1.frequency(map(controlPots[0], 1023, 0, 60, 700));
+    drum2.frequency(map(controlPots[2], 1023, 0, 60, 700));
+    drum3.frequency(map(controlPots[4], 1023, 0, 60, 700));
+    mixer4.gain(0, (1023 - controlPots[1])/1023);
+    mixer4.gain(1, (1023 - controlPots[3])/1023);
+    mixer4.gain(2, (1023 - controlPots[5])/1023);
+    
 
     //print mux inputs
     if (printEn){
@@ -784,7 +785,8 @@ void readMux(bool printEn){
       Serial.println(" ");
     }
   }
-    //write SR outputs
+
+
     uint8_t sr0 = sr0LED[0] | sr0LED[1]<<1 | sr0LED[2]<<2 | sr0LED[3]<<3 |
                   sr0LED[4]<<4 | sr0LED[5]<<5 | sr0LED[6]<<6 | sr0LED[7]<<7;
                   
@@ -796,22 +798,33 @@ void readMux(bool printEn){
                   
     uint8_t sr3 = sr3LED[0] | sr3LED[1]<<1 | sr3LED[2]<<2 | sr3LED[3]<<3 |
                   sr3LED[4]<<4 | sr3LED[5]<<5 | sr3LED[6]<<6 | sr3LED[7]<<7;
-  
-    int stepLEDMask = 0;
-    if (currStep != -1){
-      stepLEDMask = 1 << currStep;
-    }
+
+    uint8_t sr4 = 0b00000000;
+    uint8_t sr5 = 0b00000000;
+
+  //STEP LED STUFF
+  switch(ledDisplayState){
+    case DISP_STEPS:
+      for (int i = 0; i < 16; i++){ //light up which stepss are on for current instrument
+        stepLEDs[i] = currPattern->pattern[currInst][i];
+      }
+      stepLEDs[currStep] = 1; // light up the playhead/current step
+      break;
+
+    case DISP_PATTERNS:
+      for (int i = 0; i < 16; i ++){
+        stepLEDs[i] = 0;
+      }
+      stepLEDs[patternNum] = 1;
+      break;
+  }
+
+      sr4 = stepLEDs[0] | stepLEDs[1]<<1 | stepLEDs[2]<<2 | stepLEDs[3]<<3 | // send it to the sr variables
+                    stepLEDs[8]<<4 | stepLEDs[9]<<5 | stepLEDs[10]<<6 | stepLEDs[11]<<7;
     
-    for (int i = 0; i < 16; i++){
-      stepLEDs[i] = currPattern->pattern[currInst][i];
-    }
-    stepLEDs[currStep] = 1;
-      
-    uint8_t sr4 = stepLEDs[0] | stepLEDs[1]<<1 | stepLEDs[2]<<2 | stepLEDs[3]<<3 |
-                  stepLEDs[8]<<4 | stepLEDs[9]<<5 | stepLEDs[10]<<6 | stepLEDs[11]<<7;
-  
-    uint8_t sr5 = stepLEDs[4] | stepLEDs[5]<<1 | stepLEDs[6]<<2 | stepLEDs[7]<<3 |
-                  stepLEDs[12]<<4 | stepLEDs[13]<<5 | stepLEDs[14]<<6 | stepLEDs[15]<<7;
+      sr5 = stepLEDs[4] | stepLEDs[5]<<1 | stepLEDs[6]<<2 | stepLEDs[7]<<3 |
+                    stepLEDs[12]<<4 | stepLEDs[13]<<5 | stepLEDs[14]<<6 | stepLEDs[15]<<7;
+
       
     digitalWrite(ST_CP, LOW);
     shiftOut(DS, SH_CP, MSBFIRST, sr5);
@@ -872,85 +885,88 @@ void trigNote(int instNum){
   //send pulse voltage out
     int pulseLen = 10;
     switch(instNum){
-      case 0: //BD
+      case INST_BD: //BD
         sr3LED[7] = 0;
         pulseLen = 10;
         break;
   
-      case 1: //SN
+      case INST_SD: //SN
         sr2LED[2] = 0;
         pulseLen = 5;
         break;
   
-      case 2: //CYN1
+      case INST_CYN1: //CYN1
         sr0LED[0] = 0;
         pulseLen = 10;
         break;
   
-      case 3: //CYN2
+      case INST_CYN2: //CYN2
         sr0LED[7] = 0;
         pulseLen = 10;
         break;
   
-      case 4: //GLITCH
+      case INST_GLITCH: //GLITCH
         sr2LED[4] = 0;
         pulseLen = 10;
         break;
   
-      case 5: //DIGI1
+      case INST_DIGI1: //DIGI1
         sr2LED[7] = 0;
         pulseLen = 10;
-        playSdWav1.play("DRUMS/KICK.WAV");
+//        playSdWav1.play("DRUMS/KICK.WAV");
+        drum1.noteOn();
         break;
   
-      case 6: //DIGI2
+      case INST_DIGI2: //DIGI2
         sr2LED[6] = 0;
         pulseLen = 10;
-        playSdWav2.play("DRUMS/TOM.WAV");
+        drum2.noteOn();
+//        playSdWav2.play("DRUMS/TOM.WAV");
         break;
   
-      case 7: //DIGI3
+      case INST_DIGI3: //DIGI3
         sr2LED[5] = 0;
         pulseLen = 10;
-        playSdWav3.play("DRUMS/CH.WAV");
+//        playSdWav3.play("DRUMS/CH.WAV");
+        drum3.noteOn();
         break;
 
-      case 8: //casio kick
+      case INST_DIGI4: //casio kick
         pulseLen = 10;
         playSdWav4.play("DRUMS/CASIOSK1/kick.wav");
         break;
 
-      case 9: //casio snare
+      case INST_DIGI5: //casio snare
         pulseLen = 10;
         playSdWav5.play("DRUMS/CASIOSK1/snare.wav");
         break;
 
-      case 10: //casio closed hat
+      case INST_DIGI6: //casio closed hat
         pulseLen = 10;
         playSdWav6.play("DRUMS/CASIOSK1/chh.wav");
         break;
 
-      case 11: //casio open hat
+      case INST_DIGI7: //casio open hat
         pulseLen = 10;
         playSdWav7.play("DRUMS/CASIOSK1/ohh.wav");
         break;
 
-      case 12: //casio cowbell hi
+      case INST_DIGI8: //casio cowbell hi
         pulseLen = 10;
         playSdWav4.play("DRUMS/CASIOSK1/kick.wav");
         break;
 
-      case 13: //casio cowbell lo
+      case INST_DIGI9: //casio cowbell lo
         pulseLen = 10;
         playSdWav5.play("DRUMS/CASIOSK1/snare.wav");
         break;
 
-      case 14: //casio hi tom
+      case INST_DIGI10: //casio hi tom
         pulseLen = 10;
         playSdWav6.play("DRUMS/CASIOSK1/skhitom.wav");
         break;
 
-      case 15: //casio lo tom
+      case INST_DIGI11: //casio lo tom
         pulseLen = 10;
         playSdWav7.play("DRUMS/CASIOSK1/tom.wav");
         break;
