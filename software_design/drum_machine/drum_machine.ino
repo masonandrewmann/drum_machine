@@ -67,7 +67,8 @@ enum controlStates{
 
 enum ledDisplayStates{
   DISP_STEPS,
-  DISP_PATTERNS
+  DISP_PATTERNS,
+  DISP_SONGS
 };
 
 
@@ -99,6 +100,7 @@ AudioPlayArrayResmp      playSdRaw5;        //xy=321,513
 AudioPlayArrayResmp      playSdRaw6;        //xy=321,513
 AudioPlayArrayResmp      playSdRaw7;        //xy=321,513
 AudioPlayArrayResmp      playSdRaw8;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw9;        //xy=321,513
 
 newdigate::audiosample *sample1;
 newdigate::audiosample *sample2;
@@ -108,37 +110,39 @@ newdigate::audiosample *sample5;
 newdigate::audiosample *sample6;
 newdigate::audiosample *sample7;
 newdigate::audiosample *sample8;
+newdigate::audiosample *sample9;
 
 // GUItool: begin automatically generated code
-AudioPlayMemory          playMem1;       //xy=431,706
+//AudioPlaySdRaw           playSdRaw1;     //xy=387,149
+//AudioPlaySdRaw           playSdRaw2;     //xy=390,191
+//AudioPlaySdRaw           playSdRaw3;     //xy=406,236
+//AudioPlaySdRaw           playSdRaw7;     //xy=406,412
+//AudioPlaySdRaw           playSdRaw6;     //xy=407,373
+//AudioPlaySdRaw           playSdRaw4;     //xy=410,286
+//AudioPlaySdRaw           playSdRaw5;     //xy=410,332
+//AudioPlaySdRaw           playSdRaw8;     //xy=416,456
+//AudioPlaySdRaw           playSdRaw9;     //xy=451,694
 AudioSynthSimpleDrum     drum3;          //xy=475,631
 AudioSynthSimpleDrum     drum2;          //xy=478,589
 AudioSynthSimpleDrum     drum1;          //xy=485,541
-//AudioPlaySdWav           playSdWav5;     //xy=532,336
-//AudioPlaySdWav           playSdWav4;     //xy=536,278
-//AudioPlaySdWav           playSdWav6;     //xy=540,384
-//AudioPlaySdWav           playSdWav7;     //xy=540,431
-//AudioPlaySdWav           playSdWav3;     //xy=541,235
-//AudioPlaySdWav           playSdWav2;     //xy=544,195
-//AudioPlaySdWav           playSdWav8;     //xy=544,482
-//AudioPlaySdWav           playSdWav9; //xy=550,147
 AudioMixer4              mixer4;         //xy=661,593
 AudioMixer4              mixer1;         //xy=760,189
 AudioMixer4              mixer2;         //xy=765,338
 AudioMixer4              mixer3;         //xy=952,297
+AudioEffectBitcrusher    bitcrusher1;    //xy=979,485
 AudioOutputI2S           i2s1;           //xy=1078,299
-AudioConnection          patchCord1(playMem1, 0, mixer4, 3);
-AudioConnection          patchCord2(drum3, 0, mixer4, 2);
-AudioConnection          patchCord3(drum2, 0, mixer4, 1);
-AudioConnection          patchCord4(drum1, 0, mixer4, 0);
-AudioConnection          patchCord5(playSdRaw1, 0, mixer2, 0);
-AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 3);
-AudioConnection          patchCord7(playSdRaw3, 0, mixer2, 1);
-AudioConnection          patchCord8(playSdRaw4, 0, mixer2, 2);
-AudioConnection          patchCord9(playSdRaw5, 0, mixer1, 2);
-AudioConnection          patchCord10(playSdRaw6, 0, mixer1, 1);
-AudioConnection          patchCord11(playSdRaw7, 0, mixer2, 3);
-AudioConnection          patchCord12(playSdRaw8, 0, mixer1, 0);
+AudioConnection          patchCord1(playSdRaw1, 0, mixer1, 0);
+AudioConnection          patchCord2(playSdRaw2, 0, mixer1, 1);
+AudioConnection          patchCord3(playSdRaw3, 0, mixer1, 2);
+AudioConnection          patchCord4(playSdRaw7, 0, mixer2, 2);
+AudioConnection          patchCord5(playSdRaw6, 0, mixer2, 1);
+AudioConnection          patchCord6(playSdRaw4, 0, mixer1, 3);
+AudioConnection          patchCord7(playSdRaw5, 0, mixer2, 0);
+AudioConnection          patchCord8(playSdRaw8, 0, mixer2, 3);
+AudioConnection          patchCord9(playSdRaw9, 0, mixer4, 3);
+AudioConnection          patchCord10(drum3, 0, mixer4, 2);
+AudioConnection          patchCord11(drum2, 0, mixer4, 1);
+AudioConnection          patchCord12(drum1, 0, mixer4, 0);
 AudioConnection          patchCord13(mixer4, 0, mixer3, 2);
 AudioConnection          patchCord14(mixer1, 0, mixer3, 0);
 AudioConnection          patchCord15(mixer2, 0, mixer3, 1);
@@ -181,7 +185,12 @@ int controlButtonsPrev[16];
 float controlPots[16];
 
 float sampleParameters[8][2];
+float sampleVolumes[8];
 float parameterInc = 0.01;
+
+//LCD navigation
+int cursorLoc = 0;
+bool paramSel = false;
 
 
 bool sr0LED[8];
@@ -230,6 +239,8 @@ unsigned long muxTimer = 0;
 int muxIndex = 0;
 bool muxCpltFlg = false;
 bool muxTimerFlg = false;
+bool stateInitFlag = false;
+bool patternWrite = false;
 
 
 void setup() {
@@ -257,12 +268,22 @@ void setup() {
 //    Serial.println("Unable to access SPI Flash chip");
 //  }
 
-  mixer1.gain(0, 0.2);
-  mixer1.gain(1, 0.2);
-  mixer1.gain(2, 0.2);
-  mixer2.gain(0, 0.2);
-  mixer2.gain(1, 0.2);
-  mixer2.gain(2, 0.2);
+  mixer1.gain(0, 1);
+  mixer1.gain(1, 1);
+  mixer1.gain(2, 1);
+  mixer1.gain(3, 1);
+  mixer2.gain(0, 1);
+  mixer2.gain(1, 1);
+  mixer2.gain(2, 1);
+  mixer2.gain(3, 1);
+  mixer3.gain(0, 0.2);
+  mixer3.gain(1, 0.2);
+  mixer3.gain(2, 0.2);
+  mixer3.gain(3, 0.2);
+  mixer4.gain(0, 1);
+  mixer4.gain(1, 1);
+  mixer4.gain(2, 1);
+  mixer4.gain(3, 1);
 
   //digital drum initialization
   drum1.frequency(60);
@@ -289,6 +310,7 @@ void setup() {
   playSdRaw6.enableInterpolation(true);
   playSdRaw7.enableInterpolation(true);
   playSdRaw8.enableInterpolation(true);
+  playSdRaw9.enableInterpolation(true);
 
   playSdRaw1.setPlaybackRate(1);
   playSdRaw2.setPlaybackRate(1);
@@ -298,6 +320,8 @@ void setup() {
   playSdRaw6.setPlaybackRate(1);
   playSdRaw7.setPlaybackRate(1);
   playSdRaw8.setPlaybackRate(1);
+//  playSdRaw9.setPlaybackRate(1);
+  playSdRaw9.setPlaybackRate(tempo / 175.0);
 
   newdigate::flashloader loader;
   
@@ -309,6 +333,7 @@ void setup() {
   sample6 = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
   sample7 = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
   sample8 = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
+  sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
 
   
   
@@ -342,9 +367,11 @@ void setup() {
     sr3LED[i] = 0;
     sampleParameters[i][0] = 1; // sample playback speed
     sampleParameters[i][1] = 1; // another parameter
+    sampleVolumes[i] = 1;
   }
   sr1LED[2] = 0;
   sr3LED[1] = 0;
+  sr0LED[5] = 1;
   
   changeTempo(tempo);
 
@@ -411,6 +438,15 @@ void loop() {
   if(transportState == PLAYING){
     if (millis() > (currStepTime  + stepLen)){ // new step has been reached
       if(currStep == 15){
+        Serial.print("patternQueueIndex: ");
+        Serial.println(patternQueueIndex);
+        Serial.print("patternQueueLen: ");
+        Serial.println(patternQueueLen);
+        Serial.print("patternQueueIndex +1 Modulo Len ");
+        Serial.println((patternQueueIndex + 1) % patternQueueLen);
+        Serial.print("patternQueue number: ");
+        Serial.println(patternQueue[patternQueueIndex]);
+        Serial.println(" ");
         patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;
         currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
         patternNum = patternQueue[patternQueueIndex];
@@ -427,7 +463,7 @@ void loop() {
     }
   }
 
-  for (int i = 0; i < 16; i++){
+  for (int i = 0; i < 16; i++){ //check hardware output pulses
     if (outPulseTimes[i] != 0){
       if(millis() > outPulseTimes[i]){
 //        Serial.println("PULSE COMPLETE");
@@ -623,9 +659,11 @@ void readMux(bool printEn){
             }
           break;
   
-          case 2: //shift
+          case 2: //shift -----> now write
             if (controlButtons[i] == LOW){ //shift PRESSED
-              
+//              currPattern->clearPattern();
+              patternWrite = !patternWrite;
+              sr3LED[2] = patternWrite;
             } else { //shift RELEASED
               
             }
@@ -633,7 +671,7 @@ void readMux(bool printEn){
   
           case 3: //song
             if (controlButtons[i] == LOW){ //song PRESSED
-              
+              controlState = SONG_SEL;
             } else { //song RELEASED
               
             }
@@ -652,18 +690,18 @@ void readMux(bool printEn){
               controlState = PATTERN_SEL;
               patternQueueWriteIndex = 0;
               patternQueueLen = 1;
-              ledDisplayState = DISP_PATTERNS;
+//              ledDisplayState = DISP_PATTERNS;
             } else { //pattern RELEASED
-              controlState = STEP_SEL;
-              patternQueueIndex = 0;
-              currPattern = &PatternStorage[0][patternQueue[0]];
-              ledDisplayState = DISP_STEPS;
+//              controlState = STEP_SEL;
+//              patternQueueIndex = 0;
+//              currPattern = &PatternStorage[0][patternQueue[0]];
+//              ledDisplayState = DISP_STEPS;
             }
           break;
   
           case 6: //dataEncBut
             if (controlButtons[i] == LOW){ //dataEncBut PRESSED
-              
+              paramSel = !paramSel;
             } else { //dataEncBut RELEASED
               
             }
@@ -687,7 +725,7 @@ void readMux(bool printEn){
   
           case 9: //step
             if (controlButtons[i] == LOW){ //step PRESSED
-              currPattern->clearPattern();
+              controlState = STEP_SEL;
             } else { //step RELEASED
               
             }
@@ -759,6 +797,10 @@ void readMux(bool printEn){
         }
       }
     }
+    if (!stateInitFlag){
+      controlState = STEP_SEL;
+      stateInitFlag = true;
+    }
   
   // CONTROL STRUCTURE
   
@@ -780,23 +822,44 @@ void readMux(bool printEn){
       break;
   
       case PATTERN_SEL:
-        for(int i = 0; i < 16; i++){
-          if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){
-  //          currPattern = &PatternStorage[0][i];
-  //            nextPattern = i;
-              if(patternQueueWriteIndex > 0) patternQueueLen++;
-              patternQueue[patternQueueWriteIndex++] = i;
-  
-              if (transportState != PLAYING){
-                patternQueueIndex = 0;
-                currPattern = &PatternStorage[0][i];
-                patternNum = i;
-              }
-  
+        if(patternWrite){
+          for(int i = 0; i < 16; i++){
+            if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){
+    //          currPattern = &PatternStorage[0][i];
+    //            nextPattern = i;
+                if(patternQueueWriteIndex > 0) patternQueueLen++;
+                patternQueue[patternQueueWriteIndex++] = i;
+    
+                if (transportState != PLAYING){
+                  patternQueueIndex = 0;
+                  currPattern = &PatternStorage[0][i];
+                  patternNum = i;
+                }
+    
+            }
           }
+        } else {
+            for(int i = 0; i < 16; i++){
+              if(stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]){ //pressed a step button
+                if (transportState == PLAYING){
+                patternQueue[0] = i; //set pressed pattern to index 0
+                patternQueueLen = 1; // set length of queue to 2
+                } else {
+                  patternQueueIndex = 0;
+                  patternQueueLen = 1; // set length of queue to 2
+                  currPattern = &PatternStorage[0][i];
+                  patternQueue[0] = i;
+                  patternNum = i;
+                }
+              }
+            }
         }
       break;
-  
+//        if(currStep == 15){
+//        patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;
+//        currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
+//        patternNum = patternQueue[patternQueueIndex];
+//      }
       case SONG_SEL:
       break;
   
@@ -859,6 +922,18 @@ void readMux(bool printEn){
     uint8_t sr5 = 0b00000000;
 
   //STEP LED STUFF
+  switch(controlState){
+    case STEP_SEL:
+      ledDisplayState = DISP_STEPS;
+      break;
+    case PATTERN_SEL:
+      ledDisplayState = DISP_PATTERNS;
+      break;
+    case SONG_SEL:
+      ledDisplayState = DISP_SONGS;
+      break;
+  }
+  
   switch(ledDisplayState){
     case DISP_STEPS:
       for (int i = 0; i < 16; i++){ //light up which stepss are on for current instrument
@@ -880,6 +955,24 @@ void readMux(bool printEn){
     
       sr5 = stepLEDs[4] | stepLEDs[5]<<1 | stepLEDs[6]<<2 | stepLEDs[7]<<3 |
                     stepLEDs[12]<<4 | stepLEDs[13]<<5 | stepLEDs[14]<<6 | stepLEDs[15]<<7;
+
+      //control mode LEDs
+      sr3LED[3] = 0;
+      sr3LED[4] = 0;
+      sr3LED[6] = 0;
+      switch(controlState){
+        case STEP_SEL:
+            sr3LED[6] = 1;
+          break;
+        case SONG_SEL:
+            sr3LED[3] = 1;
+          break;
+
+        case PATTERN_SEL:
+            sr3LED[4] = 1;
+          break;
+          
+      }
 
       
     digitalWrite(ST_CP, LOW);
@@ -909,6 +1002,7 @@ void changeTempo(float newTempo){
   float eigthLen = quarterLen / 2;
   float sixteenthLen = quarterLen / 4;
   stepLen = sixteenthLen;
+  playSdRaw9.setPlaybackRate(tempo / 175.0);
 }
 
 ///**************************************************************************************************
@@ -981,7 +1075,8 @@ void trigNote(int instNum){
       case INST_DIGI3: //DIGI3
         sr2LED[5] = 0;
         pulseLen = 10;
-        drum3.noteOn();
+//        drum3.noteOn();
+        playSdRaw9.playRaw(sample9->sampledata, sample9->samplesize/2, 1);
         break;
         
       case INST_SMP1: //casio kick
@@ -1081,10 +1176,11 @@ void displayLCD(bool demoMode){
     break;
 
     case LCD_INST_PROP:
-        if(millis() > LCDFrameTimer + 100){
+        if(millis() > LCDFrameTimer + 10){
       u8g2.clearBuffer();          // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       char paramStr[30];
+      char volStr[30];
       
       switch(currInst){
         case INST_BD:
@@ -1113,52 +1209,44 @@ void displayLCD(bool demoMode){
           break;
         case INST_SMP1:
           u8g2.drawStr(0, 11, "Casio Kick");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[0][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP2:
           u8g2.drawStr(0, 11, "Casio Snare");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[1][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP3:
           u8g2.drawStr(0, 11, "Casio CHH");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[2][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP4:
           u8g2.drawStr(0, 11, "Casio OHH");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[3][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP5:
           u8g2.drawStr(0, 11, "Casio Lo Cowbell");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[4][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP6:
           u8g2.drawStr(0, 11, "Casio Hi Cowbell");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[5][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP7:
           u8g2.drawStr(0, 11, "Casio Lo Tom");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[6][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
         case INST_SMP8:
           u8g2.drawStr(0, 11, "Casio Hi Tom");
-          u8g2.drawStr(0, 24, "spd:");
-          sprintf (paramStr, "%.02f",sampleParameters[7][0]);
-          u8g2.drawStr(30, 24, paramStr);
           break;
+      }
+      if(currInst >= 8){
+        u8g2.setFontMode(0);
+        u8g2.setDrawColor(1);
+        sprintf (paramStr, "%.02f",sampleParameters[currInst - 8][0]);
+        sprintf (volStr, "%.02f",sampleVolumes[currInst - 8]);
+        u8g2.drawStr(0, 24, "spd:");
+        u8g2.drawStr(30, 24, paramStr);
+        u8g2.drawStr(0, 34, "vol:");
+        u8g2.drawStr(30, 34, volStr);
+        u8g2.setDrawColor(2);
+        if(paramSel){
+          u8g2.drawBox(30, 15 + 10 * cursorLoc, 23, 11);
+        } else {
+          u8g2.drawBox(0, 15 + 10 * cursorLoc, 23, 11);
+        }
       }
       u8g2.sendBuffer();          // transfer internal memory to the display
       LCDFrameTimer = millis();
@@ -1224,7 +1312,7 @@ void UpdateTempoEnc()
         if(!tempoEncAval) {
           tempoEncAcc++;
           //update tempo variable
-          tempo += 10;
+          tempo += 1;
           changeTempo(tempo);
 #ifdef DEMO          
           // Remove this when not in demo mode
@@ -1253,7 +1341,7 @@ void UpdateTempoEnc()
       if(!tempoEncAval) {
         if(!tempoEncBval) {
           tempoEncAcc--;
-          tempo -= 10;
+          tempo -= 1;
           changeTempo(tempo);
 #ifdef DEMO
           // Remove this when not in demo mode
@@ -1346,39 +1434,83 @@ void UpdateDataEnc()
           Serial.print(" ..data right.. "); 
 #endif
 //          Serial.println(currInst);
-          switch(currInst){
-            case INST_SMP1:
-              sampleParameters[0][0] += parameterInc;
-              playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
-              break;
-            case INST_SMP2:
-              sampleParameters[1][0] += parameterInc;
-              playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
-              break;
-            case INST_SMP3:
-              sampleParameters[2][0] += parameterInc;
-              playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
-              break;
-            case INST_SMP4:
-              sampleParameters[3][0] += parameterInc;
-              playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
-              break;
-            case INST_SMP5:
-              sampleParameters[4][0] += parameterInc;
-              playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
-              break;
-            case INST_SMP6:
-              sampleParameters[5][0] += parameterInc;
-              playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
-              break;
-            case INST_SMP7:
-              sampleParameters[6][0] += parameterInc;
-              playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
-              break;
-            case INST_SMP8:
-              sampleParameters[7][0] += parameterInc;
-              playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
-              break;
+          if(paramSel){
+            switch(cursorLoc){
+              case 0: //first parameter selected
+                switch(currInst){
+                    case INST_SMP1:
+                    sampleParameters[0][0] += parameterInc;
+                    playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
+                    break;
+                  case INST_SMP2:
+                    sampleParameters[1][0] += parameterInc;
+                    playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
+                    break;
+                  case INST_SMP3:
+                    sampleParameters[2][0] += parameterInc;
+                    playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
+                    break;
+                  case INST_SMP4:
+                    sampleParameters[3][0] += parameterInc;
+                    playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
+                    break;
+                  case INST_SMP5:
+                    sampleParameters[4][0] += parameterInc;
+                    playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
+                    break;
+                  case INST_SMP6:
+                    sampleParameters[5][0] += parameterInc;
+                    playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
+                    break;
+                  case INST_SMP7:
+                    sampleParameters[6][0] += parameterInc;
+                    playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
+                    break;
+                  case INST_SMP8:
+                    sampleParameters[7][0] += parameterInc;
+                    playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
+                    break;
+                }
+                break;
+              case 1: //volume selected
+                switch(currInst){
+                    sampleVolumes[0] += parameterInc;
+                    mixer1.gain(0, sampleVolumes[0]);
+                    break;
+                  case INST_SMP2:
+                    sampleVolumes[1] += parameterInc;
+                    mixer1.gain(1, sampleVolumes[1]);
+                    break;
+                  case INST_SMP3:
+                    sampleVolumes[2] += parameterInc;
+                    mixer1.gain(2, sampleVolumes[2]);
+                    break;
+                  case INST_SMP4:
+                    sampleVolumes[3] += parameterInc;
+                    mixer1.gain(3, sampleVolumes[3]);
+                    break;
+                  case INST_SMP5:
+                    sampleVolumes[4] += parameterInc;
+                    mixer2.gain(0, sampleVolumes[0]);
+                    break;
+                  case INST_SMP6:
+                    sampleVolumes[5] += parameterInc;
+                    mixer2.gain(1, sampleVolumes[5]);
+                    break;
+                  case INST_SMP7:
+                    sampleVolumes[6] += parameterInc;
+                    mixer2.gain(2, sampleVolumes[6]);
+                    break;
+                  case INST_SMP8:
+                    sampleVolumes[7] += parameterInc;
+                    mixer2.gain(3, sampleVolumes[7]);
+                    break;
+                }
+                break;
+              }
+          } else {
+            cursorLoc++;
+            if (cursorLoc > 1) cursorLoc = 1;
           }
           dataEncState = 2; // CW 2
         }
@@ -1408,48 +1540,101 @@ void UpdateDataEnc()
           Serial.print(" ..data left.. "); 
 #endif
 //          Serial.println(currInst);
-          switch(currInst){
-            case INST_SMP1:
-              sampleParameters[0][0] -= parameterInc;
-              if(sampleParameters[0][0] < 0.05) sampleParameters[0][0] = 0.05;
-              playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
-              break;
-            case INST_SMP2:
-              sampleParameters[1][0] -= parameterInc;
-              if(sampleParameters[1][0] < 0.05) sampleParameters[1][0] = 0.05;
-              playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
-              break;
-            case INST_SMP3:
-              sampleParameters[2][0] -= parameterInc;
-              if(sampleParameters[2][0] < 0.05) sampleParameters[2][0] = 0.05;
-              playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
-              break;
-            case INST_SMP4:
-              sampleParameters[3][0] -= parameterInc;
-              if(sampleParameters[3][0] < 0.05) sampleParameters[3][0] = 0.05;
-              playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
-              break;
-            case INST_SMP5:
-              sampleParameters[4][0] -= parameterInc;
-              if(sampleParameters[4][0] < 0.05) sampleParameters[4][0] = 0.05;
-              playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
-              break;
-            case INST_SMP6:
-              sampleParameters[5][0] -= parameterInc;
-              if(sampleParameters[5][0] < 0.05) sampleParameters[5][0] = 0.05;
-              playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
-              break;
-            case INST_SMP7:
-              sampleParameters[6][0] -= parameterInc;
-              if(sampleParameters[6][0] < 0.05) sampleParameters[6][0] = 0.05;
-              playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
-              break;
-            case INST_SMP8:
-              sampleParameters[7][0] -= parameterInc;
-              if(sampleParameters[7][0] < 0.05) sampleParameters[7][0] = 0.05;
-              playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
-              break;
-          }
+      if(paramSel){
+        switch(cursorLoc){
+          case 0:
+            switch(currInst){
+              case INST_SMP1:
+                sampleParameters[0][0] -= parameterInc;
+                if(sampleParameters[0][0] < 0.05) sampleParameters[0][0] = 0.05;
+                playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
+                break;
+              case INST_SMP2:
+                sampleParameters[1][0] -= parameterInc;
+                if(sampleParameters[1][0] < 0.05) sampleParameters[1][0] = 0.05;
+                playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
+                break;
+              case INST_SMP3:
+                sampleParameters[2][0] -= parameterInc;
+                if(sampleParameters[2][0] < 0.05) sampleParameters[2][0] = 0.05;
+                playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
+                break;
+              case INST_SMP4:
+                sampleParameters[3][0] -= parameterInc;
+                if(sampleParameters[3][0] < 0.05) sampleParameters[3][0] = 0.05;
+                playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
+                break;
+              case INST_SMP5:
+                sampleParameters[4][0] -= parameterInc;
+                if(sampleParameters[4][0] < 0.05) sampleParameters[4][0] = 0.05;
+                playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
+                break;
+              case INST_SMP6:
+                sampleParameters[5][0] -= parameterInc;
+                if(sampleParameters[5][0] < 0.05) sampleParameters[5][0] = 0.05;
+                playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
+                break;
+              case INST_SMP7:
+                sampleParameters[6][0] -= parameterInc;
+                if(sampleParameters[6][0] < 0.05) sampleParameters[6][0] = 0.05;
+                playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
+                break;
+              case INST_SMP8:
+                sampleParameters[7][0] -= parameterInc;
+                if(sampleParameters[7][0] < 0.05) sampleParameters[7][0] = 0.05;
+                playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
+                break;
+            }
+            break;
+
+          case 1: //volume selected
+                switch(currInst){
+                    sampleVolumes[0] -= parameterInc;
+                    if (sampleVolumes[0] < 0) sampleVolumes[0] = 0;
+                    mixer1.gain(0, sampleVolumes[0]);
+                    break;
+                  case INST_SMP2:
+                    sampleVolumes[1] -= parameterInc;
+                    if (sampleVolumes[1] < 0) sampleVolumes[1] = 0;
+                    mixer1.gain(1, sampleVolumes[1]);
+                    break;
+                  case INST_SMP3:
+                    sampleVolumes[2] -= parameterInc;
+                    if (sampleVolumes[2] < 0) sampleVolumes[2] = 0;
+                    mixer1.gain(2, sampleVolumes[2]);
+                    break;
+                  case INST_SMP4:
+                    sampleVolumes[3] -= parameterInc;
+                    if (sampleVolumes[3] < 0) sampleVolumes[3] = 0;
+                    mixer1.gain(3, sampleVolumes[3]);
+                    break;
+                  case INST_SMP5:
+                    sampleVolumes[4] -= parameterInc;
+                    if (sampleVolumes[4] < 0) sampleVolumes[4] = 0;
+                    mixer2.gain(0, sampleVolumes[4]);
+                    break;
+                  case INST_SMP6:
+                    sampleVolumes[5] -= parameterInc;
+                    if (sampleVolumes[5] < 0) sampleVolumes[5] = 0;
+                    mixer2.gain(1, sampleVolumes[5]);
+                    break;
+                  case INST_SMP7:
+                    sampleVolumes[6] -= parameterInc;
+                    if (sampleVolumes[6] < 0) sampleVolumes[6] = 0;
+                    mixer2.gain(2, sampleVolumes[6]);
+                    break;
+                  case INST_SMP8:
+                    sampleVolumes[7] -= parameterInc;
+                    if (sampleVolumes[7] < 0) sampleVolumes[7] = 0;
+                    mixer2.gain(3, sampleVolumes[7]);
+                    break;
+                }
+                break;
+        }
+      } else {
+        cursorLoc--;
+        if(cursorLoc < 0) cursorLoc = 0;
+      }
           dataEncState = 12; // CCW 2
         }
       } else {
