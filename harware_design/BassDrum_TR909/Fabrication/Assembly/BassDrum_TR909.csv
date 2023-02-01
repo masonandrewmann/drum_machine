@@ -1,0 +1,69 @@
+Designator,Comment,Footprint,LCSC
+"C1, C9,",3n3,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C1613
+"C3,",2n2,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C1604
+"C5,",68n,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C31658
+"C6, C14,",470n,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C1623
+"C7, C18,",330n,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C1615
+"C8,",6n8,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C1631
+"C10, C21, C22, C23, C24, C25, C30, C29,",100n,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C14663
+"C11,",4n7,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C53987
+"C12, C2,",100p,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C14858
+"C15,",2u2,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23630
+"C16, C4, C13,",33n,Capacitor_SMD:C_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C21117
+"C17, C19, C20,",10u,Capacitor_SMD:CP_Elec_5x5.4,
+"D2, D4, D9, D8, D7, D3, D1, D6, D5,",D_Small,Diode_SMD:D_SOD-323,C2128
+"FB2, FB1,",Ferrite_Bead_Small,Inductor_THT:L_Axial_L7.0mm_D3.3mm_P2.54mm_Vertical_Fastron_MICC,
+"J1,",VelW,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J2,",trig,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J3,",tune_pot,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J4,",depth_1,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J5,",depth_3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J6,",depth_W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J7,",pitch1W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J8,",pitch3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J9,",Out,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J10,",PWR_Conn,Connector_IDC:IDC-Header_2x05_P2.54mm_Vertical,
+"J11,",Noise_IN,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J12,",Noise_OUT,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J14,",Atk3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J15,",Atk1W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J16,",Dec1W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J17,",Dist1W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J18,",Dec3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J19,",Dist3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J20,",Out1W,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J21,",NoisW,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"J24,",Out3,Connector_Wire:SolderWirePad_1x01_Drill1mm,
+"JP1,",Ns,Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,
+"Q1, Q2, Q6, Q5, Q7, Q10,",2N3906,Package_TO_SOT_SMD:TSOT-23_HandSoldering,
+"Q4, Q3, Q8, Q12, Q13, Q11, Q9,",2N3904,Package_TO_SOT_SMD:TSOT-23_HandSoldering,C20526
+"R2, R12, R20, R35, R33, R39, R42, R43, R46, R65, R66, R6, R18, R28, R31, R54, R52,",100k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C25803
+"R7, R27, R49, R59, R19, R23, R5, R40,",22k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C31850
+"R8, R3, R37, R53, R47,",10k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C25804
+"R9, R4, R64,",1M,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C22935
+"R10, R1, R29, R26, R22,",4k7,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23162 
+"R11, R24, R60, R13, R50, R45,",47k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C25819
+"R15, R25, R58, R56,",2k2,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C4190
+"R17,",6k8,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder, C23212 
+"R21,",12k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder, C22790 
+"R30, R55,",330k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23137
+"R32,",330,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23138
+"R34,",39k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23153 
+"R41,",150k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C22807 
+"R44,",1k8,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C4177 
+"R48, R67,",1k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C21190 
+"R51,",3k3,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder, C22978 
+"R57, R36,",47R,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23182 
+"R61,",330k-2M2 depending on noise lvl,Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal,
+"R62, R16, R14, R38,",470k,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder,C23178 
+"R63,",10M,Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder, C7250 
+"RV2,",1M,Potentiometer_THT:Potentiometer_Runtron_RM-065_Vertical,
+"RV3, RV9, RV1,",100k,,
+"RV4,",470,,
+"RV5, RV8,",10k,,
+"RV6,",1M,,
+"RV7,",47k,,
+"RV10,",100k,Potentiometer_THT:Potentiometer_Runtron_RM-065_Vertical,
+"U1, U4,",TL072,Package_SO:SOIC-8_3.9x4.9mm_P1.27mm,C6961 
+"U2,",40106,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,
+"U3,",TL074,Package_SO:SOIC-14_3.9x8.7mm_P1.27mm,

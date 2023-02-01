@@ -8,6 +8,9 @@
 #include <U8g2lib.h>
 #include "frames.h"
 #include "Pattern.h"
+//#include "AudioSampleDistkick.h"
+#include <TeensyVariablePlayback.h>
+#include "flashloader.h"
 
 //#define DEMO 1
 
@@ -32,14 +35,20 @@ enum instruments{
   INST_DIGI2,
   INST_DIGI3,
   
-  INST_DIGI4, 
-  INST_DIGI5,
-  INST_DIGI6, 
-  INST_DIGI7,
-  INST_DIGI8,
-  INST_DIGI9,
-  INST_DIGI10,
-  INST_DIGI11
+  INST_SMP1, 
+  INST_SMP2,
+  INST_SMP3, 
+  INST_SMP4,
+  INST_SMP5,
+  INST_SMP6,
+  INST_SMP7,
+  INST_SMP8
+};
+
+enum lcdStates{
+  LCD_INST_PROP,
+  LCD_TEMPO,
+  LCD_DEMO
 };
 
 enum transportStates{
@@ -63,7 +72,7 @@ enum ledDisplayStates{
 
 
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
-EXTMEM Pattern PatternStorage[16][16] ;
+EXTMEM Pattern PatternStorage[16][16];
 //------EXTERNAL QSPI RAM CHIP SECTION END------
 
 //Pattern variables
@@ -76,40 +85,66 @@ int patternQueueLen = 1;
 int patternQueueIndex = 0;
 int patternQueueWriteIndex = 0;
 
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
+AudioPlayArrayResmp      playSdRaw1;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw2;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw3;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw4;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw5;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw6;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw7;        //xy=321,513
+AudioPlayArrayResmp      playSdRaw8;        //xy=321,513
+
+newdigate::audiosample *sample1;
+newdigate::audiosample *sample2;
+newdigate::audiosample *sample3;
+newdigate::audiosample *sample4;
+newdigate::audiosample *sample5;
+newdigate::audiosample *sample6;
+newdigate::audiosample *sample7;
+newdigate::audiosample *sample8;
+
 // GUItool: begin automatically generated code
-AudioSynthSimpleDrum     drum3;          //xy=123,598
-AudioSynthSimpleDrum     drum2;          //xy=126,556
-AudioSynthSimpleDrum     drum1;          //xy=133,508
-AudioPlaySdWav           playSdWav5;     //xy=180,303
-AudioPlaySdWav           playSdWav4;     //xy=184,245
-AudioPlaySdWav           playSdWav6;     //xy=188,351
-AudioPlaySdWav           playSdWav7;     //xy=188,398
-AudioPlaySdWav           playSdWav3;     //xy=189,202
-AudioPlaySdWav           playSdWav2;     //xy=192,162
-AudioPlaySdWav           playSdWav8;     //xy=192,449
-AudioPlaySdWav           playSdWav1;     //xy=198,114
-AudioMixer4              mixer4;         //xy=309,560
-AudioMixer4              mixer1;         //xy=408,156
-AudioMixer4              mixer2;         //xy=413,305
-AudioMixer4              mixer3;         //xy=600,264
-AudioOutputI2S           i2s1;           //xy=726,266
-AudioConnection          patchCord1(drum3, 0, mixer4, 2);
-AudioConnection          patchCord2(drum2, 0, mixer4, 1);
-AudioConnection          patchCord3(drum1, 0, mixer4, 0);
-AudioConnection          patchCord4(playSdWav5, 0, mixer2, 0);
-AudioConnection          patchCord5(playSdWav4, 0, mixer1, 3);
-AudioConnection          patchCord6(playSdWav6, 0, mixer2, 1);
-AudioConnection          patchCord7(playSdWav7, 0, mixer2, 2);
-AudioConnection          patchCord8(playSdWav3, 0, mixer1, 2);
-AudioConnection          patchCord9(playSdWav2, 0, mixer1, 1);
-AudioConnection          patchCord10(playSdWav8, 0, mixer2, 3);
-AudioConnection          patchCord11(playSdWav1, 0, mixer1, 0);
-AudioConnection          patchCord12(mixer4, 0, mixer3, 2);
-AudioConnection          patchCord13(mixer1, 0, mixer3, 0);
-AudioConnection          patchCord14(mixer2, 0, mixer3, 1);
-AudioConnection          patchCord15(mixer3, 0, i2s1, 0);
-AudioConnection          patchCord16(mixer3, 0, i2s1, 1);
-AudioControlSGTL5000     sgtl5000_1;     //xy=815,326
+AudioPlayMemory          playMem1;       //xy=431,706
+AudioSynthSimpleDrum     drum3;          //xy=475,631
+AudioSynthSimpleDrum     drum2;          //xy=478,589
+AudioSynthSimpleDrum     drum1;          //xy=485,541
+//AudioPlaySdWav           playSdWav5;     //xy=532,336
+//AudioPlaySdWav           playSdWav4;     //xy=536,278
+//AudioPlaySdWav           playSdWav6;     //xy=540,384
+//AudioPlaySdWav           playSdWav7;     //xy=540,431
+//AudioPlaySdWav           playSdWav3;     //xy=541,235
+//AudioPlaySdWav           playSdWav2;     //xy=544,195
+//AudioPlaySdWav           playSdWav8;     //xy=544,482
+//AudioPlaySdWav           playSdWav9; //xy=550,147
+AudioMixer4              mixer4;         //xy=661,593
+AudioMixer4              mixer1;         //xy=760,189
+AudioMixer4              mixer2;         //xy=765,338
+AudioMixer4              mixer3;         //xy=952,297
+AudioOutputI2S           i2s1;           //xy=1078,299
+AudioConnection          patchCord1(playMem1, 0, mixer4, 3);
+AudioConnection          patchCord2(drum3, 0, mixer4, 2);
+AudioConnection          patchCord3(drum2, 0, mixer4, 1);
+AudioConnection          patchCord4(drum1, 0, mixer4, 0);
+AudioConnection          patchCord5(playSdRaw1, 0, mixer2, 0);
+AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 3);
+AudioConnection          patchCord7(playSdRaw3, 0, mixer2, 1);
+AudioConnection          patchCord8(playSdRaw4, 0, mixer2, 2);
+AudioConnection          patchCord9(playSdRaw5, 0, mixer1, 2);
+AudioConnection          patchCord10(playSdRaw6, 0, mixer1, 1);
+AudioConnection          patchCord11(playSdRaw7, 0, mixer2, 3);
+AudioConnection          patchCord12(playSdRaw8, 0, mixer1, 0);
+AudioConnection          patchCord13(mixer4, 0, mixer3, 2);
+AudioConnection          patchCord14(mixer1, 0, mixer3, 0);
+AudioConnection          patchCord15(mixer2, 0, mixer3, 1);
+AudioConnection          patchCord16(mixer3, 0, i2s1, 0);
+AudioConnection          patchCord17(mixer3, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=1154,637
 // GUItool: end automatically generated code
 
 
@@ -123,6 +158,7 @@ int transportState = PLAYING;
 int currInst = INST_BD;
 int controlState = STEP_SEL;
 int ledDisplayState = DISP_STEPS;
+int lcdState = LCD_INST_PROP;
 
 //Contact SH_CP - Clock
 int SH_CP = 31;
@@ -143,6 +179,9 @@ int controlButtons[16];
 int controlButtonsPrev[16];
 
 float controlPots[16];
+
+float sampleParameters[8][2];
+float parameterInc = 0.01;
 
 
 bool sr0LED[8];
@@ -240,6 +279,39 @@ void setup() {
   drum3.length(400);
   drum3.secondMix(1.0);
   drum3.pitchMod(0.5);
+
+  //SAMPLER setup
+  playSdRaw1.enableInterpolation(true);
+  playSdRaw2.enableInterpolation(true);
+  playSdRaw3.enableInterpolation(true);
+  playSdRaw4.enableInterpolation(true);
+  playSdRaw5.enableInterpolation(true);
+  playSdRaw6.enableInterpolation(true);
+  playSdRaw7.enableInterpolation(true);
+  playSdRaw8.enableInterpolation(true);
+
+  playSdRaw1.setPlaybackRate(1);
+  playSdRaw2.setPlaybackRate(1);
+  playSdRaw3.setPlaybackRate(1);
+  playSdRaw4.setPlaybackRate(1);
+  playSdRaw5.setPlaybackRate(1);
+  playSdRaw6.setPlaybackRate(1);
+  playSdRaw7.setPlaybackRate(1);
+  playSdRaw8.setPlaybackRate(1);
+
+  newdigate::flashloader loader;
+  
+  sample1 = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
+  sample2 = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
+  sample3 = loader.loadSample("DRUMS/CASIOSK1/CHH.RAW");
+  sample4 = loader.loadSample("DRUMS/CASIOSK1/OHH.RAW");
+  sample5 = loader.loadSample("DRUMS/CASIOSK1/CB_LO.RAW");
+  sample6 = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
+  sample7 = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
+  sample8 = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
+
+  
+  
   
   //initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins)/sizeof(muxAddressPins[0]); i++){
@@ -264,12 +336,15 @@ void setup() {
   }
 
   for (int i = 0; i < 8; i ++){
-    sr0LED[i] = 1;
-    sr1LED[i] = 1;
+    sr0LED[i] = 0;
+    sr1LED[i] = 0;
     sr2LED[i] = 1;
-    sr3LED[i] = 1;
+    sr3LED[i] = 0;
+    sampleParameters[i][0] = 1; // sample playback speed
+    sampleParameters[i][1] = 1; // another parameter
   }
   sr1LED[2] = 0;
+  sr3LED[1] = 0;
   
   changeTempo(tempo);
 
@@ -313,12 +388,13 @@ void setup() {
     
   currPattern = &PatternStorage[0][0];
   patternNum = 0;
+  
 //  MyPattern.readFromSD("/PATTERNS/SIXTEENPATTERNTEST.CSV");
 //  MyPattern.printPattern();
 //  MyPattern.writePatternToSD("/PATTERNS/MYTESTWRITE.CSV");
 
 //  currPattern->readFromSD("/PATTERNS/A/1.CSV");
-  currPattern->printPattern();
+//  currPattern->printPattern();
 
 //  MyPattern.readFromSD("/PATTERNS/MYTESTWRITE.CSV");
 //  MyPattern.printPattern();
@@ -328,27 +404,7 @@ void setup() {
 }
 
 void loop() {
-  //brute force LCD
-  if(millis() > LCDFrameTimer + 500){
-  u8g2.clearBuffer();          // clear the internal memory
-   switch (starsFrameCount){
-      case 0:
-        u8g2.drawXBMP(0,0, 84, 48, frame1);
-        starsFrameCount = 1;
-        break;
-      case 1:
-        u8g2.drawXBMP(0,0, 84, 48, frame2);
-        starsFrameCount = 0;
-        break;
-   }
-   u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-//  u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
-//  u8g2.drawStr(20,30," <3");  // write something to the internal memory
-  u8g2.drawStr(40,44,"drums!");  // write something to the internal memory
-  u8g2.sendBuffer();          // transfer internal memory to the display
-  LCDFrameTimer = millis();
-  }
-  
+  displayLCD(false);
   readMux(false);
   
   // steps
@@ -913,7 +969,6 @@ void trigNote(int instNum){
       case INST_DIGI1: //DIGI1
         sr2LED[7] = 0;
         pulseLen = 10;
-//        playSdWav1.play("DRUMS/KICK.WAV");
         drum1.noteOn();
         break;
   
@@ -921,54 +976,52 @@ void trigNote(int instNum){
         sr2LED[6] = 0;
         pulseLen = 10;
         drum2.noteOn();
-//        playSdWav2.play("DRUMS/TOM.WAV");
         break;
   
       case INST_DIGI3: //DIGI3
         sr2LED[5] = 0;
         pulseLen = 10;
-//        playSdWav3.play("DRUMS/CH.WAV");
         drum3.noteOn();
         break;
-
-      case INST_DIGI4: //casio kick
+        
+      case INST_SMP1: //casio kick
         pulseLen = 10;
-        playSdWav4.play("DRUMS/CASIOSK1/kick.wav");
+        playSdRaw1.playRaw(sample1->sampledata, sample1->samplesize/2, 1);
         break;
 
-      case INST_DIGI5: //casio snare
+      case INST_SMP2: //casio snare
         pulseLen = 10;
-        playSdWav5.play("DRUMS/CASIOSK1/snare.wav");
+        playSdRaw2.playRaw(sample2->sampledata, sample2->samplesize/2, 1);
         break;
 
-      case INST_DIGI6: //casio closed hat
+      case INST_SMP3: //casio closed hat
         pulseLen = 10;
-        playSdWav6.play("DRUMS/CASIOSK1/chh.wav");
+        playSdRaw3.playRaw(sample3->sampledata, sample3->samplesize/2, 1);
         break;
 
-      case INST_DIGI7: //casio open hat
+      case INST_SMP4: //casio open hat
         pulseLen = 10;
-        playSdWav7.play("DRUMS/CASIOSK1/ohh.wav");
+        playSdRaw4.playRaw(sample4->sampledata, sample4->samplesize/2, 1);
         break;
 
-      case INST_DIGI8: //casio cowbell hi
+      case INST_SMP5: //casio cowbell hi
         pulseLen = 10;
-        playSdWav4.play("DRUMS/CASIOSK1/kick.wav");
+        playSdRaw5.playRaw(sample5->sampledata, sample5->samplesize/2, 1);
         break;
 
-      case INST_DIGI9: //casio cowbell lo
+      case INST_SMP6: //casio cowbell lo
         pulseLen = 10;
-        playSdWav5.play("DRUMS/CASIOSK1/snare.wav");
+        playSdRaw6.playRaw(sample6->sampledata, sample6->samplesize/2, 1);
         break;
 
-      case INST_DIGI10: //casio hi tom
+      case INST_SMP7: //casio hi tom
         pulseLen = 10;
-        playSdWav6.play("DRUMS/CASIOSK1/skhitom.wav");
+        playSdRaw7.playRaw(sample7->sampledata, sample7->samplesize/2, 1);
         break;
 
-      case INST_DIGI11: //casio lo tom
+      case INST_SMP8: //casio lo tom
         pulseLen = 10;
-        playSdWav7.play("DRUMS/CASIOSK1/tom.wav");
+        playSdRaw8.playRaw(sample8->sampledata, sample8->samplesize/2, 1);
         break;
        
     }
@@ -994,6 +1047,124 @@ void clockOutput(){
   Serial.println(" ");
 }
 
+///**************************************************************************************************
+// * Function displayLCD
+// * -------------------------------------------------------------------------------------------------
+// * Overview: handles displaying stuff on the LCD screen
+// * Input: 
+// * Output: Nothing
+// **************************************************************************************************/
+void displayLCD(bool demoMode){
+  if (demoMode) lcdState = LCD_DEMO;
+
+  switch(lcdState){
+    case LCD_DEMO:
+      if(millis() > LCDFrameTimer + 500){
+        u8g2.clearBuffer();          // clear the internal memory
+         switch (starsFrameCount){
+            case 0:
+              u8g2.drawXBMP(0,0, 84, 48, frame1);
+              starsFrameCount = 1;
+              break;
+            case 1:
+              u8g2.drawXBMP(0,0, 84, 48, frame2);
+              starsFrameCount = 0;
+              break;
+         }
+         u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+    //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
+         u8g2.drawStr(20,30," <3");  // write something to the internal memory
+         u8g2.drawStr(40,44,"drums!");  // write something to the internal memory
+         u8g2.sendBuffer();          // transfer internal memory to the display
+         LCDFrameTimer = millis();
+         }
+    break;
+
+    case LCD_INST_PROP:
+        if(millis() > LCDFrameTimer + 100){
+      u8g2.clearBuffer();          // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+      char paramStr[30];
+      
+      switch(currInst){
+        case INST_BD:
+          u8g2.drawStr(0, 11, "Bass Drum");
+          break;
+        case INST_SD:
+          u8g2.drawStr(0, 11, "Snare Drum");
+          break;
+        case INST_CYN1:
+          u8g2.drawStr(0, 11, "Cynare #1");
+          break;
+        case INST_CYN2:
+          u8g2.drawStr(0, 11, "Cynare #2");
+          break;
+        case INST_GLITCH:
+          u8g2.drawStr(0, 11, "Glitch");
+          break;
+        case INST_DIGI1:
+          u8g2.drawStr(0, 11, "DigiDrum #1");
+          break;
+        case INST_DIGI2:
+          u8g2.drawStr(0, 11, "DigiDrum #2");
+          break;
+        case INST_DIGI3:
+          u8g2.drawStr(0, 11, "DigiDrum #3");
+          break;
+        case INST_SMP1:
+          u8g2.drawStr(0, 11, "Casio Kick");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[0][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP2:
+          u8g2.drawStr(0, 11, "Casio Snare");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[1][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP3:
+          u8g2.drawStr(0, 11, "Casio CHH");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[2][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP4:
+          u8g2.drawStr(0, 11, "Casio OHH");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[3][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP5:
+          u8g2.drawStr(0, 11, "Casio Lo Cowbell");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[4][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP6:
+          u8g2.drawStr(0, 11, "Casio Hi Cowbell");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[5][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP7:
+          u8g2.drawStr(0, 11, "Casio Lo Tom");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[6][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+        case INST_SMP8:
+          u8g2.drawStr(0, 11, "Casio Hi Tom");
+          u8g2.drawStr(0, 24, "spd:");
+          sprintf (paramStr, "%.02f",sampleParameters[7][0]);
+          u8g2.drawStr(30, 24, paramStr);
+          break;
+      }
+      u8g2.sendBuffer();          // transfer internal memory to the display
+      LCDFrameTimer = millis();
+   }
+  }
+}
 
 // Return the current value of the rotaryEncoder 
 // counter in an interrupt safe way.
@@ -1174,6 +1345,41 @@ void UpdateDataEnc()
           // Remove this when not in demo mode
           Serial.print(" ..data right.. "); 
 #endif
+//          Serial.println(currInst);
+          switch(currInst){
+            case INST_SMP1:
+              sampleParameters[0][0] += parameterInc;
+              playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
+              break;
+            case INST_SMP2:
+              sampleParameters[1][0] += parameterInc;
+              playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
+              break;
+            case INST_SMP3:
+              sampleParameters[2][0] += parameterInc;
+              playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
+              break;
+            case INST_SMP4:
+              sampleParameters[3][0] += parameterInc;
+              playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
+              break;
+            case INST_SMP5:
+              sampleParameters[4][0] += parameterInc;
+              playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
+              break;
+            case INST_SMP6:
+              sampleParameters[5][0] += parameterInc;
+              playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
+              break;
+            case INST_SMP7:
+              sampleParameters[6][0] += parameterInc;
+              playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
+              break;
+            case INST_SMP8:
+              sampleParameters[7][0] += parameterInc;
+              playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
+              break;
+          }
           dataEncState = 2; // CW 2
         }
       } else {
@@ -1201,6 +1407,49 @@ void UpdateDataEnc()
           // Remove this when not in demo mode
           Serial.print(" ..data left.. "); 
 #endif
+//          Serial.println(currInst);
+          switch(currInst){
+            case INST_SMP1:
+              sampleParameters[0][0] -= parameterInc;
+              if(sampleParameters[0][0] < 0.05) sampleParameters[0][0] = 0.05;
+              playSdRaw1.setPlaybackRate(sampleParameters[0][0]);
+              break;
+            case INST_SMP2:
+              sampleParameters[1][0] -= parameterInc;
+              if(sampleParameters[1][0] < 0.05) sampleParameters[1][0] = 0.05;
+              playSdRaw2.setPlaybackRate(sampleParameters[1][0]);
+              break;
+            case INST_SMP3:
+              sampleParameters[2][0] -= parameterInc;
+              if(sampleParameters[2][0] < 0.05) sampleParameters[2][0] = 0.05;
+              playSdRaw3.setPlaybackRate(sampleParameters[2][0]);
+              break;
+            case INST_SMP4:
+              sampleParameters[3][0] -= parameterInc;
+              if(sampleParameters[3][0] < 0.05) sampleParameters[3][0] = 0.05;
+              playSdRaw4.setPlaybackRate(sampleParameters[3][0]);
+              break;
+            case INST_SMP5:
+              sampleParameters[4][0] -= parameterInc;
+              if(sampleParameters[4][0] < 0.05) sampleParameters[4][0] = 0.05;
+              playSdRaw5.setPlaybackRate(sampleParameters[4][0]);
+              break;
+            case INST_SMP6:
+              sampleParameters[5][0] -= parameterInc;
+              if(sampleParameters[5][0] < 0.05) sampleParameters[5][0] = 0.05;
+              playSdRaw6.setPlaybackRate(sampleParameters[5][0]);
+              break;
+            case INST_SMP7:
+              sampleParameters[6][0] -= parameterInc;
+              if(sampleParameters[6][0] < 0.05) sampleParameters[6][0] = 0.05;
+              playSdRaw7.setPlaybackRate(sampleParameters[6][0]);
+              break;
+            case INST_SMP8:
+              sampleParameters[7][0] -= parameterInc;
+              if(sampleParameters[7][0] < 0.05) sampleParameters[7][0] = 0.05;
+              playSdRaw8.setPlaybackRate(sampleParameters[7][0]);
+              break;
+          }
           dataEncState = 12; // CCW 2
         }
       } else {
