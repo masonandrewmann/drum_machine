@@ -1,0 +1,50 @@
+Pattern Map
+
+
+
+PARAMETERS
+
+0 - d1p
+1 - d1pp
+2 - d2p
+3 - d2pp
+4 - d3p
+5 - d3pp
+
+6 - s1p
+7 - s1pp
+8 - s2p
+9 - s2pp
+10 - s3p
+11 - s3pp
+12 - s4p
+13 - s4pp
+14 - s5p
+15 - s5pp
+16 - s6p
+17 - s6pp
+18 - s7p
+19 - s7pp
+20 - d8p
+21 - d8pp
+
+
+VELOCITIES
+
+0 - kick
+1 - snare
+2 - cyn1
+3 - cyn2
+4 - glitch
+5 - digi1
+6 - digi2
+7 - digi3
+8 - s1
+9 - s2
+10 - s3
+11 - s4
+12 - s5
+13 - s6
+14 - s7
+15 - s8
+
