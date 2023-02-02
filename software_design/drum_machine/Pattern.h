@@ -91,9 +91,7 @@ class Pattern {
 //      }
 
       // format for drum pattern
-//      CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLL", /*has_header*/ true, /*delimiter*/ ','); // for 8 innst pattern
         CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLLLfffLfffLfffLfffLfffLfffLfffLffff", /*has_header*/ true, /*delimiter*/ ','); // for 16 innst pattern
-//        CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLL LLLLLLLLLLLLLLLLLLLLLLLL", /*has_header*/ true, /*delimiter*/ ','); // for 16 innst pattern
 
       if (cp.readSDfile(path)) {
         Serial.println("path exists; reading");
@@ -469,9 +467,8 @@ void writePatternToSD(const char* path)
       myFile.print(",");
       myFile.print(parameter[20][i]);
       myFile.print(",");
-      myFile.print(parameter[21][i]);
+      myFile.println(parameter[21][i]);
   }
-
   myFile.close();
   }
 }
