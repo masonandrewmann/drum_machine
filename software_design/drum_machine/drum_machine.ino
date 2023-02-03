@@ -152,12 +152,14 @@ unsigned int stepLen = 0;
 unsigned int currStep = 0;
 unsigned long currStepTime = 0;
 
+
 int transportState = PLAYING;
 int currInst = INST_BD;
 int controlState = STEP_SEL;
 int ledDisplayState = DISP_STEPS;
 int lcdState = LCD_INST_PROP;
-
+int lastLcdState = LCD_INST_PROP;
+bool tempoLcdFlag = true;
 //Contact SH_CP - Clock
 int SH_CP = 31;
 //Contact ST_CP - Latch
@@ -185,6 +187,7 @@ float parameterInc = 0.01;
 //LCD navigation
 int cursorLoc = 0;
 bool paramSel = false;
+unsigned long tempoDispTimer = 0;
 
 
 bool sr0LED[8];
@@ -1187,6 +1190,19 @@ void clockOutput(){
 void displayLCD(bool demoMode){
   if (demoMode) lcdState = LCD_DEMO;
 
+  if(millis() > (tempoDispTimer + 750)){
+    if(!tempoLcdFlag){
+      lcdState = lastLcdState;
+      tempoLcdFlag = true;
+    }
+  } else{
+    if (tempoLcdFlag){
+      tempoLcdFlag = false;
+      lastLcdState = lcdState;
+      lcdState = LCD_TEMPO;
+    }
+  }
+
   switch(lcdState){
     case LCD_DEMO:
       if(millis() > LCDFrameTimer + 500){
@@ -1316,6 +1332,20 @@ void displayLCD(bool demoMode){
       u8g2.sendBuffer();          // transfer internal memory to the display
       LCDFrameTimer = millis();
    }
+    break;
+   case LCD_TEMPO:
+    if(millis() > LCDFrameTimer + 10){
+      u8g2.clearBuffer();          // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+//      u8g2.setDraw
+      u8g2.drawStr(10, 10, "BPM");
+      char tempoStr[30];
+      sprintf(tempoStr, "%.01f", tempo);
+      u8g2.drawStr(30, 30, tempoStr);
+      u8g2.sendBuffer();
+      LCDFrameTimer = millis();
+    }
+ 
   }
 }
 
@@ -1383,6 +1413,7 @@ void UpdateTempoEnc()
           // Remove this when not in demo mode
           Serial.print(" ..tempo right.. "); 
 #endif
+          tempoDispTimer = millis();
           tempoEncState = 2; // CW 2
         }
       } else {
@@ -1412,6 +1443,7 @@ void UpdateTempoEnc()
           // Remove this when not in demo mode
           Serial.print(" ..tempo left.. "); 
 #endif
+          tempoDispTimer = millis();
           tempoEncState = 12; // CCW 2
         }
       } else {
