@@ -94,7 +94,6 @@ class Pattern {
         CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLLLfffLfffLfffLfffLfffLfffLfffLffff", /*has_header*/ true, /*delimiter*/ ','); // for 16 innst pattern
 
       if (cp.readSDfile(path)) {
-        Serial.println("path exists; reading");
       // copy pattern to internal memory
         memcpy(pattern[0],(int32_t*)cp["kk"], 64);
         memcpy(pattern[1],(int32_t*)cp["s"], 64);
@@ -112,7 +111,6 @@ class Pattern {
         memcpy(pattern[13],(int32_t*)cp["s6"], 64);
         memcpy(pattern[14],(int32_t*)cp["s7"], 64);
         memcpy(pattern[15],(int32_t*)cp["s8"], 64);
-        Serial.println("patterns read");
 
 //        memcpy(instSteps[0],(int32_t*)cp["kk"], 64);
 //        memcpy(instSteps[1],(int32_t*)cp["s"], 64);
@@ -153,7 +151,7 @@ class Pattern {
         memcpy(velocity[13],(float*)cp["s6v"], 64);
         memcpy(velocity[14],(float*)cp["s7v"], 64);
         memcpy(velocity[15],(float*)cp["s8v"], 64);
-        Serial.println("velocities read");
+
       // copy digital voice parameters to internal memory
         memcpy(parameter[0],(float*)cp["d1p"], 64);
         memcpy(parameter[1],(float*)cp["d1pp"], 64);
@@ -177,10 +175,8 @@ class Pattern {
         memcpy(parameter[19],(float*)cp["s7pp"], 64);
         memcpy(parameter[20],(float*)cp["s8p"], 64);
         memcpy(parameter[21],(float*)cp["s8pp"], 64);
-        Serial.println("parameters read");
         //copy settings to internal memory
         memcpy(settings,(float*)cp["sett"], 64);
-        Serial.println("setttings read");
       }
     }
 
@@ -341,7 +337,7 @@ void writePatternToSD(const char* path)
   File myFile = SD.open(path, FILE_WRITE);
   if (myFile){
     Serial.println("Writing headers to new CSV");
-    myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp");
+    myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp, sett");
     Serial.println("Headers written");
 
     //writing data
@@ -467,7 +463,10 @@ void writePatternToSD(const char* path)
       myFile.print(",");
       myFile.print(parameter[20][i]);
       myFile.print(",");
-      myFile.println(parameter[21][i]);
+      myFile.print(parameter[21][i]);
+      myFile.print(",");
+      
+      myFile.println(settings[i]);
   }
   myFile.close();
   }

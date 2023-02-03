@@ -86,12 +86,6 @@ int patternQueueLen = 1;
 int patternQueueIndex = 0;
 int patternQueueWriteIndex = 0;
 
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
-
 AudioPlayArrayResmp      playSdRaw1;        //xy=321,513
 AudioPlayArrayResmp      playSdRaw2;        //xy=321,513
 AudioPlayArrayResmp      playSdRaw3;        //xy=321,513
@@ -360,7 +354,7 @@ void setup() {
   mixer4.gain(0, 1);
   mixer4.gain(1, 1);
   mixer4.gain(2, 1);
-  mixer4.gain(3, 1);
+  mixer4.gain(3, 2);
 
   //initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins)/sizeof(muxAddressPins[0]); i++){
@@ -394,6 +388,7 @@ void setup() {
     sampleVolumes[i] = 1;
   }
   sr1LED[2] = 0;
+  sr1LED[1] = 1;
   sr3LED[1] = 0;
   sr0LED[5] = 1;
   
@@ -418,22 +413,22 @@ void setup() {
     //load patterns from SD Card
     Serial.println("Reading patterns from SD");
     PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
-//    PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
-//    PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
-//    PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
-//    PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
-//    PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
-//    PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
-//    PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
-//
-//    PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
-//    PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-//    PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
-//    PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
-//    PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
-//    PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
-//    PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
-//    PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
+    PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
+    PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
+    PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
+    PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
+    PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
+    PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
+    PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
+
+    PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
+    PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
+    PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
+    PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
+    PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
+    PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
+    PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
+    PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
     Serial.println("Done reading patterns!");
 
     
@@ -461,6 +456,7 @@ void loop() {
   // steps
   if(transportState == PLAYING){
     if (millis() > (currStepTime  + stepLen)){ // new step has been reached
+      recallParameters(); //update parameters for this step
       if(currStep == 15){
         patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;
         currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
@@ -474,7 +470,13 @@ void loop() {
           trigNote(i);
         }
       }
-      currStepTime = currStepTime  + stepLen;
+      float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4);
+      if(currStep % 2 == 0){
+        currStepTime = currStepTime  + stepLen * (1.0 + swingAmt);
+      } else {
+        currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
+      }
+      
     }
   }
 
@@ -1793,4 +1795,25 @@ void UpdateDataEnc()
       }
       break;
   }
+}
+
+
+void recallParameters(){
+  mixer1.gain(0, currPattern->velocity[8][0]);
+  mixer1.gain(1, currPattern->velocity[9][0]);
+  mixer1.gain(2, currPattern->velocity[10][0]);
+  mixer1.gain(3, currPattern->velocity[11][0]);
+  mixer2.gain(0, currPattern->velocity[12][0]);
+  mixer2.gain(1, currPattern->velocity[13][0]);
+  mixer2.gain(2, currPattern->velocity[14][0]);
+  mixer2.gain(3, currPattern->velocity[15][0]);
+  playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
+  playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
+  playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
+  playSdRaw4.setPlaybackRate(currPattern->parameter[12][0]);
+  playSdRaw5.setPlaybackRate(currPattern->parameter[14][0]);
+  playSdRaw6.setPlaybackRate(currPattern->parameter[16][0]);
+  playSdRaw7.setPlaybackRate(currPattern->parameter[18][0]);
+  playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
+  
 }
