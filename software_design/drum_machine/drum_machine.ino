@@ -1,14 +1,11 @@
-//#include <LinkedList.h>
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
-//#include <SerialFlash.h>
 #include <CSV_Parser.h>
 #include <U8g2lib.h>
 #include "frames.h"
 #include "Pattern.h"
-//#include "AudioSampleDistkick.h"
 #include <TeensyVariablePlayback.h>
 #include "flashloader.h"
 
@@ -408,47 +405,33 @@ void setup() {
   pinMode(dataEncAPin, INPUT);
   pinMode(dataEncBPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(dataEncAPin), 
-    ISRdataEncAChange, CHANGE);
+  ISRdataEncAChange, CHANGE);
   attachInterrupt(digitalPinToInterrupt(dataEncBPin), 
-    ISRdataEncBChange, CHANGE);
-
+  ISRdataEncBChange, CHANGE);
 
     //load patterns from SD Card
-    Serial.println("Reading patterns from SD");
-    PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
-    PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
-    PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
-    PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
-    PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
-    PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
-    PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
-    PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
+  Serial.println("Reading patterns from SD");
+  PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
+  PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
+  PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
+  PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
+  PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
+  PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
+  PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
+  PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
 
-    PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
-    PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-    PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
-    PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
-    PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
-    PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
-    PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
-    PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
-    Serial.println("Done reading patterns!");
-
-    
+  PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
+  PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
+  PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
+  PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
+  PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
+  PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
+  PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
+  PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
+  Serial.println("Done reading patterns!");
+  
   currPattern = &PatternStorage[0][0];
   patternNum = 0;
-  
-//  MyPattern.readFromSD("/PATTERNS/SIXTEENPATTERNTEST.CSV");
-//  MyPattern.printPattern();
-//  MyPattern.writePatternToSD("/PATTERNS/MYTESTWRITE.CSV");
-
-//  currPattern->readFromSD("/PATTERNS/A/1.CSV");
-//  currPattern->printPattern();
-
-//  MyPattern.readFromSD("/PATTERNS/MYTESTWRITE.CSV");
-//  MyPattern.printPattern();
-//  MyPattern.writePatternToSD("/PATTERNS/MYTESTWRITE2.CSV");
-
   currStepTime = millis();
 }
 
@@ -479,7 +462,6 @@ void loop() {
       } else {
         currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
       }
-      
     }
   }
 
@@ -591,8 +573,7 @@ void readMux(bool printEn){
     stepButtons[4] = inputs[1][0];
     stepButtons[5] = inputs[1][1];
     stepButtons[6] = inputs[1][2];
-    stepButtons[7] = inputs[1][3];
-    
+    stepButtons[7] = inputs[1][3]; 
     stepButtons[8] = inputs[0][4];
     stepButtons[9] = inputs[0][5];
     stepButtons[10] = inputs[0][6];
@@ -892,26 +873,13 @@ void readMux(bool printEn){
             }
         }
       break;
-//        if(currStep == 15){
-//        patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;
-//        currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
-//        patternNum = patternQueue[patternQueueIndex];
-//      }
       case SONG_SEL:
       break;
   
       case BANK_SEL:
       break;
     }
-
-    //handle potentiometer updates
     
-//      controlPots[0] = inputs[4][0] //digi 1 param
-//    controlPots[1] = inputs[4][1] //digi 1 vol
-//    controlPots[2] = inputs[4][2] //digi 2 param
-//    controlPots[3] = inputs[4][3] //digi 2 vol
-//    controlPots[4] = inputs[4][5] //digi 3 param
-//    controlPots[5] = inputs[4][4] //digi 3 vol
     drum1.frequency(map(controlPots[0], 1023, 0, 60, 700));
     drum2.frequency(map(controlPots[2], 1023, 0, 60, 700));
     drum3.frequency(map(controlPots[4], 1023, 0, 60, 700));
@@ -1008,9 +976,7 @@ void readMux(bool printEn){
         case PATTERN_SEL:
             sr3LED[4] = 1;
           break;
-          
       }
-
       
     digitalWrite(ST_CP, LOW);
     shiftOut(DS, SH_CP, MSBFIRST, sr5);
@@ -1020,10 +986,7 @@ void readMux(bool printEn){
     shiftOut(DS, SH_CP, MSBFIRST, sr1);
     shiftOut(DS, SH_CP, MSBFIRST, sr0);
     digitalWrite(ST_CP, HIGH);
-  
-  
 }
-
 
 ///**************************************************************************************************
 // * Function changeTempo
