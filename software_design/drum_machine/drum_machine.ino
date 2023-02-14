@@ -755,7 +755,7 @@ void readMux(bool printEn){
   
           case 7: //tempoEncBut
             if (controlButtons[i] == LOW){ //tempoEncBut PRESSED
-              
+              tempoDispTimer = millis();
             } else { //tempoEncBut RELEASED
               
             }
