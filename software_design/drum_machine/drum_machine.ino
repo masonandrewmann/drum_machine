@@ -105,6 +105,27 @@ newdigate::audiosample *sample5;
 newdigate::audiosample *sample6;
 newdigate::audiosample *sample7;
 newdigate::audiosample *sample8;
+
+newdigate::audiosample *e08_sample1;
+newdigate::audiosample *e08_sample2;
+newdigate::audiosample *e08_sample3;
+newdigate::audiosample *e08_sample4;
+newdigate::audiosample *e08_sample5;
+newdigate::audiosample *e08_sample6;
+newdigate::audiosample *e08_sample7;
+newdigate::audiosample *e08_sample8;
+
+newdigate::audiosample *hhxc_sample1;
+newdigate::audiosample *hhxc_sample2;
+newdigate::audiosample *hhxc_sample3;
+newdigate::audiosample *hhxc_sample4;
+newdigate::audiosample *hhxc_sample5;
+newdigate::audiosample *hhxc_sample6;
+newdigate::audiosample *hhxc_sample7;
+newdigate::audiosample *hhxc_sample8;
+
+newdigate::audiosample *kitSamples[3][8];
+
 newdigate::audiosample *sample9;
 newdigate::audiosample *sample10;
 
@@ -228,7 +249,7 @@ bool stateInitFlag = false; // don't remember why i added this, sets state to ST
 bool patternWrite = false; //
 
 // bank navigation
-int kitNum = 0;
+int kitSel = 0;
 
 void setup()
 {
@@ -236,7 +257,7 @@ void setup()
   Serial.print("Hellooo: ");
 
   u8g2.begin();           // start communication with LCD
-  AudioMemory(8);         // THIS IS REALLY IMPORTANTT!! CHECK THAT MEMORY USAGE
+  AudioMemory(20);        // THIS IS REALLY IMPORTANTT!! CHECK THAT MEMORY USAGE
   sgtl5000_1.enable();    // enable the output
   sgtl5000_1.volume(0.5); // set master volume on output
 
@@ -244,7 +265,61 @@ void setup()
   pinMode(SH_CP, OUTPUT); // clock pin
   pinMode(ST_CP, OUTPUT); // latch
   pinMode(DS, OUTPUT);    // data pin
+  
+  // inittialize a bunch of arrays
+  for (int i = 0; i < 16; i++)
+  {
+    stepButtons[i] = 0;
+    stepButtonsPrev[i] = 0;
+    outPulseTimes[i] = 0;
+    stepLEDs[i] = 1;
+    patternQueue[i] = 0;
+    controlPots[i] = 0;
+  }
+  // initialize even more arrays
+  for (int i = 0; i < 8; i++)
+  {
+    sr0LED[i] = 0;
+    sr1LED[i] = 0;
+    sr2LED[i] = 1;
+    sr3LED[i] = 0;
+    sampleParameters[i][0] = 1;   // sample playback speed
+    sampleParameters[i][1] = 100; // another parameter
+    sampleVolumes[i] = 1;
+  }
+  // set some default led states
+  sr1LED[2] = 0;
+  sr1LED[1] = 1;
+  sr3LED[1] = 0;
+  sr0LED[5] = 1;
+  sr3LED[7] = 1;
 
+    // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
+  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
+                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
+
+  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
+                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
+
+  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
+                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
+
+  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
+                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
+
+  // make two blank variables for the step LEDs, not necessary i could just define them below
+  uint8_t sr4 = 0b00000000;
+  uint8_t sr5 = 0b00000000;
+  
+  // send all shift register values out
+  digitalWrite(ST_CP, LOW);
+  shiftOut(DS, SH_CP, MSBFIRST, sr5);
+  shiftOut(DS, SH_CP, MSBFIRST, sr4);
+  shiftOut(DS, SH_CP, MSBFIRST, sr3);
+  shiftOut(DS, SH_CP, MSBFIRST, sr2);
+  shiftOut(DS, SH_CP, MSBFIRST, sr1);
+  shiftOut(DS, SH_CP, MSBFIRST, sr0);
+  digitalWrite(ST_CP, HIGH);
   // flash setup
   //----SD CARD setup
   if (!(SD.begin(SDCARD_CS_PIN)))
@@ -256,6 +331,27 @@ void setup()
   //  if (!SerialFlash.begin(flashChipSelect)) {
   //    Serial.println("Unable to access SPI Flash chip");
   //  }
+
+    // load patterns from SD Card
+  Serial.println("Reading patterns from SD");
+  PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
+  PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
+  PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
+  PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
+  PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
+  PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
+  PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
+  PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
+
+  PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
+  PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
+  PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
+  PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
+  PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
+  PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
+  PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
+  PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
+  Serial.println("Done reading patterns!");
 
   // digital drum initialization
   drum1.frequency(60);
@@ -292,22 +388,42 @@ void setup()
   playSdRaw6.setPlaybackRate(1);
   playSdRaw7.setPlaybackRate(1);
   playSdRaw8.setPlaybackRate(1);
-  //  playSdRaw9.setPlaybackRate(1);
+
   playSdRaw9.setPlaybackRate(tempo / 175.0);
 
   newdigate::flashloader loader;
 
-  sample1 = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
-  sample2 = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
-  sample2 = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
-  sample3 = loader.loadSample("DRUMS/CASIOSK1/CHH.RAW");
-  sample4 = loader.loadSample("DRUMS/CASIOSK1/OHH.RAW");
-  sample5 = loader.loadSample("DRUMS/CASIOSK1/CB_LO.RAW");
-  sample6 = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
-  sample7 = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
-  sample8 = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
+  kitSamples[0][0] = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
+  kitSamples[0][1] = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
+  kitSamples[0][2] = loader.loadSample("DRUMS/CASIOSK1/CHH.RAW");
+  kitSamples[0][3] = loader.loadSample("DRUMS/CASIOSK1/OHH.RAW");
+  kitSamples[0][4] = loader.loadSample("DRUMS/CASIOSK1/CB_LO.RAW");
+  kitSamples[0][5] = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
+  kitSamples[0][6] = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
+  kitSamples[0][7] = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
+  
+  kitSamples[0][0] = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
+  kitSamples[0][1] = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
+
+  kitSamples[1][0] = loader.loadSample("DRUMS/808/KICK.RAW");
+  kitSamples[1][1] = loader.loadSample("DRUMS/808/SNARE.RAW");
+  kitSamples[1][2] = loader.loadSample("DRUMS/808/CHH.RAW");
+  kitSamples[1][3] = loader.loadSample("DRUMS/808/OHH.RAW");
+  kitSamples[1][4] = loader.loadSample("DRUMS/808/CYM.RAW");
+  kitSamples[1][5] = loader.loadSample("DRUMS/808/CYM_REV.RAW");
+  kitSamples[1][6] = loader.loadSample("DRUMS/808/CL.RAW");
+  kitSamples[1][7] = loader.loadSample("DRUMS/808/CB.RAW");
+
+  kitSamples[2][0] = loader.loadSample("DRUMS/HPYHXC/KICK.RAW");
+  kitSamples[2][1] = loader.loadSample("DRUMS/HPYHXC/KICK2.RAW");
+  kitSamples[2][2] = loader.loadSample("DRUMS/HPYHXC/SNARE.RAW");
+  kitSamples[2][3] = loader.loadSample("DRUMS/HPYHXC/CLAP.RAW");
+  kitSamples[2][4] = loader.loadSample("DRUMS/HPYHXC/CHH.RAW");
+  kitSamples[2][5] = loader.loadSample("DRUMS/HPYHXC/OHH.RAW");
+  kitSamples[2][6] = loader.loadSample("DRUMS/HPYHXC/RIDE.RAW");
+  kitSamples[2][7] = loader.loadSample("DRUMS/HPYHXC/CRASH.RAW");
+
   sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
-  sample1 = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
 
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
@@ -318,24 +434,30 @@ void setup()
   }
 
   // play and stop all samplers to associate sample data with the player
-  playSdRaw1.playRaw(sample1->sampledata, sample1->samplesize / 2, 1);
+  playSdRaw1.playRaw(kitSamples[0][0]->sampledata, kitSamples[0][0]->samplesize / 2, 1);
   playSdRaw1.stop();
-  playSdRaw2.playRaw(sample2->sampledata, sample2->samplesize / 2, 1);
+  playSdRaw2.playRaw(kitSamples[0][1]->sampledata, kitSamples[0][1]->samplesize / 2, 1);
   playSdRaw2.stop();
-  playSdRaw3.playRaw(sample3->sampledata, sample3->samplesize / 2, 1);
+  playSdRaw3.playRaw(kitSamples[0][2]->sampledata, kitSamples[0][2]->samplesize / 2, 1);
   playSdRaw3.stop();
-  playSdRaw4.playRaw(sample4->sampledata, sample4->samplesize / 2, 1);
+  playSdRaw4.playRaw(kitSamples[0][3]->sampledata, kitSamples[0][3]->samplesize / 2, 1);
   playSdRaw4.stop();
-  playSdRaw5.playRaw(sample5->sampledata, sample5->samplesize / 2, 1);
+  playSdRaw5.playRaw(kitSamples[0][4]->sampledata, kitSamples[0][4]->samplesize / 2, 1);
   playSdRaw5.stop();
-  playSdRaw6.playRaw(sample6->sampledata, sample6->samplesize / 2, 1);
+  playSdRaw6.playRaw(kitSamples[0][5]->sampledata, kitSamples[0][5]->samplesize / 2, 1);
   playSdRaw6.stop();
-  playSdRaw7.playRaw(sample7->sampledata, sample7->samplesize / 2, 1);
+  playSdRaw7.playRaw(kitSamples[0][6]->sampledata, kitSamples[0][6]->samplesize / 2, 1);
   playSdRaw7.stop();
-  playSdRaw8.playRaw(sample8->sampledata, sample8->samplesize / 2, 1);
+  playSdRaw8.playRaw(kitSamples[0][7]->sampledata, kitSamples[0][7]->samplesize / 2, 1);
   playSdRaw8.stop();
   playSdRaw9.playRaw(sample9->sampledata, sample9->samplesize / 2, 1);
   playSdRaw9.stop();
+
+  // for (int i = 0; i < 3; i++){
+  //   for (int j = 0; j < 8; j++){
+  //     playSdRa
+  //   }
+  // }
 
   // set all mixer gains
   mixer1.gain(0, 1);   // playSdRaw1
@@ -367,32 +489,7 @@ void setup()
     pinMode(muxDataPins[i], INPUT);
   }
 
-  // inittialize a bunch of arrays
-  for (int i = 0; i < 16; i++)
-  {
-    stepButtons[i] = 0;
-    stepButtonsPrev[i] = 0;
-    outPulseTimes[i] = 0;
-    stepLEDs[i] = 1;
-    patternQueue[i] = 0;
-    controlPots[i] = 0;
-  }
-  // initialize even more arrays
-  for (int i = 0; i < 8; i++)
-  {
-    sr0LED[i] = 0;
-    sr1LED[i] = 0;
-    sr2LED[i] = 1;
-    sr3LED[i] = 0;
-    sampleParameters[i][0] = 1;   // sample playback speed
-    sampleParameters[i][1] = 100; // another parameter
-    sampleVolumes[i] = 1;
-  }
-  // set some default led states
-  sr1LED[2] = 0;
-  sr1LED[1] = 1;
-  sr3LED[1] = 0;
-  sr0LED[5] = 1;
+
 
   changeTempo(tempo); // set the tempo
 
@@ -411,26 +508,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(dataEncBPin),
                   ISRdataEncBChange, CHANGE);
 
-  // load patterns from SD Card
-  Serial.println("Reading patterns from SD");
-  PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
-  PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
-  PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
-  PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
-  PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
-  PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
-  PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
-  PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
 
-  PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
-  PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-  PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
-  PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
-  PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
-  PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
-  PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
-  PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
-  Serial.println("Done reading patterns!");
 
   currPattern = &PatternStorage[0][0];
   patternNum = 0;
@@ -439,7 +517,6 @@ void setup()
 
 void loop()
 {
-
   if (millis() > lcdTimeout) // LCD framerate limiter
   {
     displayLCD(false);
@@ -458,7 +535,6 @@ void loop()
         patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;     // step to the next pattern in sequence
         currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]]; // actually grab the pattern from memory
         patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
-        changeKit(currPattern->settings[1]);                               // grab kit from next pattern
       }
       currStep = (currStep + 1) % 16; // move step pointer to next step
 
@@ -779,8 +855,7 @@ void readMux(bool printEn)
             }
             else if (controlState == KIT_SEL) // if we're in kit_sel mode, choose the currently selected kit
             {
-              changeKit(kitNum);                 // change the kit
-              currPattern->settings[1] = kitNum; // place kit into pattern memory
+              currPattern->settings[1] = kitSel; // place kit into pattern memory
               controlState = STEP_SEL;           // exit kit selection mode
               lcdState = LCD_INST_PROP;          // exit kit selection display
             }
@@ -1212,42 +1287,42 @@ void trigNote(int instNum, int instParam)
   case INST_SMP1: // casio kick
     pulseLen = playSdRaw1.lengthMillis() * (currPattern->parameter[7][0] / 100.0) / currPattern->parameter[6][0];
     //        Serial.println(playSdRaw1.lengthMillis());
-    playSdRaw1.playRaw(sample1->sampledata, sample1->samplesize / 2, 1);
+    playSdRaw1.playRaw(kitSamples[(int)currPattern->settings[1]][0]->sampledata, kitSamples[(int)currPattern->settings[1]][0]->samplesize / 2, 1);
     break;
 
   case INST_SMP2: // casio snare
     pulseLen = playSdRaw2.lengthMillis() * (currPattern->parameter[9][0] / 100.0) / currPattern->parameter[8][0];
-    playSdRaw2.playRaw(sample2->sampledata, sample2->samplesize / 2, 1);
+    playSdRaw2.playRaw(kitSamples[(int)currPattern->settings[1]][1]->sampledata, kitSamples[(int)currPattern->settings[1]][1]->samplesize / 2, 1);
     break;
 
   case INST_SMP3: // casio closed hat
     pulseLen = playSdRaw3.lengthMillis() * (currPattern->parameter[11][0] / 100.0) / currPattern->parameter[10][0];
-    playSdRaw3.playRaw(sample3->sampledata, sample3->samplesize / 2, 1);
+    playSdRaw3.playRaw(kitSamples[(int)currPattern->settings[1]][2]->sampledata, kitSamples[(int)currPattern->settings[1]][2]->samplesize / 2, 1);
     break;
 
   case INST_SMP4: // casio open hat
     pulseLen = playSdRaw4.lengthMillis() * (currPattern->parameter[13][0] / 100.0) / currPattern->parameter[12][0];
-    playSdRaw4.playRaw(sample4->sampledata, sample4->samplesize / 2, 1);
+    playSdRaw4.playRaw(kitSamples[(int)currPattern->settings[1]][3]->sampledata, kitSamples[(int)currPattern->settings[1]][3]->samplesize / 2, 1);
     break;
 
   case INST_SMP5: // casio cowbell hi
     pulseLen = playSdRaw5.lengthMillis() * (currPattern->parameter[15][0] / 100.0) / currPattern->parameter[14][0];
-    playSdRaw5.playRaw(sample5->sampledata, sample5->samplesize / 2, 1);
+    playSdRaw5.playRaw(kitSamples[(int)currPattern->settings[1]][4]->sampledata, kitSamples[(int)currPattern->settings[1]][4]->samplesize / 2, 1);
     break;
 
   case INST_SMP6: // casio cowbell lo
     pulseLen = playSdRaw6.lengthMillis() * (currPattern->parameter[17][0] / 100.0) / currPattern->parameter[16][0];
-    playSdRaw6.playRaw(sample6->sampledata, sample6->samplesize / 2, 1);
+    playSdRaw6.playRaw(kitSamples[(int)currPattern->settings[1]][5]->sampledata, kitSamples[(int)currPattern->settings[1]][5]->samplesize / 2, 1);
     break;
 
   case INST_SMP7: // casio hi tom
     pulseLen = playSdRaw7.lengthMillis() * (currPattern->parameter[19][0] / 100.0) / currPattern->parameter[18][0];
-    playSdRaw7.playRaw(sample7->sampledata, sample7->samplesize / 2, 1);
+    playSdRaw7.playRaw(kitSamples[(int)currPattern->settings[1]][6]->sampledata, kitSamples[(int)currPattern->settings[1]][6]->samplesize / 2, 1);
     break;
 
   case INST_SMP8: // casio lo tom
     pulseLen = playSdRaw8.lengthMillis() * (currPattern->parameter[21][0] / 100.0) / currPattern->parameter[20][0];
-    playSdRaw8.playRaw(sample8->sampledata, sample8->samplesize / 2, 1);
+    playSdRaw8.playRaw(kitSamples[(int)currPattern->settings[1]][7]->sampledata, kitSamples[(int)currPattern->settings[1]][7]->samplesize / 2, 1);
     break;
   }
   outPulseTimes[instNum] = millis() + pulseLen; // send the pulse end time to or pulse timer array
@@ -1464,7 +1539,7 @@ void displayLCD(bool demoMode)
       u8g2.drawStr(0, 24, "808");
       u8g2.drawStr(0, 34, "Happy Hxc");
       u8g2.setDrawColor(2);
-      u8g2.drawBox(0, 5 + 10 * kitNum, 80, 11); // draw selection box
+      u8g2.drawBox(0, 5 + 10 * kitSel, 80, 11); // draw selection box
       u8g2.sendBuffer();
       LCDFrameTimer = millis();
     }
@@ -1679,9 +1754,9 @@ void UpdateDataEnc()
         //          Serial.println(currInst);
         if (controlState == KIT_SEL) // navigate kit selection menu
         {
-          kitNum = (kitNum + 1);
-          if (kitNum > 2)
-            kitNum = 2;
+          kitSel = (kitSel + 1);
+          if (kitSel > 2)
+            kitSel = 2;
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
@@ -1856,9 +1931,9 @@ void UpdateDataEnc()
         //          Serial.println(currInst);
         if (controlState == KIT_SEL) // navigate kit selection menu
         {
-          kitNum = (kitNum - 1);
-          if (kitNum < 0)
-            kitNum = 0;
+          kitSel = (kitSel - 1);
+          if (kitSel < 0)
+            kitSel = 0;
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
@@ -2082,58 +2157,6 @@ void recallParameters()
   playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
 
   changeTempo(currPattern->settings[0]); // probably don't need this here. This function is run every step and tempo won't be changing per step
-}
-
-///**************************************************************************************************
-// * Function changeKit
-// * -------------------------------------------------------------------------------------------------
-// * Overview: changes the 8 samples on the main instrument layer to another kit
-// * Input:
-// *        int kit_number: number of the  kit to select, associations defined within function
-// * Output: Nothing
-// **************************************************************************************************/
-void changeKit(int kit_number)
-{
-  newdigate::flashloader loader;
-  switch (kit_number)
-  {
-  case 0: // CasioSK1
-    sample1 = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
-    sample2 = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
-    sample2 = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
-    sample3 = loader.loadSample("DRUMS/CASIOSK1/CHH.RAW");
-    sample4 = loader.loadSample("DRUMS/CASIOSK1/OHH.RAW");
-    sample5 = loader.loadSample("DRUMS/CASIOSK1/CB_LO.RAW");
-    sample6 = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
-    sample7 = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
-    sample8 = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
-    sample1 = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
-    sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
-    break;
-  case 1: // 808
-    sample1 = loader.loadSample("DRUMS/808/KICK.RAW");
-    sample2 = loader.loadSample("DRUMS/808/SNARE.RAW");
-    sample2 = loader.loadSample("DRUMS/808/SNARE.RAW");
-    sample3 = loader.loadSample("DRUMS/808/CHH.RAW");
-    sample4 = loader.loadSample("DRUMS/808/OHH.RAW");
-    sample5 = loader.loadSample("DRUMS/808/CYM.RAW");
-    sample6 = loader.loadSample("DRUMS/808/CYM_REV.RAW");
-    sample7 = loader.loadSample("DRUMS/808/CL.RAW");
-    sample8 = loader.loadSample("DRUMS/808/CB.RAW");
-    sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
-    break;
-  case 2: // Happy Hardcore
-    sample1 = loader.loadSample("DRUMS/HPYHXC/KICK.RAW");
-    sample2 = loader.loadSample("DRUMS/HPYHXC/KICK2.RAW");
-    sample3 = loader.loadSample("DRUMS/HPYHXC/SNARE.RAW");
-    sample4 = loader.loadSample("DRUMS/HPYHXC/CLAP.RAW");
-    sample5 = loader.loadSample("DRUMS/HPYHXC/CHH.RAW");
-    sample6 = loader.loadSample("DRUMS/HPYHXC/OHH.RAW");
-    sample7 = loader.loadSample("DRUMS/HPYHXC/RIDE.RAW");
-    sample8 = loader.loadSample("DRUMS/HPYHXC/CRASH.RAW");
-    sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
-    break;
-  }
 }
 
 ///**************************************************************************************************

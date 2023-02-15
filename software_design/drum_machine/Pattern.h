@@ -127,6 +127,10 @@ public:
     {
       // copy steps to internal memory
       memcpy(pattern[0], (int32_t *)cp["kk"], 64);
+//      int32_t *numm = (int32_t*)cp["s"];
+//      for (int i = 0; i < 16; i++){
+//        pattern[0][i] = numbers[i];
+//      }
       memcpy(pattern[1], (int32_t *)cp["s"], 64);
       memcpy(pattern[2], (int32_t *)cp["c1"], 64);
       memcpy(pattern[3], (int32_t *)cp["c2"], 64);
