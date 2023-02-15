@@ -2,6 +2,7 @@ class Pattern
 {
 public:
   int32_t pattern[21][16] = {
+      // array of active steps for each instrument
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 - BD
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 1 - S
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 2 - CYN1
@@ -25,6 +26,7 @@ public:
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 20 - Breaks
   };
   float velocity[21][16] = {
+      // array of volumes per step for each instrument
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // BD
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // S
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // CYN1
@@ -48,6 +50,7 @@ public:
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // Breaks
   };
   float parameter[33][16] = {
+      // array of parameters by step for each instrument
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 - DIGI1 P1
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 1 -DIGI1 P2
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 2 - DIGI2 P1
@@ -83,7 +86,7 @@ public:
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 32 - break p2
   };
 
-  float settings[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  float settings[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // array of global settings for pattern
   // [0] tempo
   // [1] kit number
   // [2]
@@ -107,18 +110,22 @@ public:
   {
   }
 
-  void readFromSD(const char *path)
-  { // READS PATTERN FROM CSV ON SD CARD
-    //      if (!SD.begin(sdChipSelect)) {
-    //        Serial.println("Card failed, or not present");
-    //      }
-
-    // format for drum pattern
+  ///**************************************************************************************************
+  // * Function readFromSD
+  // * -------------------------------------------------------------------------------------------------
+  // * Overview: reads pattern from CSV on SD card
+  // * Input:
+  // *      const char* path: path of CSV to read on SD card
+  // * Output: Nothing
+  // **************************************************************************************************/
+  void readFromSD(const char *path) // READS PATTERN FROM CSV ON SD CARD
+  {
+    // format for drum pattern: data types of each column in CSV
     CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLLLfffLfffLfffLfffLfffLfffLfffLffffLfffLfffLfffLfffLffff", /*has_header*/ true, /*delimiter*/ ',');
 
     if (cp.readSDfile(path))
     {
-      // copy pattern to internal memory
+      // copy steps to internal memory
       memcpy(pattern[0], (int32_t *)cp["kk"], 64);
       memcpy(pattern[1], (int32_t *)cp["s"], 64);
       memcpy(pattern[2], (int32_t *)cp["c1"], 64);
@@ -164,7 +171,7 @@ public:
       memcpy(velocity[19], (float *)cp["onv"], 64);
       memcpy(velocity[20], (float *)cp["brv"], 64);
 
-      // copy digital voice parameters to internal memory
+      // copy parameters to internal memory
       memcpy(parameter[0], (float *)cp["d1p"], 64);
       memcpy(parameter[1], (float *)cp["d1pp"], 64);
       memcpy(parameter[2], (float *)cp["d2p"], 64);
@@ -187,7 +194,6 @@ public:
       memcpy(parameter[19], (float *)cp["s7pp"], 64);
       memcpy(parameter[20], (float *)cp["s8p"], 64);
       memcpy(parameter[21], (float *)cp["s8pp"], 64);
-
       memcpy(parameter[22], (float *)cp["ocp1"], 64);
       memcpy(parameter[23], (float *)cp["ocp2"], 64);
       memcpy(parameter[24], (float *)cp["gcp1"], 64);
@@ -205,6 +211,13 @@ public:
     }
   }
 
+  ///**************************************************************************************************
+  // * Function printPattern
+  // * -------------------------------------------------------------------------------------------------
+  // * Overview: prints pattern to Serial port
+  // * Input: Nothingg
+  // * Output: Nothing
+  // **************************************************************************************************/
   void printPattern()
   { // PRINTS PATTERN TO SERIAL MONITOR
     //      //print out the pattern
@@ -228,8 +241,7 @@ public:
       }
       Serial.println(" ");
     }
-    //
-    //      //print out the digital voice parameters
+    // print out the digital voice parameters
     for (int i = 0; i < 16; i++)
     {
       for (int j = 0; j < 33; j++)
@@ -252,10 +264,9 @@ public:
   ///**************************************************************************************************
   // * Function writePatternToSD
   // * -------------------------------------------------------------------------------------------------
-  // * Overview: Writes a Pattern object to a csv file on SD card
+  // * Overview: Writes a Pattern object to a CSV file on SD card
   // * Input:
-  //          patt: Pattern object to be written to SD Card
-  //          path: path on SD card to write object to ( in format 'FILEPATH/NAME.TXT'
+  //          path: path on SD card to write pattern to
   // * Output:
   // **************************************************************************************************/
   void writePatternToSD(const char *path)
@@ -272,11 +283,11 @@ public:
     File myFile = SD.open(path, FILE_WRITE);
     if (myFile)
     {
-      Serial.println("Writing headers to new CSV");
+      Serial.println("Writing headers to new CSV"); // writing header row to CSV
       myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp,sett,oc,ocv,ocp1,ocp2,gc,gcv,gcp1,gcp2,go,gov,gop1,gop2,on,onv,onp1,onp2,br,brv,brpi,brp1,brp2");
       Serial.println("Headers written");
 
-      // writing data
+      // writing all pattern data to CSV
       for (int i = 0; i < 16; i++)
       {
         myFile.print(pattern[0][i]); // KICK
@@ -456,6 +467,14 @@ public:
     }
   }
 
+  ///**************************************************************************************************
+  // * Function clearPattern
+  // * -------------------------------------------------------------------------------------------------
+  // * Overview: clears pattern by deactivating all steps and setting volume, and parameters to neutral values
+  // *           tempo is set to 120 BPM
+  // * Input: Nothing
+  // * Output: Nothing
+  // **************************************************************************************************/
   void clearPattern()
   {
     for (int i = 0; i < 16; i++)
@@ -472,5 +491,6 @@ public:
       }
       settings[i] = 0;
     }
+    settings[0] = 120; // set tempo to 120 BPM
   }
 };
