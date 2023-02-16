@@ -278,18 +278,18 @@ public:
     // clear out old data file
     if (SD.exists(path))
     {
-      Serial.println("Removing old csv");
+//      Serial.println("Removing old csv");
       SD.remove(path);
-      Serial.println("Done");
+//      Serial.println("Done");
     }
 
     // create new file
     File myFile = SD.open(path, FILE_WRITE);
     if (myFile)
     {
-      Serial.println("Writing headers to new CSV"); // writing header row to CSV
+//      Serial.println("Writing headers to new CSV"); // writing header row to CSV
       myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp,sett,oc,ocv,ocp1,ocp2,gc,gcv,gcp1,gcp2,go,gov,gop1,gop2,on,onv,onp1,onp2,br,brv,brpi,brp1,brp2");
-      Serial.println("Headers written");
+//      Serial.println("Headers written");
 
       // writing all pattern data to CSV
       for (int i = 0; i < 16; i++)
