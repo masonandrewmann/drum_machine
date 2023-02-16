@@ -39,7 +39,12 @@ enum instruments
   INST_SMP5,
   INST_SMP6,
   INST_SMP7,
-  INST_SMP8
+  INST_SMP8,
+  INST_ORGAN_CHORDS,
+  INST_GUITAR_CHORDS,
+  INST_GUITAR_ONE,
+  INST_ORGAN_NOTES,
+  INST_BREAKS
 };
 
 enum lcdStates
@@ -112,6 +117,7 @@ Song *currSong;
 int songNum = 0;
 int songWriteIndex = 0;
 
+// bank A kit
 AudioPlayArrayResmp playSdRaw1; // xy=321,513
 AudioPlayArrayResmp playSdRaw2; // xy=321,513
 AudioPlayArrayResmp playSdRaw3; // xy=321,513
@@ -120,83 +126,234 @@ AudioPlayArrayResmp playSdRaw5; // xy=321,513
 AudioPlayArrayResmp playSdRaw6; // xy=321,513
 AudioPlayArrayResmp playSdRaw7; // xy=321,513
 AudioPlayArrayResmp playSdRaw8; // xy=321,513
+
+//bank A break
 AudioPlayArrayResmp playSdRaw9; // xy=321,513
 
-newdigate::audiosample *sample1;
-newdigate::audiosample *sample2;
-newdigate::audiosample *sample3;
-newdigate::audiosample *sample4;
-newdigate::audiosample *sample5;
-newdigate::audiosample *sample6;
-newdigate::audiosample *sample7;
-newdigate::audiosample *sample8;
+//bank B
+AudioPlayArrayResmp playSdRaw10; // xy=321,513
+AudioPlayArrayResmp playSdRaw11; // xy=321,513
+AudioPlayArrayResmp playSdRaw12; // xy=321,513
+AudioPlayArrayResmp playSdRaw13; // xy=321,513
+AudioPlayArrayResmp playSdRaw14; // xy=321,513
+AudioPlayArrayResmp playSdRaw15; // xy=321,513
+AudioPlayArrayResmp playSdRaw16; // xy=321,513
+AudioPlayArrayResmp playSdRaw17; // xy=321,513
+AudioPlayArrayResmp playSdRaw18; // xy=321,513
+AudioPlayArrayResmp playSdRaw19; // xy=321,513
+AudioPlayArrayResmp playSdRaw20; // xy=321,513
+AudioPlayArrayResmp playSdRaw21; // xy=321,513
+AudioPlayArrayResmp playSdRaw22; // xy=321,513
+AudioPlayArrayResmp playSdRaw23; // xy=321,513
+AudioPlayArrayResmp playSdRaw24; // xy=321,513
+AudioPlayArrayResmp playSdRaw25; // xy=321,513
 
-newdigate::audiosample *e08_sample1;
-newdigate::audiosample *e08_sample2;
-newdigate::audiosample *e08_sample3;
-newdigate::audiosample *e08_sample4;
-newdigate::audiosample *e08_sample5;
-newdigate::audiosample *e08_sample6;
-newdigate::audiosample *e08_sample7;
-newdigate::audiosample *e08_sample8;
+newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
 
-newdigate::audiosample *hhxc_sample1;
-newdigate::audiosample *hhxc_sample2;
-newdigate::audiosample *hhxc_sample3;
-newdigate::audiosample *hhxc_sample4;
-newdigate::audiosample *hhxc_sample5;
-newdigate::audiosample *hhxc_sample6;
-newdigate::audiosample *hhxc_sample7;
-newdigate::audiosample *hhxc_sample8;
+newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
+  // 0 - Cmaj
+  // 1 - Cmin
+  // 2 - C7
+  // 3 - Cmaj7
+  // 4 - Cmin7
+  // 5 - Cdim
+  // 6 - Caug
 
-newdigate::audiosample *kitSamples[3][8];
 
 newdigate::audiosample *sample9;
 newdigate::audiosample *sample10;
+//
+//// GUItool: begin automatically generated code
+//AudioSynthSimpleDrum     drum2;          //xy=55,814
+//AudioSynthSimpleDrum     drum3;          //xy=55,858
+////AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
+//AudioSynthSimpleDrum     drum1;          //xy=71,754
+////AudioPlaySdRaw           playSdRaw1;     //xy=93,353
+////AudioPlaySdRaw           playSdRaw2;     //xy=96,395
+////AudioPlaySdRaw           playSdRaw3;     //xy=112,440
+////AudioPlaySdRaw           playSdRaw7;     //xy=112,616
+////AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
+////AudioPlaySdRaw           playSdRaw6;     //xy=113,577
+////AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
+////AudioPlaySdRaw           playSdRaw4;     //xy=116,490
+////AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
+////AudioPlaySdRaw           playSdRaw5;     //xy=116,536
+////AudioPlaySdRaw           playSdRaw14;    //xy=115,1137
+////AudioPlaySdRaw           playSdRaw10;    //xy=116,966
+////AudioPlaySdRaw           playSdRaw16;    //xy=117,1209
+////AudioPlaySdRaw           playSdRaw8;     //xy=122,660
+////AudioPlaySdRaw           playSdRaw15;    //xy=120,1173
+////AudioPlaySdRaw           playSdRaw21;    //xy=119,1428
+////AudioPlaySdRaw           playSdRaw20;    //xy=120,1385
+////AudioPlaySdRaw           playSdRaw17;    //xy=121,1254
+////AudioPlaySdRaw           playSdRaw18;    //xy=122,1302
+////AudioPlaySdRaw           playSdRaw19;    //xy=123,1341
+////AudioPlaySdRaw           playSdRaw25;    //xy=132,1628
+////AudioPlaySdRaw           playSdRaw23;    //xy=133,1543
+////AudioPlaySdRaw           playSdRaw24;    //xy=133,1583
+////AudioPlaySdRaw           playSdRaw22;    //xy=135,1503
+//AudioMixer4              mixer4;         //xy=224,762
+//AudioEffectGranular      granular1;      //xy=228,917
+//AudioMixer4              mixer6;         //xy=287,1007
+//AudioMixer4              mixer7;         //xy=293,1156
+//AudioMixer4              mixer8;         //xy=294,1318
+//AudioMixer4              mixer9;         //xy=303,1528
+//AudioMixer4              mixer1;         //xy=342,380
+//AudioMixer4              mixer2;         //xy=385,599
+//AudioMixer4              mixer5;         //xy=499,1020
+//AudioMixer4              mixer3;         //xy=610,595
+//AudioOutputI2S           i2s1;           //xy=780,526
+//AudioConnection          patchCord1(drum2, 0, mixer4, 1);
+//AudioConnection          patchCord2(drum3, 0, mixer4, 2);
+//AudioConnection          patchCord3(playSdRaw9, granular1);
+//AudioConnection          patchCord4(drum1, 0, mixer4, 0);
+//AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
+//AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
+//AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
+//AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
+//AudioConnection          patchCord9(playSdRaw12, 0, mixer6, 2);
+//AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
+//AudioConnection          patchCord11(playSdRaw13, 0, mixer6, 3);
+//AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
+//AudioConnection          patchCord13(playSdRaw11, 0, mixer6, 1);
+//AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
+//AudioConnection          patchCord15(playSdRaw14, 0, mixer7, 0);
+//AudioConnection          patchCord16(playSdRaw10, 0, mixer6, 0);
+//AudioConnection          patchCord17(playSdRaw16, 0, mixer7, 2);
+//AudioConnection          patchCord18(playSdRaw8, 0, mixer2, 3);
+//AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
+//AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
+//AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
+//AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
+//AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
+//AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
+//AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
+//AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
+//AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
+//AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
+//AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
+//AudioConnection          patchCord30(granular1, 0, mixer4, 3);
+//AudioConnection          patchCord31(mixer6, 0, mixer5, 0);
+//AudioConnection          patchCord32(mixer7, 0, mixer5, 1);
+//AudioConnection          patchCord33(mixer8, 0, mixer5, 2);
+//AudioConnection          patchCord34(mixer9, 0, mixer5, 3);
+//AudioConnection          patchCord35(mixer1, 0, mixer3, 0);
+//AudioConnection          patchCord36(mixer2, 0, mixer3, 1);
+//AudioConnection          patchCord37(mixer5, 0, mixer3, 3);
+//AudioConnection          patchCord38(mixer3, 0, i2s1, 0);
+//AudioConnection          patchCord39(mixer3, 0, i2s1, 1);
+//AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
+//// GUItool: end automatically generated code
+
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
 
 // GUItool: begin automatically generated code
-// AudioPlaySdRaw           playSdRaw1;     //xy=387,149
-// AudioPlaySdRaw           playSdRaw2;     //xy=390,191
-// AudioPlaySdRaw           playSdRaw3;     //xy=406,236
-// AudioPlaySdRaw           playSdRaw7;     //xy=406,412
-// AudioPlaySdRaw           playSdRaw6;     //xy=407,373
-// AudioPlaySdRaw           playSdRaw4;     //xy=410,286
-// AudioPlaySdRaw           playSdRaw5;     //xy=410,332
-// AudioPlaySdRaw           playSdRaw8;     //xy=416,456
-// AudioPlaySdRaw           playSdRaw9;     //xy=451,694
-AudioSynthSimpleDrum drum3;        // xy=475,631
-AudioSynthSimpleDrum drum2;        // xy=478,589
-AudioSynthSimpleDrum drum1;        // xy=485,541
-AudioMixer4 mixer4;                // xy=661,593
-AudioMixer4 mixer1;                // xy=760,189
-AudioMixer4 mixer2;                // xy=765,338
-AudioMixer4 mixer3;                // xy=952,297
-AudioEffectBitcrusher bitcrusher1; // xy=979,485
-AudioOutputI2S i2s1;               // xy=1078,299
-AudioConnection patchCord1(playSdRaw1, 0, mixer1, 0);
-AudioConnection patchCord2(playSdRaw2, 0, mixer1, 1);
-AudioConnection patchCord3(playSdRaw3, 0, mixer1, 2);
-AudioConnection patchCord4(playSdRaw7, 0, mixer2, 2);
-AudioConnection patchCord5(playSdRaw6, 0, mixer2, 1);
-AudioConnection patchCord6(playSdRaw4, 0, mixer1, 3);
-AudioConnection patchCord7(playSdRaw5, 0, mixer2, 0);
-AudioConnection patchCord8(playSdRaw8, 0, mixer2, 3);
-AudioConnection patchCord9(playSdRaw9, 0, mixer4, 3);
-AudioConnection patchCord10(drum3, 0, mixer4, 2);
-AudioConnection patchCord11(drum2, 0, mixer4, 1);
-AudioConnection patchCord12(drum1, 0, mixer4, 0);
-AudioConnection patchCord13(mixer4, 0, mixer3, 2);
-AudioConnection patchCord14(mixer1, 0, mixer3, 0);
-AudioConnection patchCord15(mixer2, 0, mixer3, 1);
-AudioConnection patchCord16(mixer3, 0, i2s1, 0);
-AudioConnection patchCord17(mixer3, 0, i2s1, 1);
-AudioControlSGTL5000 sgtl5000_1; // xy=1154,637
+AudioSynthSimpleDrum     drum2;          //xy=55,814
+AudioSynthSimpleDrum     drum3;          //xy=55,858
+//AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
+AudioSynthSimpleDrum     drum1;          //xy=71,754
+//AudioPlaySdRaw           playSdRaw1;     //xy=93,353
+//AudioPlaySdRaw           playSdRaw2;     //xy=96,395
+//AudioPlaySdRaw           playSdRaw3;     //xy=112,440
+//AudioPlaySdRaw           playSdRaw7;     //xy=112,616
+//AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
+//AudioPlaySdRaw           playSdRaw6;     //xy=113,577
+//AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
+//AudioPlaySdRaw           playSdRaw4;     //xy=116,490
+//AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
+//AudioPlaySdRaw           playSdRaw5;     //xy=116,536
+//AudioPlaySdRaw           playSdRaw10;    //xy=116,966
+//AudioPlaySdRaw           playSdRaw8;     //xy=122,660
+//AudioPlaySdRaw           playSdRaw14;    //xy=146,1347
+//AudioPlaySdRaw           playSdRaw16;    //xy=148,1419
+//AudioPlaySdRaw           playSdRaw15;    //xy=151,1383
+//AudioPlaySdRaw           playSdRaw21;    //xy=150,1638
+//AudioPlaySdRaw           playSdRaw20;    //xy=151,1595
+//AudioPlaySdRaw           playSdRaw17;    //xy=152,1464
+//AudioPlaySdRaw           playSdRaw18;    //xy=153,1512
+//AudioPlaySdRaw           playSdRaw19;    //xy=154,1551
+//AudioPlaySdRaw           playSdRaw25;    //xy=163,1838
+//AudioPlaySdRaw           playSdRaw23;    //xy=164,1753
+//AudioPlaySdRaw           playSdRaw24;    //xy=164,1793
+//AudioPlaySdRaw           playSdRaw22;    //xy=166,1713
+AudioMixer4              mixer4;         //xy=224,762
+AudioEffectGranular      granular1;      //xy=228,917
+AudioEffectGranular      granular5;      //xy=299,1091
+AudioEffectGranular      granular4;      //xy=300,1049
+AudioEffectGranular      granular3;      //xy=301,1003
+AudioEffectGranular      granular2;      //xy=303,963
+AudioMixer4              mixer7;         //xy=324,1366
+AudioMixer4              mixer8;         //xy=325,1528
+AudioMixer4              mixer9;         //xy=334,1738
+AudioMixer4              mixer1;         //xy=342,380
+AudioMixer4              mixer2;         //xy=385,599
+AudioMixer4              mixer6;         //xy=497,1007
+AudioMixer4              mixer3;         //xy=610,595
+AudioOutputI2S           i2s1;           //xy=780,526
+AudioMixer4              mixer5;         //xy=860,1053
+AudioConnection          patchCord1(drum2, 0, mixer4, 1);
+AudioConnection          patchCord2(drum3, 0, mixer4, 2);
+AudioConnection          patchCord3(playSdRaw9, granular1);
+AudioConnection          patchCord4(drum1, 0, mixer4, 0);
+AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
+AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
+AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
+AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
+AudioConnection          patchCord9(playSdRaw12, granular4);
+AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
+AudioConnection          patchCord11(playSdRaw13, granular5);
+AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
+AudioConnection          patchCord13(playSdRaw11, granular3);
+AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
+AudioConnection          patchCord15(playSdRaw10, granular2);
+AudioConnection          patchCord16(playSdRaw8, 0, mixer2, 3);
+AudioConnection          patchCord17(playSdRaw14, 0, mixer7, 0);
+AudioConnection          patchCord18(playSdRaw16, 0, mixer7, 2);
+AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
+AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
+AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
+AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
+AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
+AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
+AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
+AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
+AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
+AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
+AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
+AudioConnection          patchCord30(granular1, 0, mixer4, 3);
+AudioConnection          patchCord31(granular5, 0, mixer6, 3);
+AudioConnection          patchCord32(granular4, 0, mixer6, 2);
+AudioConnection          patchCord33(granular3, 0, mixer6, 1);
+AudioConnection          patchCord34(granular2, 0, mixer6, 0);
+AudioConnection          patchCord35(mixer7, 0, mixer5, 1);
+AudioConnection          patchCord36(mixer8, 0, mixer5, 2);
+AudioConnection          patchCord37(mixer9, 0, mixer5, 3);
+AudioConnection          patchCord38(mixer1, 0, mixer3, 0);
+AudioConnection          patchCord39(mixer2, 0, mixer3, 1);
+AudioConnection          patchCord40(mixer6, 0, mixer5, 0);
+AudioConnection          patchCord41(mixer3, 0, i2s1, 0);
+AudioConnection          patchCord42(mixer3, 0, i2s1, 1);
+AudioConnection          patchCord43(mixer5, 0, mixer3, 3);
+AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
 // GUItool: end automatically generated code
+
+
+
+#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
+int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
 
 // transport variables
 float tempo = 120;
 unsigned int stepLen = 0;
-unsigned int currStep = 0;
+int currStep = 0;
 unsigned long currStepTime = 0;
 
 int transportState = PLAYING;
@@ -285,6 +442,14 @@ int songBankNum = 0;
 int playMode = PLAY_PATTERN;
 int songPlayStep = 0;
 int patternSection = 0; // which part of pattern are we in: 1-16, 17-32, 33-48 or 49-64? poorly named variable :~(
+
+//chord playback
+long stepEditIndex = 0;
+char rootNotes[12][6] = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
+char chordQual[7][6] = {"maj", "min", "7", "maj7", "min7", "dim", "aug"};
+int chordCursorLoc = 0;
+int instChordTypes[3] = {0, 0, 0};
+
 
 void setup()
 {
@@ -434,6 +599,22 @@ void setup()
   playSdRaw7.enableInterpolation(true);
   playSdRaw8.enableInterpolation(true);
   playSdRaw9.enableInterpolation(true);
+  playSdRaw10.enableInterpolation(true);
+  playSdRaw11.enableInterpolation(true);
+  playSdRaw12.enableInterpolation(true);
+  playSdRaw13.enableInterpolation(true);
+  playSdRaw14.enableInterpolation(true);
+  playSdRaw15.enableInterpolation(true);
+  playSdRaw16.enableInterpolation(true);
+  playSdRaw17.enableInterpolation(true);
+  playSdRaw18.enableInterpolation(true);
+  playSdRaw19.enableInterpolation(true);
+  playSdRaw20.enableInterpolation(true);
+  playSdRaw21.enableInterpolation(true);
+  playSdRaw22.enableInterpolation(true);
+  playSdRaw23.enableInterpolation(true);
+  playSdRaw24.enableInterpolation(true);
+  playSdRaw25.enableInterpolation(true);
 
   playSdRaw1.setPlaybackRate(1);
   playSdRaw2.setPlaybackRate(1);
@@ -443,6 +624,23 @@ void setup()
   playSdRaw6.setPlaybackRate(1);
   playSdRaw7.setPlaybackRate(1);
   playSdRaw8.setPlaybackRate(1);
+  playSdRaw9.setPlaybackRate(1);
+  playSdRaw10.setPlaybackRate(1);
+  playSdRaw11.setPlaybackRate(1);
+  playSdRaw12.setPlaybackRate(1);
+  playSdRaw13.setPlaybackRate(1);
+  playSdRaw14.setPlaybackRate(1);
+  playSdRaw15.setPlaybackRate(1);
+  playSdRaw16.setPlaybackRate(1);
+  playSdRaw17.setPlaybackRate(1);
+  playSdRaw18.setPlaybackRate(1);
+  playSdRaw19.setPlaybackRate(1);
+  playSdRaw20.setPlaybackRate(1);
+  playSdRaw21.setPlaybackRate(1);
+  playSdRaw22.setPlaybackRate(1);
+  playSdRaw23.setPlaybackRate(1);
+  playSdRaw24.setPlaybackRate(1);
+  playSdRaw24.setPlaybackRate(1);
 
   playSdRaw9.setPlaybackRate(tempo / 175.0);
 
@@ -479,6 +677,31 @@ void setup()
   kitSamples[2][7] = loader.loadSample("DRUMS/HPYHXC/CRASH.RAW");
 
   sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
+
+  chordSamples[0][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
+  chordSamples[0][1] = loader.loadSample("SAMPLES/ORGAN/CMIN.RAW");
+  chordSamples[0][2] = loader.loadSample("SAMPLES/ORGAN/C7.RAW");
+  chordSamples[0][3] = loader.loadSample("SAMPLES/ORGAN/CMAJ7.RAW");
+  chordSamples[0][4] = loader.loadSample("SAMPLES/ORGAN/CMIN7.RAW");
+  chordSamples[0][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
+  chordSamples[0][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
+
+  chordSamples[1][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
+  chordSamples[1][1] = loader.loadSample("SAMPLES/ORGAN/CMIN.RAW");
+  chordSamples[1][2] = loader.loadSample("SAMPLES/ORGAN/C7.RAW");
+  chordSamples[1][3] = loader.loadSample("SAMPLES/ORGAN/CMAJ7.RAW");
+  chordSamples[1][4] = loader.loadSample("SAMPLES/ORGAN/CMIN7.RAW");
+  chordSamples[1][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
+  chordSamples[1][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
+
+  chordSamples[2][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
+  chordSamples[2][1] = loader.loadSample("SAMPLES/ORGAN/CMIN.RAW");
+  chordSamples[2][2] = loader.loadSample("SAMPLES/ORGAN/C7.RAW");
+  chordSamples[2][3] = loader.loadSample("SAMPLES/ORGAN/CMAJ7.RAW");
+  chordSamples[2][4] = loader.loadSample("SAMPLES/ORGAN/CMIN7.RAW");
+  chordSamples[2][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
+  chordSamples[2][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
+  
 
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
@@ -526,6 +749,19 @@ void setup()
   mixer4.gain(2, 1);   // digi drum 3
   mixer4.gain(3, 2);   // playSdRaw9
 
+  //granular setup
+  granular1.begin(granularMemory1, GRANULAR_MEMORY_SIZE);
+  granular1.beginPitchShift(50);
+
+  granular2.begin(granularMemory2, GRANULAR_MEMORY_SIZE);
+  granular2.beginPitchShift(50);
+  granular3.begin(granularMemory3, GRANULAR_MEMORY_SIZE);
+  granular3.beginPitchShift(50);
+  granular4.begin(granularMemory4, GRANULAR_MEMORY_SIZE);
+  granular4.beginPitchShift(50);
+  granular5.begin(granularMemory5, GRANULAR_MEMORY_SIZE);
+  granular5.beginPitchShift(50);
+  
   // initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins) / sizeof(muxAddressPins[0]); i++)
   {
@@ -566,7 +802,9 @@ void loop()
     displayLCD(false);
     lcdTimeout = millis() + 100;
   }
+//  Serial.println("enter mux read");
   readMux(false); // read inputs and process them
+//  Serial.println("exit mux read");
 
   // steps
   if (transportState == PLAYING)
@@ -582,17 +820,22 @@ void loop()
           patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
         }
         currStep = (currStep + 1) % 16; // move step pointer to next step
+        endChords(); // turn off any chords that need to be turned off on this step
   
         // clockOutput(); //send clock signal out external output
   
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 21; i++)
         { // send triggers of all instruments to be played at this step
-          if (currPattern->pattern[i][currStep])
+          if (currStep != -1 && currPattern->pattern[i][currStep])
           {
             int myParam = 0; // initialize myParam to zero for instruments that don't need it
-            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20)
+            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
               myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
+            }
+//              Serial.println(i);
+//              Serial.println(myParam);
             trigNote(i, myParam);                          // trigger correct instrument and send the parameter
+//            Serial.println("note triggered");
           }
         }
         float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
@@ -617,7 +860,7 @@ void loop()
         
         for (int i = 0; i < 16; i++)
         { // send triggers of all instruments to be played at this step
-          if (currPattern->pattern[i][currStep])
+          if (currStep != -1 && currPattern->pattern[i][currStep])
           {
             int myParam = 0; // initialize myParam to zero for instruments that don't need it
             if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20)
@@ -637,7 +880,6 @@ void loop()
       }
     }
   }
-
   for (int i = 0; i < 16; i++) // check if hardware output pulses need to finish
   {
     if (outPulseTimes[i] != 0) // only check active pulses
@@ -815,7 +1057,9 @@ void readMux(bool printEn)
     controlPots[13] = inputs[5][5]; // analog aux in 3
     controlPots[14] = inputs[5][6]; // analog aux in 4
     controlPots[15] = inputs[5][7]; // analog aux in 5
-
+//    float mySpeed = ((float)controlPots[7] / 1023.0) * 1.5 + 0.5;
+//    Serial.println(mySpeed);
+//    granular2.setSpeed(pow(2, 2/12));
     // check if any control buttons have been pressed
     for (int i = 0; i < 16; i++)
     {
@@ -1139,7 +1383,9 @@ void readMux(bool printEn)
             sr1LED[1] = 0;
             songPlayStep = 0;
             transportState = STOPPED;
+            
             currStep = -1;         // jump back to start of pattern
+            
             if (playMode == PLAY_PATTERN){
               patternQueueIndex = 0; // jump back to start of song
               currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
@@ -1194,7 +1440,34 @@ void readMux(bool printEn)
       {
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
+          // THIS CURRENTLY CAUSES ERRORS BECAUSE THERE ARE MORE BANKS/INST INDICES THAN THERE ARE INSTRUMENTS IN PATTERN OBJECT
+          // THIS RESULTS IN AN OUT OF BOUNDS ERROR IF YOU TRY TO ACCESS ANY INSTRUMENT GREATER THAN I THINK 20 OR 21
           currPattern->pattern[currInst][i] = !currPattern->pattern[currInst][i]; // record buttom press into current pattern array
+          stepEditIndex = i;
+          
+          if(currInst == 16 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[16][prevStep] > 0){
+              currPattern->pattern[16][i] = currPattern->pattern[16][prevStep];
+              currPattern->parameter[22][i] = currPattern->parameter[22][prevStep]; 
+            }
+          }
+
+          if(currInst == 17 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[17][prevStep] > 0){
+              currPattern->pattern[17][i] = currPattern->pattern[17][prevStep];
+              currPattern->parameter[24][i] = currPattern->parameter[24][prevStep]; 
+            }
+          }
+
+          
         }
       }
       break;
@@ -1204,7 +1477,7 @@ void readMux(bool printEn)
       {
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          currInst = i; // set current instrument to the one that was pressed
+          currInst = i + 16 * instBankNum; // set current instrument to the one that was pressed offsetting by 16 for each bank
         }
       }
       break;
@@ -1375,7 +1648,6 @@ void readMux(bool printEn)
     ledDisplayState = DISP_PATT_BANK;
     break;
   }
-
   switch (ledDisplayState)
   {
   case DISP_STEPS:
@@ -1383,7 +1655,9 @@ void readMux(bool printEn)
     {
       stepLEDs[i] = currPattern->pattern[currInst][i];
     }
-    stepLEDs[currStep] = 1; // light up the playhead/current step
+    if (currStep >= 0){
+      stepLEDs[currStep] = 1; // light up the playhead/current step
+    }
     break;
 
   case DISP_PATTERNS: // display current pattern on step LEDs
@@ -1406,7 +1680,7 @@ void readMux(bool printEn)
     {
       stepLEDs[i] = 0;
     }
-    stepLEDs[currInst] = 1;
+    stepLEDs[currInst % 16] = 1;
     break;
   case DISP_PATT_BANK:
     for (int i = 0; i < 16; i++)
@@ -1489,7 +1763,6 @@ void readMux(bool printEn)
     sr3LED[5] = 1; // turn on bank LED
     break;
   }
-
   // send all shift register values out
   digitalWrite(ST_CP, LOW);
   shiftOut(DS, SH_CP, MSBFIRST, sr5);
@@ -1639,8 +1912,38 @@ void trigNote(int instNum, int instParam)
     pulseLen = playSdRaw8.lengthMillis() * (currPattern->parameter[21][0] / 100.0) / currPattern->parameter[20][0];
     playSdRaw8.playRaw(kitSamples[(int)currPattern->settings[1]][7]->sampledata, kitSamples[(int)currPattern->settings[1]][7]->samplesize / 2, 1);
     break;
+    
+  case INST_ORGAN_CHORDS:
+//    Serial.print("Play organ! ");
+    if (currStep >= 0){
+      playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
+    float mySpeed = pow(2, (currPattern->pattern[16][currStep] - 1)/12.0);
+//    Serial.println(mySpeed);
+    granular2.setSpeed(mySpeed);
+    }
+    break;
+
+  case INST_GUITAR_CHORDS:
+    if (currStep >= 0){
+      playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
+      float mySpeed = pow(2, (currPattern->pattern[17][currStep] - 1)/12.0);
+      granular3.setSpeed(mySpeed);
+    }
+    break;
+    
+  case INST_GUITAR_ONE:
+    break;
+
+  case INST_ORGAN_NOTES:
+    break;
+
+  case INST_BREAKS:
+    break;
+  
   }
+  if (instNum < 16){
   outPulseTimes[instNum] = millis() + pulseLen; // send the pulse end time to or pulse timer array
+  }
 }
 
 ///**************************************************************************************************
@@ -1652,15 +1955,15 @@ void trigNote(int instNum, int instParam)
 // **************************************************************************************************/
 void clockOutput()
 {
-  Serial.print("PATTERN STEP: ");
-  Serial.print(currStep); // prints current pattern number
-  Serial.print("   ");
-
-  for (int i = 0; i < 16; i++)
-  {
-    Serial.print(currPattern->pattern[i][currStep]); // prints which instruments are played on this step
-  }
-  Serial.println(" ");
+//  Serial.print("PATTERN STEP: ");
+//  Serial.print(currStep); // prints current pattern number
+//  Serial.print("   ");
+//
+//  for (int i = 0; i < 16; i++)
+//  {
+//    Serial.print(currPattern->pattern[i][currStep]); // prints which instruments are played on this step
+//  }
+//  Serial.println(" ");
 }
 
 ///**************************************************************************************************
@@ -1729,7 +2032,8 @@ void displayLCD(bool demoMode)
       char paramStr[30];                  // char array for parameter value
       char volStr[30];                    // char array for volume value
       char envStr[30];                    // char array for envelope value
-
+      int32_t myRootNote;
+      char stepNumStr[30]; // display num of curr edit step
       switch (currInst) // set name string and parameters, these are unique to each instrument so i have this dumb huge switch statement :~(
       {
       case INST_BD:
@@ -1804,8 +2108,60 @@ void displayLCD(bool demoMode)
         sprintf(volStr, "%.02f", currPattern->velocity[15][0]);
         sprintf(envStr, "%.01f", currPattern->parameter[21][0]);
         break;
+      case INST_ORGAN_CHORDS:
+        if (stepEditIndex < 0 || stepEditIndex > 15){
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
+        u8g2.drawStr(0, 11, "Organ chords");
+        myRootNote = currPattern->pattern[16][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "chord:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[16][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[22][stepEditIndex];
+          u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+
+      case INST_GUITAR_CHORDS:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
       }
-      if (currInst >= 8) // draw all the parameter stuff on the screen for instruments that need them
+        u8g2.drawStr(0, 11, "Guitar chords");
+       myRootNote = currPattern->pattern[17][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "chord:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[17][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[24][stepEditIndex];
+          u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+      }
+        u8g2.setFontMode(0);
+        u8g2.setDrawColor(1);
+        char instNumStr[30]; // display num of curr inst
+        sprintf(instNumStr, "%i", currInst);
+        u8g2.drawStr(70, 45, instNumStr);
+      if (currInst >= 8 && currInst < 16) // draw all the parameter stuff on the screen for instruments that need them
       {
         u8g2.setFontMode(0);
         u8g2.setDrawColor(1);
@@ -1824,6 +2180,26 @@ void displayLCD(bool demoMode)
         else
         {
           u8g2.drawBox(0, 15 + 10 * cursorLoc, 27, 11); // selection box on menu for navigation
+        }
+      }
+      if (currInst == 16 || currInst == 17 || currInst == 18){ // organ and guitar chords
+        u8g2.setDrawColor(2);
+        if (paramSel) // draw a selection box
+        {
+          if(cursorLoc != 2){
+            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+          } else {
+            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+          }
+          
+        }
+        else
+        {
+          if(cursorLoc != 2){
+            u8g2.drawBox(0, 15 + 10 * cursorLoc, 36, 11); // selection box on menu for navigation
+          } else {
+            u8g2.drawBox(0, 15 + 10 * cursorLoc, 26, 11); // selection box on menu for navigation
+          }
         }
       }
       u8g2.sendBuffer();        // transfer internal memory to the display
@@ -2160,138 +2536,167 @@ void UpdateDataEnc()
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
-          if (paramSel) // if cursor is modifying parameter
-          {
-            switch (cursorLoc) // figure out which parameter is being modified
+          if (currInst > 7 && currInst < 21){ // bank A sample kit
+            if (paramSel) // if cursor is modifying parameter
             {
-            case 0:             // first parameter (playback speed) selected
-              switch (currInst) // figure out which instrument we are modifying parameters on
+              switch (cursorLoc) // figure out which parameter is being modified
               {
-              case INST_SMP1:
-                currPattern->parameter[6][0] += parameterInc;
-                playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
+              case 0:             // first parameter (playback speed) selected
+                switch (currInst) // figure out which instrument we are modifying parameters on
+                {
+                case INST_SMP1:
+                  currPattern->parameter[6][0] += parameterInc;
+                  playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
+                  break;
+                case INST_SMP2:
+                  currPattern->parameter[8][0] += parameterInc;
+                  playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
+                  break;
+                case INST_SMP3:
+                  currPattern->parameter[10][0] += parameterInc;
+                  playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
+                  break;
+                case INST_SMP4:
+                  currPattern->parameter[12][0] += parameterInc;
+                  playSdRaw4.setPlaybackRate(currPattern->parameter[12][0]);
+                  break;
+                case INST_SMP5:
+                  currPattern->parameter[14][0] += parameterInc;
+                  playSdRaw5.setPlaybackRate(currPattern->parameter[14][0]);
+                  break;
+                case INST_SMP6:
+                  currPattern->parameter[16][0] += parameterInc;
+                  playSdRaw6.setPlaybackRate(currPattern->parameter[16][0]);
+                  break;
+                case INST_SMP7:
+                  currPattern->parameter[18][0] += parameterInc;
+                  playSdRaw7.setPlaybackRate(currPattern->parameter[18][0]);
+                  break;
+                case INST_SMP8:
+                  currPattern->parameter[20][0] += parameterInc;
+                  playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
+                  break;
+                case INST_ORGAN_CHORDS:
+                  currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] + 1;
+                  if (currPattern->pattern[16][stepEditIndex] > 12) currPattern->pattern[16][stepEditIndex] = 1;
+                  break;
+                case INST_GUITAR_CHORDS:
+                  currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] + 1;
+                  if (currPattern->pattern[17][stepEditIndex] > 12) currPattern->pattern[17][stepEditIndex] = 1;
+                  break;
+                }
                 break;
-              case INST_SMP2:
-                currPattern->parameter[8][0] += parameterInc;
-                playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
+              case 1:             // volume selected
+                switch (currInst) // figure out which instrument we are modifying volumes on
+                {
+                case INST_SMP1:
+                  currPattern->velocity[8][0] += parameterInc;
+                  mixer1.gain(0, currPattern->velocity[8][0]);
+                  break;
+                case INST_SMP2:
+                  currPattern->velocity[9][0] += parameterInc;
+                  mixer1.gain(1, currPattern->velocity[9][0]);
+                  break;
+                case INST_SMP3:
+                  currPattern->velocity[10][0] += parameterInc;
+                  mixer1.gain(2, currPattern->velocity[10][0]);
+                  break;
+                case INST_SMP4:
+                  currPattern->velocity[11][0] += parameterInc;
+                  mixer1.gain(3, currPattern->velocity[11][0]);
+                  break;
+                case INST_SMP5:
+                  currPattern->velocity[12][0] += parameterInc;
+                  mixer2.gain(0, currPattern->velocity[12][0]);
+                  break;
+                case INST_SMP6:
+                  currPattern->velocity[13][0] += parameterInc;
+                  mixer2.gain(1, currPattern->velocity[13][0]);
+                  break;
+                case INST_SMP7:
+                  currPattern->velocity[14][0] += parameterInc;
+                  mixer2.gain(2, currPattern->velocity[14][0]);
+                  break;
+                case INST_SMP8:
+                  currPattern->velocity[15][0] += parameterInc;
+                  mixer2.gain(3, currPattern->velocity[15][0]);
+                  break;
+                case INST_ORGAN_CHORDS:
+                    currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[22][stepEditIndex] > 6){ // cycle back to beginning of list
+                      currPattern->parameter[22][stepEditIndex] = 0;
+                    }
+                case INST_GUITAR_CHORDS:
+                    currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[24][stepEditIndex] > 6){ // cycle back to beginning of list
+                      currPattern->parameter[24][stepEditIndex] = 0;
+                    }
+                  break;
+                }
                 break;
-              case INST_SMP3:
-                currPattern->parameter[10][0] += parameterInc;
-                playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
-                break;
-              case INST_SMP4:
-                currPattern->parameter[12][0] += parameterInc;
-                playSdRaw4.setPlaybackRate(currPattern->parameter[12][0]);
-                break;
-              case INST_SMP5:
-                currPattern->parameter[14][0] += parameterInc;
-                playSdRaw5.setPlaybackRate(currPattern->parameter[14][0]);
-                break;
-              case INST_SMP6:
-                currPattern->parameter[16][0] += parameterInc;
-                playSdRaw6.setPlaybackRate(currPattern->parameter[16][0]);
-                break;
-              case INST_SMP7:
-                currPattern->parameter[18][0] += parameterInc;
-                playSdRaw7.setPlaybackRate(currPattern->parameter[18][0]);
-                break;
-              case INST_SMP8:
-                currPattern->parameter[20][0] += parameterInc;
-                playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
+  
+              case 2:             // param 2 (length) selected
+                switch (currInst) // figure out which instrument we are modifying the envelope parameter on
+                {
+                case INST_SMP1:
+                  currPattern->parameter[7][0] += 1;
+                  if (currPattern->parameter[7][0] > 100)
+                    currPattern->parameter[7][0] = 100;
+                  break;
+                case INST_SMP2:
+                  currPattern->parameter[9][0] += 1;
+                  if (currPattern->parameter[9][0] > 100)
+                    currPattern->parameter[9][0] = 100;
+                  break;
+                case INST_SMP3:
+                  currPattern->parameter[11][0] += 1;
+                  if (currPattern->parameter[11][0] > 100)
+                    currPattern->parameter[11][0] = 100;
+                  break;
+                case INST_SMP4:
+                  currPattern->parameter[13][0] += 1;
+                  if (currPattern->parameter[13][0] > 100)
+                    currPattern->parameter[13][0] = 100;
+                  break;
+                case INST_SMP5:
+                  currPattern->parameter[15][0] += 1;
+                  if (currPattern->parameter[15][0] > 100)
+                    currPattern->parameter[15][0] = 100;
+                  break;
+                case INST_SMP6:
+                  currPattern->parameter[17][0] += 1;
+                  if (currPattern->parameter[17][0] > 100)
+                    currPattern->parameter[17][0] = 100;
+                  break;
+                case INST_SMP7:
+                  currPattern->parameter[19][0] += 1;
+                  if (currPattern->parameter[19][0] > 100)
+                    currPattern->parameter[19][0] = 100;
+                  break;
+                case INST_SMP8:
+                  currPattern->parameter[21][0] += 1;
+                  if (currPattern->parameter[21][0] > 100)
+                    currPattern->parameter[21][0] = 100;
+                  break;
+                case INST_ORGAN_CHORDS:
+                  currPattern->velocity[16][0] += parameterInc;
+                  mixer6.gain(0, currPattern->velocity[16][0]);
+                  break;
+                case INST_GUITAR_CHORDS:
+                  currPattern->velocity[17][0] += parameterInc;
+                  mixer6.gain(1, currPattern->velocity[17][0]);
+                  break;
+                }
                 break;
               }
-              break;
-            case 1:             // volume selected
-              switch (currInst) // figure out which instrument we are modifying volumes on
-              {
-              case INST_SMP1:
-                currPattern->velocity[8][0] += parameterInc;
-                mixer1.gain(0, currPattern->velocity[8][0]);
-                break;
-              case INST_SMP2:
-                currPattern->velocity[9][0] += parameterInc;
-                mixer1.gain(1, currPattern->velocity[9][0]);
-                break;
-              case INST_SMP3:
-                currPattern->velocity[10][0] += parameterInc;
-                mixer1.gain(2, currPattern->velocity[10][0]);
-                break;
-              case INST_SMP4:
-                currPattern->velocity[11][0] += parameterInc;
-                mixer1.gain(3, currPattern->velocity[11][0]);
-                break;
-              case INST_SMP5:
-                currPattern->velocity[12][0] += parameterInc;
-                mixer2.gain(0, currPattern->velocity[12][0]);
-                break;
-              case INST_SMP6:
-                currPattern->velocity[13][0] += parameterInc;
-                mixer2.gain(1, currPattern->velocity[13][0]);
-                break;
-              case INST_SMP7:
-                currPattern->velocity[14][0] += parameterInc;
-                mixer2.gain(2, currPattern->velocity[14][0]);
-                break;
-              case INST_SMP8:
-                currPattern->velocity[15][0] += parameterInc;
-                mixer2.gain(3, currPattern->velocity[15][0]);
-                break;
-              }
-              break;
-
-            case 2:             // param 2 (length) selected
-              switch (currInst) // figure out which instrument we are modifying the envelope parameter on
-              {
-              case INST_SMP1:
-                currPattern->parameter[7][0] += 1;
-                if (currPattern->parameter[7][0] > 100)
-                  currPattern->parameter[7][0] = 100;
-                break;
-              case INST_SMP2:
-                currPattern->parameter[9][0] += 1;
-                if (currPattern->parameter[9][0] > 100)
-                  currPattern->parameter[9][0] = 100;
-                break;
-              case INST_SMP3:
-                currPattern->parameter[11][0] += 1;
-                if (currPattern->parameter[11][0] > 100)
-                  currPattern->parameter[11][0] = 100;
-                break;
-              case INST_SMP4:
-                currPattern->parameter[13][0] += 1;
-                if (currPattern->parameter[13][0] > 100)
-                  currPattern->parameter[13][0] = 100;
-                break;
-              case INST_SMP5:
-                currPattern->parameter[15][0] += 1;
-                if (currPattern->parameter[15][0] > 100)
-                  currPattern->parameter[15][0] = 100;
-                break;
-              case INST_SMP6:
-                currPattern->parameter[17][0] += 1;
-                if (currPattern->parameter[17][0] > 100)
-                  currPattern->parameter[17][0] = 100;
-                break;
-              case INST_SMP7:
-                currPattern->parameter[19][0] += 1;
-                if (currPattern->parameter[19][0] > 100)
-                  currPattern->parameter[19][0] = 100;
-                break;
-              case INST_SMP8:
-                currPattern->parameter[21][0] += 1;
-                if (currPattern->parameter[21][0] > 100)
-                  currPattern->parameter[21][0] = 100;
-                break;
-              }
-              break;
             }
-          }
-          else // navigate through menu
-          {
-            cursorLoc++;
-            if (cursorLoc > 2)
-              cursorLoc = 2;
-          }
+            else // navigate through menu
+            {
+              cursorLoc++;
+              if (cursorLoc > 2)
+                cursorLoc = 2;
+            }
+          } 
         }
 
         dataEncState = 2; // CW 2
@@ -2392,6 +2797,14 @@ void UpdateDataEnc()
                   currPattern->parameter[20][0] = 0.05;
                 playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
                 break;
+              case INST_ORGAN_CHORDS:
+                  currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] - 1;
+                  if (currPattern->pattern[16][stepEditIndex] < 1) currPattern->pattern[16][stepEditIndex] = 12;
+                  //update granular effect here
+                  break;
+
+                    //SWAP SAMPLE HERE
+                  break;
               }
               break;
 
@@ -2446,6 +2859,11 @@ void UpdateDataEnc()
                   currPattern->velocity[15][0] = 0;
                 mixer2.gain(3, currPattern->velocity[15][0]);
                 break;
+              case INST_ORGAN_CHORDS:
+                    currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[22][stepEditIndex] < 0){ // cycle back to beginning of list
+                      currPattern->parameter[22][stepEditIndex] = 6;
+                    }
               }
               break;
             case 2:             // param 2 (length) selected
@@ -2491,6 +2909,10 @@ void UpdateDataEnc()
                 if (currPattern->parameter[21][0] < 0)
                   currPattern->parameter[21][0] = 1;
                 break;
+              case INST_ORGAN_CHORDS:
+                  currPattern->velocity[16][0] -= parameterInc;
+                  mixer6.gain(0, currPattern->velocity[16][0]);
+                  break;
               }
               break;
             }
@@ -2577,4 +2999,39 @@ void stopSamples()
   playSdRaw7.stop();
   playSdRaw8.stop();
   playSdRaw9.stop();
+  playSdRaw10.stop();
+  playSdRaw11.stop();
+  playSdRaw12.stop();
+  playSdRaw13.stop();
+  playSdRaw14.stop();
+  playSdRaw15.stop();
+  playSdRaw16.stop();
+  playSdRaw17.stop();
+  playSdRaw18.stop();
+  playSdRaw19.stop();
+  playSdRaw20.stop();
+  playSdRaw21.stop();
+  playSdRaw22.stop();
+  playSdRaw23.stop();
+  playSdRaw24.stop();
+  playSdRaw25.stop();
+}
+
+///**************************************************************************************************
+// * Function endChords
+// * -------------------------------------------------------------------------------------------------
+// * Overview: checks what chords need to be ended and ends them
+// * Input:
+// * Output: Nothing
+// **************************************************************************************************/
+void endChords()
+{
+  if( currStep >= 0){
+    if(currPattern->pattern[16][currStep] <= 0){
+      playSdRaw10.stop();
+    }
+    if(currPattern->pattern[17][currStep] <= 0){
+      playSdRaw11.stop();
+    }
+  }
 }
