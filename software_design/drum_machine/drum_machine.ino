@@ -19,6 +19,10 @@
 #define LCD_CS 10
 #define LCD_RST 24
 
+#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
+//#define AUDIO_BLOCK_LEN 10000000
+//#define AUDIO_OFFSET     5000000
+
 #define SDCARD_CS_PIN BUILTIN_SDCARD
 
 enum instruments
@@ -102,9 +106,17 @@ enum playMode{
 };
 
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
-EXTMEM Pattern PatternStorage[16][16];
+//EXTMEM char myAudioBlock[AUDIO_BLOCK_LEN]; // block of memory for audio
+//                         9099342
 EXTMEM Song SongStorage[16][16];
+EXTMEM Pattern PatternStorage[16][16];
+EXTMEM int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
 //------EXTERNAL QSPI RAM CHIP SECTION END------
+ 
 
 // Pattern variables
 Pattern *currPattern;
@@ -258,15 +270,6 @@ AudioConnection          patchCord42(mixer3, 0, i2s1, 1);
 AudioConnection          patchCord43(mixer5, 0, mixer3, 3);
 AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
 // GUItool: end automatically generated code
-
-
-
-#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
-int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
 
 // transport variables
 float tempo = 120;
@@ -449,6 +452,9 @@ void setup()
   //  if (!SerialFlash.begin(flashChipSelect)) {
   //    Serial.println("Unable to access SPI Flash chip");
   //  }
+//    for(int i = 0; i < AUDIO_BLOCK_LEN;i++){
+//      myAudioBlock[i] = 2;
+//    }
 
     // load patterns from SD Card
     Serial.println("Reading patterns from SD");
@@ -463,13 +469,14 @@ void setup()
   
     PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
     PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-    PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
-    PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
-    PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
-    PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
-    PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
-    PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
+    PatternStorage[0][10].readFromSD("/PATTERNS/A/1.CSV");
+    PatternStorage[0][11].readFromSD("/PATTERNS/A/2.CSV");
+    PatternStorage[0][12].readFromSD("/PATTERNS/A/3.CSV");
+    PatternStorage[0][13].readFromSD("/PATTERNS/A/4.CSV");
+    PatternStorage[0][14].readFromSD("/PATTERNS/A/5.CSV");
+    PatternStorage[0][15].readFromSD("/PATTERNS/A/6.CSV");
     Serial.println("Done reading patterns!");
+    PatternStorage[0][14].printPattern();
   
       Serial.println("Reading songs from SD");
     SongStorage[0][0].readFromSD("/SONGS/A/1.CSV");
@@ -489,7 +496,6 @@ void setup()
     SongStorage[0][13].readFromSD("/SONGS/A/14.CSV");
     SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
     SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
-  }
 
   // digital drum initialization
   drum1.frequency(60);
@@ -629,6 +635,7 @@ void setup()
   organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW"); 
 
+PatternStorage[0][14].printPattern();
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
     mixer1.gain(i, 0);

@@ -32,6 +32,7 @@ namespace newdigate {
 
     const uint32_t flashloader_default_sd_buffersize = 4 * 1024;
     const uint32_t flash_offset = 0x10000;
+    const uint32_t audio_offset = 5000000;
 
     struct audiosample {
         int16_t *sampledata;
@@ -44,7 +45,7 @@ namespace newdigate {
         flashloader() {
             uint8_t size = external_psram_size;
             _bytesavailable = size * 1048576 - flash_offset;
-            memory_begin = (uint32_t *)(0x70000000 + flash_offset);
+            memory_begin = (uint32_t *)(0x70000000 + flash_offset + audio_offset); //last hex number is me trying to add an offset to account for pattern storage
             memory_end = (uint32_t *)(0x70000000 + flash_offset + _bytesavailable);
             Serial.printf("SerialFlash for samples: %d\n", _bytesavailable);
         }
