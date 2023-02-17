@@ -159,97 +159,12 @@ newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chor
   // 5 - Cdim
   // 6 - Caug
 
+newdigate::audiosample *organNotes[8];
+
+
 
 newdigate::audiosample *sample9;
 newdigate::audiosample *sample10;
-//
-//// GUItool: begin automatically generated code
-//AudioSynthSimpleDrum     drum2;          //xy=55,814
-//AudioSynthSimpleDrum     drum3;          //xy=55,858
-////AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
-//AudioSynthSimpleDrum     drum1;          //xy=71,754
-////AudioPlaySdRaw           playSdRaw1;     //xy=93,353
-////AudioPlaySdRaw           playSdRaw2;     //xy=96,395
-////AudioPlaySdRaw           playSdRaw3;     //xy=112,440
-////AudioPlaySdRaw           playSdRaw7;     //xy=112,616
-////AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
-////AudioPlaySdRaw           playSdRaw6;     //xy=113,577
-////AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
-////AudioPlaySdRaw           playSdRaw4;     //xy=116,490
-////AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
-////AudioPlaySdRaw           playSdRaw5;     //xy=116,536
-////AudioPlaySdRaw           playSdRaw14;    //xy=115,1137
-////AudioPlaySdRaw           playSdRaw10;    //xy=116,966
-////AudioPlaySdRaw           playSdRaw16;    //xy=117,1209
-////AudioPlaySdRaw           playSdRaw8;     //xy=122,660
-////AudioPlaySdRaw           playSdRaw15;    //xy=120,1173
-////AudioPlaySdRaw           playSdRaw21;    //xy=119,1428
-////AudioPlaySdRaw           playSdRaw20;    //xy=120,1385
-////AudioPlaySdRaw           playSdRaw17;    //xy=121,1254
-////AudioPlaySdRaw           playSdRaw18;    //xy=122,1302
-////AudioPlaySdRaw           playSdRaw19;    //xy=123,1341
-////AudioPlaySdRaw           playSdRaw25;    //xy=132,1628
-////AudioPlaySdRaw           playSdRaw23;    //xy=133,1543
-////AudioPlaySdRaw           playSdRaw24;    //xy=133,1583
-////AudioPlaySdRaw           playSdRaw22;    //xy=135,1503
-//AudioMixer4              mixer4;         //xy=224,762
-//AudioEffectGranular      granular1;      //xy=228,917
-//AudioMixer4              mixer6;         //xy=287,1007
-//AudioMixer4              mixer7;         //xy=293,1156
-//AudioMixer4              mixer8;         //xy=294,1318
-//AudioMixer4              mixer9;         //xy=303,1528
-//AudioMixer4              mixer1;         //xy=342,380
-//AudioMixer4              mixer2;         //xy=385,599
-//AudioMixer4              mixer5;         //xy=499,1020
-//AudioMixer4              mixer3;         //xy=610,595
-//AudioOutputI2S           i2s1;           //xy=780,526
-//AudioConnection          patchCord1(drum2, 0, mixer4, 1);
-//AudioConnection          patchCord2(drum3, 0, mixer4, 2);
-//AudioConnection          patchCord3(playSdRaw9, granular1);
-//AudioConnection          patchCord4(drum1, 0, mixer4, 0);
-//AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
-//AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
-//AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
-//AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
-//AudioConnection          patchCord9(playSdRaw12, 0, mixer6, 2);
-//AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
-//AudioConnection          patchCord11(playSdRaw13, 0, mixer6, 3);
-//AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
-//AudioConnection          patchCord13(playSdRaw11, 0, mixer6, 1);
-//AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
-//AudioConnection          patchCord15(playSdRaw14, 0, mixer7, 0);
-//AudioConnection          patchCord16(playSdRaw10, 0, mixer6, 0);
-//AudioConnection          patchCord17(playSdRaw16, 0, mixer7, 2);
-//AudioConnection          patchCord18(playSdRaw8, 0, mixer2, 3);
-//AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
-//AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
-//AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
-//AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
-//AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
-//AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
-//AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
-//AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
-//AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
-//AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
-//AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
-//AudioConnection          patchCord30(granular1, 0, mixer4, 3);
-//AudioConnection          patchCord31(mixer6, 0, mixer5, 0);
-//AudioConnection          patchCord32(mixer7, 0, mixer5, 1);
-//AudioConnection          patchCord33(mixer8, 0, mixer5, 2);
-//AudioConnection          patchCord34(mixer9, 0, mixer5, 3);
-//AudioConnection          patchCord35(mixer1, 0, mixer3, 0);
-//AudioConnection          patchCord36(mixer2, 0, mixer3, 1);
-//AudioConnection          patchCord37(mixer5, 0, mixer3, 3);
-//AudioConnection          patchCord38(mixer3, 0, i2s1, 0);
-//AudioConnection          patchCord39(mixer3, 0, i2s1, 1);
-//AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
-//// GUItool: end automatically generated code
-
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
 
 // GUItool: begin automatically generated code
 AudioSynthSimpleDrum     drum2;          //xy=55,814
@@ -701,6 +616,16 @@ void setup()
   chordSamples[2][4] = loader.loadSample("SAMPLES/ORGAN/CMIN7.RAW");
   chordSamples[2][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
   chordSamples[2][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
+
+  organNotes[0] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[1] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[2] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[3] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[4] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[5] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  
   
 
   for (int i = 0; i < 4; i++)
@@ -832,10 +757,7 @@ void loop()
             if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
               myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
             }
-//              Serial.println(i);
-//              Serial.println(myParam);
             trigNote(i, myParam);                          // trigger correct instrument and send the parameter
-//            Serial.println("note triggered");
           }
         }
         float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
@@ -1467,6 +1389,29 @@ void readMux(bool printEn)
             }
           }
 
+          if(currInst == 18 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[18][prevStep] > 0){
+              currPattern->pattern[18][i] = currPattern->pattern[18][prevStep];
+              currPattern->parameter[26][i] = currPattern->parameter[26][prevStep]; 
+            }
+          }
+
+          if(currInst == 19 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[19][prevStep] > 0){
+              currPattern->pattern[19][i] = currPattern->pattern[19][prevStep];
+              currPattern->parameter[28][i] = currPattern->parameter[28][prevStep]; 
+              currPattern->parameter[29][i] = currPattern->parameter[29][prevStep]; 
+            }
+          }
+
           
         }
       }
@@ -1914,27 +1859,44 @@ void trigNote(int instNum, int instParam)
     break;
     
   case INST_ORGAN_CHORDS:
-//    Serial.print("Play organ! ");
     if (currStep >= 0){
-      playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
+        playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
     float mySpeed = pow(2, (currPattern->pattern[16][currStep] - 1)/12.0);
-//    Serial.println(mySpeed);
     granular2.setSpeed(mySpeed);
     }
     break;
 
   case INST_GUITAR_CHORDS:
     if (currStep >= 0){
-      playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
+        playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
       float mySpeed = pow(2, (currPattern->pattern[17][currStep] - 1)/12.0);
       granular3.setSpeed(mySpeed);
     }
     break;
     
   case INST_GUITAR_ONE:
+    if (currStep >= 0){
+        playSdRaw12.playRaw(chordSamples[2][(int)currPattern->parameter[26][currStep]]->sampledata, chordSamples[2][(int)currPattern->parameter[26][currStep]]->samplesize / 2, 1);
+      float mySpeed = pow(2, (currPattern->pattern[18][currStep] - 1)/12.0);
+      granular4.setSpeed(mySpeed);
+    }
     break;
 
   case INST_ORGAN_NOTES:
+    if (currStep >= 0){
+      float mySpeed = pow(2, (currPattern->pattern[19][currStep] - 1)/12.0);
+      float myOct = currPattern->parameter[28][currStep];
+      if(myOct > 0){
+        mySpeed = mySpeed * (2 * myOct);
+      } else if (myOct < 0){
+        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
+      }
+      Serial.print("speed: ");
+      Serial.println(mySpeed);
+//      granular4.setSpeed(mySpeed);
+        playSdRaw14.setPlaybackRate(mySpeed);
+        playSdRaw14.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+    }
     break;
 
   case INST_BREAKS:
@@ -2155,6 +2117,57 @@ void displayLCD(bool demoMode)
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
+
+
+      case INST_GUITAR_ONE:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Guitar oneshots");
+       myRootNote = currPattern->pattern[18][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "chord:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[18][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[26][stepEditIndex];
+          u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+
+      case INST_ORGAN_NOTES:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Organ notes");
+       myRootNote = currPattern->pattern[19][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "oct:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[19][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[28][stepEditIndex];
+          sprintf(paramStr, "%.02f", myChordQual);
+          
+          u8g2.drawStr(40, 34, paramStr);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
       }
         u8g2.setFontMode(0);
         u8g2.setDrawColor(1);
@@ -2182,7 +2195,7 @@ void displayLCD(bool demoMode)
           u8g2.drawBox(0, 15 + 10 * cursorLoc, 27, 11); // selection box on menu for navigation
         }
       }
-      if (currInst == 16 || currInst == 17 || currInst == 18){ // organ and guitar chords
+      if (currInst == 16 || currInst == 17 || currInst == 18 || currInst == 19){ // organ and guitar chords
         u8g2.setDrawColor(2);
         if (paramSel) // draw a selection box
         {
@@ -2584,8 +2597,17 @@ void UpdateDataEnc()
                   currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] + 1;
                   if (currPattern->pattern[17][stepEditIndex] > 12) currPattern->pattern[17][stepEditIndex] = 1;
                   break;
+                case INST_GUITAR_ONE:
+                  currPattern->pattern[18][stepEditIndex] = currPattern->pattern[18][stepEditIndex] + 1;
+                  if (currPattern->pattern[18][stepEditIndex] > 12) currPattern->pattern[18][stepEditIndex] = 1;
+                  break;
+                case INST_ORGAN_NOTES:
+                  currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] + 1;
+                  if (currPattern->pattern[19][stepEditIndex] > 12) currPattern->pattern[19][stepEditIndex] = 1;
+                  break;
                 }
                 break;
+
               case 1:             // volume selected
                 switch (currInst) // figure out which instrument we are modifying volumes on
                 {
@@ -2626,10 +2648,23 @@ void UpdateDataEnc()
                     if (currPattern->parameter[22][stepEditIndex] > 6){ // cycle back to beginning of list
                       currPattern->parameter[22][stepEditIndex] = 0;
                     }
+                    break;
                 case INST_GUITAR_CHORDS:
                     currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] + 1; // increment chord type
                     if (currPattern->parameter[24][stepEditIndex] > 6){ // cycle back to beginning of list
                       currPattern->parameter[24][stepEditIndex] = 0;
+                    }
+                  break;
+                case INST_GUITAR_ONE:
+                    currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[26][stepEditIndex] > 6){ // cycle back to beginning of list
+                      currPattern->parameter[26][stepEditIndex] = 0;
+                    }
+                  break;
+                case INST_ORGAN_NOTES:
+                    currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[28][stepEditIndex] > 3){ // cycle back to beginning of list
+                      currPattern->parameter[28][stepEditIndex] = 3;
                     }
                   break;
                 }
@@ -2685,6 +2720,14 @@ void UpdateDataEnc()
                 case INST_GUITAR_CHORDS:
                   currPattern->velocity[17][0] += parameterInc;
                   mixer6.gain(1, currPattern->velocity[17][0]);
+                  break;
+                case INST_GUITAR_ONE:
+                  currPattern->velocity[18][0] += parameterInc;
+                  mixer6.gain(2, currPattern->velocity[18][0]);
+                  break;
+                case INST_ORGAN_NOTES:
+                  currPattern->velocity[19][0] += parameterInc;
+                  mixer7.gain(0, currPattern->velocity[19][0]);
                   break;
                 }
                 break;
@@ -2800,10 +2843,18 @@ void UpdateDataEnc()
               case INST_ORGAN_CHORDS:
                   currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] - 1;
                   if (currPattern->pattern[16][stepEditIndex] < 1) currPattern->pattern[16][stepEditIndex] = 12;
-                  //update granular effect here
                   break;
-
-                    //SWAP SAMPLE HERE
+              case INST_GUITAR_CHORDS:
+                  currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] - 1;
+                  if (currPattern->pattern[17][stepEditIndex] < 1) currPattern->pattern[17][stepEditIndex] = 12;
+                  break;
+              case INST_GUITAR_ONE:
+                  currPattern->pattern[18][stepEditIndex] = currPattern->pattern[18][stepEditIndex] - 1;
+                  if (currPattern->pattern[18][stepEditIndex] < 1) currPattern->pattern[18][stepEditIndex] = 12;
+                  break;
+              case INST_ORGAN_NOTES:
+                  currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] - 1;
+                  if (currPattern->pattern[19][stepEditIndex] < 1) currPattern->pattern[19][stepEditIndex] = 12;
                   break;
               }
               break;
@@ -2864,8 +2915,28 @@ void UpdateDataEnc()
                     if (currPattern->parameter[22][stepEditIndex] < 0){ // cycle back to beginning of list
                       currPattern->parameter[22][stepEditIndex] = 6;
                     }
+                    break;
+              case INST_GUITAR_CHORDS:
+                    currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[24][stepEditIndex] < 0){ // cycle back to beginning of list
+                      currPattern->parameter[24][stepEditIndex] = 6;
+                    }
+                    break;
+              case INST_GUITAR_ONE:
+                    currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[26][stepEditIndex] < 0){ // cycle back to beginning of list
+                      currPattern->parameter[26][stepEditIndex] = 6;
+                    }
+                    break;
+              case INST_ORGAN_NOTES:
+                    currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[28][stepEditIndex] < -3){ // cycle back to beginning of list
+                      currPattern->parameter[28][stepEditIndex] = -3;
+                    }
+                    break;
               }
               break;
+
             case 2:             // param 2 (length) selected
               switch (currInst) // check which instrument is being modified
               {
@@ -2912,6 +2983,18 @@ void UpdateDataEnc()
               case INST_ORGAN_CHORDS:
                   currPattern->velocity[16][0] -= parameterInc;
                   mixer6.gain(0, currPattern->velocity[16][0]);
+                  break;
+              case INST_GUITAR_CHORDS:
+                  currPattern->velocity[17][0] -= parameterInc;
+                  mixer6.gain(1, currPattern->velocity[17][0]);
+                  break;
+              case INST_GUITAR_ONE:
+                  currPattern->velocity[18][0] -= parameterInc;
+                  mixer6.gain(2, currPattern->velocity[18][0]);
+                  break;
+              case INST_ORGAN_NOTES:
+                  currPattern->velocity[19][0] -= parameterInc;
+                  mixer7.gain(0, currPattern->velocity[19][0]);
                   break;
               }
               break;
@@ -2969,6 +3052,10 @@ void recallParameters()
   mixer2.gain(1, currPattern->velocity[13][0]);
   mixer2.gain(2, currPattern->velocity[14][0]);
   mixer2.gain(3, currPattern->velocity[15][0]);
+//  mixer6.gain(0, currPattern->velocity[16][0]);
+//  mixer6.gain(1, currPattern->velocity[17][0]);
+//  mixer6.gain(2, currPattern->velocity[18][0]);
+//  mixer7.gain(0, currPattern->velocity[18][0]);
   playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
   playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
   playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
