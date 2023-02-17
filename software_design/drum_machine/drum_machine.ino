@@ -460,15 +460,17 @@ void setup()
   //    }
 
   // load patterns from SD Card ::: NOTE THIS TAKES LIKE 10 SEC TO LOAD ALL BANKS
-   for (int j = 0; j < 1; j++){ // limit on j determines how many banks to load
-        for (int i = 0; i < 16; i++){
-            char myFullArr[25];
-            sprintf(myFullArr, "/PATTERNS/%i/%i.CSV", j+1, i+1);
-            PatternStorage[j][i].readFromSD((const char*)myFullArr);
-            sprintf(myFullArr, "/SONGS/%i/%i.CSV", j+1, i+1);
-            SongStorage[j][i].readFromSD(myFullArr);
-        }
+  for (int j = 0; j < 1; j++)
+  { // limit on j determines how many banks to load
+    for (int i = 0; i < 16; i++)
+    {
+      char myFullArr[25];
+      sprintf(myFullArr, "/PATTERNS/%i/%i.CSV", j + 1, i + 1);
+      PatternStorage[j][i].readFromSD((const char *)myFullArr);
+      sprintf(myFullArr, "/SONGS/%i/%i.CSV", j + 1, i + 1);
+      SongStorage[j][i].readFromSD(myFullArr);
     }
+  }
 
   // digital drum initialization
   drum1.frequency(60);
@@ -608,7 +610,6 @@ void setup()
   organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
 
-
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
     mixer1.gain(i, 0);
@@ -713,7 +714,7 @@ void loop()
     displayLCD(false);
     lcdTimeout = millis() + 100;
   }
-  
+
   readMux(false); // read inputs and process them
 
   // steps
@@ -722,14 +723,17 @@ void loop()
     if (millis() > (currStepTime + stepLen)) // new step has been reached
     {
       recallParameters(); // update parameters for this step
-      if (playMode == PLAY_PATTERN){
+      if (playMode == PLAY_PATTERN)
+      {
         if (currStep == (int)currPattern->settings[2] - 1)
         {                                                                    // last step off pattern, time to move to the next one
           patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;     // step to the next pattern in sequence
           currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]]; // actually grab the pattern from memory
           patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
         }
-      } else if (playMode == PLAY_SONG){
+      }
+      else if (playMode == PLAY_SONG)
+      {
         if (currStep == (int)currPattern->settings[2] - 1)
         {                 // last step off pattern, time to move to the next one
           songPlayStep++; // increment the song pattern index
@@ -740,29 +744,29 @@ void loop()
           currPattern = &PatternStorage[0][currSong->patterns[songPlayStep]]; // grab the next pattern from memory
         }
       }
-        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
-        endChords();     
-        
-        for (int i = 0; i < 24; i++)
-        { // send triggers of all instruments to be played at this step
-          if (currStep != -1 && currPattern->pattern[i][currStep])
-          {
-            int myParam = 0;      // initialize myParam to zero for instruments that don't need it
-                                  //            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
-                                  //              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
-                                  //            }
-            trigNote(i, myParam); // trigger correct instrument and send the parameter
-          }
-        }
-        float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
-        if (currStep % 2 == 0)
-        { // set timing for steps, accounting for swing
-          currStepTime = currStepTime + stepLen * (1.0 + swingAmt);
-        }
-        else
+      currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
+      endChords();
+
+      for (int i = 0; i < 24; i++)
+      { // send triggers of all instruments to be played at this step
+        if (currStep != -1 && currPattern->pattern[i][currStep])
         {
-          currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
+          int myParam = 0;      // initialize myParam to zero for instruments that don't need it
+                                //            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
+                                //              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
+                                //            }
+          trigNote(i, myParam); // trigger correct instrument and send the parameter
         }
+      }
+      float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
+      if (currStep % 2 == 0)
+      { // set timing for steps, accounting for swing
+        currStepTime = currStepTime + stepLen * (1.0 + swingAmt);
+      }
+      else
+      {
+        currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
+      }
       if (currStep < 16)
       {
         patternPlaySection = 0;
@@ -781,7 +785,7 @@ void loop()
       }
     }
   }
-  
+
   for (int i = 0; i < 16; i++) // check if hardware output pulses need to finish
   {
     if (outPulseTimes[i] != 0) // only check active pulses
@@ -1051,41 +1055,20 @@ void readMux(bool printEn)
             shiftOut(DS, SH_CP, MSBFIRST, sr1);
             shiftOut(DS, SH_CP, MSBFIRST, sr0);
             digitalWrite(ST_CP, HIGH);
-            // save all patterns in bank A for now, maybe make this more elegant later
-            PatternStorage[0][0].writePatternToSD("/PATTERNS/1/1.CSV");
-            PatternStorage[0][1].writePatternToSD("/PATTERNS/1/2.CSV");
-            PatternStorage[0][2].writePatternToSD("/PATTERNS/1/3.CSV");
-            PatternStorage[0][3].writePatternToSD("/PATTERNS/1/4.CSV");
-            PatternStorage[0][4].writePatternToSD("/PATTERNS/1/5.CSV");
-            PatternStorage[0][5].writePatternToSD("/PATTERNS/1/6.CSV");
-            PatternStorage[0][6].writePatternToSD("/PATTERNS/1/7.CSV");
-            PatternStorage[0][7].writePatternToSD("/PATTERNS/1/8.CSV");
-            PatternStorage[0][8].writePatternToSD("/PATTERNS/1/9.CSV");
-            PatternStorage[0][9].writePatternToSD("/PATTERNS/1/10.CSV");
-            PatternStorage[0][10].writePatternToSD("/PATTERNS/1/11.CSV");
-            PatternStorage[0][11].writePatternToSD("/PATTERNS/1/12.CSV");
-            PatternStorage[0][12].writePatternToSD("/PATTERNS/1/13.CSV");
-            PatternStorage[0][13].writePatternToSD("/PATTERNS/1/14.CSV");
-            PatternStorage[0][14].writePatternToSD("/PATTERNS/1/15.CSV");
-            PatternStorage[0][15].writePatternToSD("/PATTERNS/1/16.CSV");
 
-            // save all songs in bank A for now, maybe make this more elegant later
-            SongStorage[0][0].writeSongToSD("/SONGS/1/1.CSV");
-            SongStorage[0][1].writeSongToSD("/SONGS/1/2.CSV");
-            SongStorage[0][2].writeSongToSD("/SONGS/1/3.CSV");
-            SongStorage[0][3].writeSongToSD("/SONGS/1/4.CSV");
-            SongStorage[0][4].writeSongToSD("/SONGS/1/5.CSV");
-            SongStorage[0][5].writeSongToSD("/SONGS/1/6.CSV");
-            SongStorage[0][6].writeSongToSD("/SONGS/1/7.CSV");
-            SongStorage[0][7].writeSongToSD("/SONGS/1/8.CSV");
-            SongStorage[0][8].writeSongToSD("/SONGS/1/9.CSV");
-            SongStorage[0][9].writeSongToSD("/SONGS/1/10.CSV");
-            SongStorage[0][10].writeSongToSD("/SONGS/1/11.CSV");
-            SongStorage[0][11].writeSongToSD("/SONGS/1/12.CSV");
-            SongStorage[0][12].writeSongToSD("/SONGS/1/13.CSV");
-            SongStorage[0][13].writeSongToSD("/SONGS/1/14.CSV");
-            SongStorage[0][14].writeSongToSD("/SONGS/1/15.CSV");
-            SongStorage[0][15].writeSongToSD("/SONGS/1/16.CSV");
+            
+            // load patterns from SD Card ::: NOTE THIS TAKES LIKE 10 SEC TO LOAD ALL BANKS
+            for (int j = 0; j < 1; j++)
+            { // limit on j determines how many banks to load
+              for (int i = 0; i < 16; i++)
+              {
+                char myFullArr[25];
+                sprintf(myFullArr, "/PATTERNS/%i/%i.CSV", j + 1, i + 1);
+                PatternStorage[j][i].writePatternToSD((const char *)myFullArr);
+                sprintf(myFullArr, "/SONGS/%i/%i.CSV", j + 1, i + 1);
+                SongStorage[j][i].writeSongToSD(myFullArr);
+              }
+            }
 
             sr3LED[1] = 0;
             sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
@@ -1729,10 +1712,11 @@ void readMux(bool printEn)
     {
       stepLEDs[i] = 0;
     }
-    if (playMode == PLAY_SONG){
+    if (playMode == PLAY_SONG)
+    {
       stepLEDs[songNum] = 1;
     }
-    
+
     break;
   case DISP_INST:
     for (int i = 0; i < 16; i++)
@@ -2609,13 +2593,16 @@ void displayLCD(bool demoMode)
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      if(playMode == PLAY_SONG){
-        u8g2.drawStr(0, 14, "Song number"); 
+      if (playMode == PLAY_SONG)
+      {
+        u8g2.drawStr(0, 14, "Song number");
         char songNumStr[30];
         sprintf(songNumStr, "%i", songNum + 1);
         u8g2.drawStr(30, 34, songNumStr);
-      } else {
-        u8g2.drawStr(0, 14, "Select a song <3"); 
+      }
+      else
+      {
+        u8g2.drawStr(0, 14, "Select a song <3");
       }
 
       u8g2.sendBuffer();
