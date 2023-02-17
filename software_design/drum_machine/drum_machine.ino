@@ -44,7 +44,10 @@ enum instruments
   INST_GUITAR_CHORDS,
   INST_GUITAR_ONE,
   INST_ORGAN_NOTES,
-  INST_BREAKS
+  INST_ORGAN_NOTES_2,
+  INST_ORGAN_NOTES_3,
+  INST_ORGAN_NOTES_4,
+  INST_ORGAN_NOTES_5
 };
 
 enum lcdStates
@@ -624,9 +627,7 @@ void setup()
   organNotes[4] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[5] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  
-  
+  organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW"); 
 
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
@@ -749,14 +750,14 @@ void loop()
   
         // clockOutput(); //send clock signal out external output
   
-        for (int i = 0; i < 21; i++)
+        for (int i = 0; i < 24; i++)
         { // send triggers of all instruments to be played at this step
           if (currStep != -1 && currPattern->pattern[i][currStep])
           {
             int myParam = 0; // initialize myParam to zero for instruments that don't need it
-            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
-              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
-            }
+//            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
+//              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
+//            }
             trigNote(i, myParam);                          // trigger correct instrument and send the parameter
           }
         }
@@ -780,13 +781,13 @@ void loop()
         }
         currStep = (currStep + 1) % 16; // move step pointer to next step
         
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 24; i++)
         { // send triggers of all instruments to be played at this step
           if (currStep != -1 && currPattern->pattern[i][currStep])
           {
             int myParam = 0; // initialize myParam to zero for instruments that don't need it
-            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20)
-              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
+//            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20)
+//              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
             trigNote(i, myParam);                          // trigger correct instrument and send the parameter
           }
         }
@@ -1412,6 +1413,54 @@ void readMux(bool printEn)
             }
           }
 
+          if(currInst == 20 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[20][prevStep] > 0){
+              currPattern->pattern[20][i] = currPattern->pattern[20][prevStep];
+              currPattern->parameter[30][i] = currPattern->parameter[30][prevStep]; 
+              currPattern->parameter[31][i] = currPattern->parameter[31][prevStep]; 
+            }
+          }
+
+          if(currInst == 21 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[21][prevStep] > 0){
+              currPattern->pattern[21][i] = currPattern->pattern[21][prevStep];
+              currPattern->parameter[32][i] = currPattern->parameter[32][prevStep]; 
+              currPattern->parameter[33][i] = currPattern->parameter[33][prevStep]; 
+            }
+          }
+
+          if(currInst == 22 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[22][prevStep] > 0){
+              currPattern->pattern[22][i] = currPattern->pattern[22][prevStep];
+              currPattern->parameter[34][i] = currPattern->parameter[34][prevStep]; 
+              currPattern->parameter[35][i] = currPattern->parameter[35][prevStep]; 
+            }
+          }
+
+          if(currInst == 23 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = i - 1;
+            if (prevStep == -1){
+              prevStep = 15;
+            }
+            if(currPattern->pattern[23][prevStep] > 0){
+              currPattern->pattern[23][i] = currPattern->pattern[23][prevStep];
+              currPattern->parameter[36][i] = currPattern->parameter[36][prevStep]; 
+              currPattern->parameter[37][i] = currPattern->parameter[37][prevStep]; 
+            }
+          }
+
           
         }
       }
@@ -1891,15 +1940,65 @@ void trigNote(int instNum, int instParam)
       } else if (myOct < 0){
         mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-      Serial.print("speed: ");
-      Serial.println(mySpeed);
-//      granular4.setSpeed(mySpeed);
         playSdRaw14.setPlaybackRate(mySpeed);
         playSdRaw14.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
 
-  case INST_BREAKS:
+  case INST_ORGAN_NOTES_2:
+    if (currStep >= 0){
+      float mySpeed = pow(2, (currPattern->pattern[20][currStep] - 1)/12.0);
+      float myOct = currPattern->parameter[30][currStep];
+      if(myOct > 0){
+        mySpeed = mySpeed * (2 * myOct);
+      } else if (myOct < 0){
+        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
+      }
+        playSdRaw15.setPlaybackRate(mySpeed);
+        playSdRaw15.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+    }
+    break;
+
+  case INST_ORGAN_NOTES_3:
+    if (currStep >= 0){
+      float mySpeed = pow(2, (currPattern->pattern[21][currStep] - 1)/12.0);
+      float myOct = currPattern->parameter[32][currStep];
+      if(myOct > 0){
+        mySpeed = mySpeed * (2 * myOct);
+      } else if (myOct < 0){
+        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
+      }
+        playSdRaw16.setPlaybackRate(mySpeed);
+        playSdRaw16.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+    }
+    break;
+
+  case INST_ORGAN_NOTES_4:
+    if (currStep >= 0){
+      float mySpeed = pow(2, (currPattern->pattern[22][currStep] - 1)/12.0);
+      float myOct = currPattern->parameter[34][currStep];
+      if(myOct > 0){
+        mySpeed = mySpeed * (2 * myOct);
+      } else if (myOct < 0){
+        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
+      }
+        playSdRaw17.setPlaybackRate(mySpeed);
+        playSdRaw17.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+    }
+    break;
+
+  case INST_ORGAN_NOTES_5:                  
+    if (currStep >= 0){
+      float mySpeed = pow(2, (currPattern->pattern[23][currStep] - 1)/12.0);
+      float myOct = currPattern->parameter[36][currStep];
+      if(myOct > 0){
+        mySpeed = mySpeed * (2 * myOct);
+      } else if (myOct < 0){
+        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
+      }
+        playSdRaw18.setPlaybackRate(mySpeed * -1);
+        playSdRaw18.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+    }
     break;
   
   }
@@ -2168,6 +2267,110 @@ void displayLCD(bool demoMode)
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
+
+      case INST_ORGAN_NOTES_2:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Organ notes 2");
+       myRootNote = currPattern->pattern[20][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "oct:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[20][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[30][stepEditIndex];
+          sprintf(paramStr, "%.02f", myChordQual);
+          
+          u8g2.drawStr(40, 34, paramStr);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+
+      case INST_ORGAN_NOTES_3:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Organ notes 3");
+       myRootNote = currPattern->pattern[21][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "oct:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[21][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[32][stepEditIndex];
+          sprintf(paramStr, "%.02f", myChordQual);
+          
+          u8g2.drawStr(40, 34, paramStr);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+
+      case INST_ORGAN_NOTES_4:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Organ notes 4");
+       myRootNote = currPattern->pattern[22][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "oct:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[22][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[34][stepEditIndex];
+          sprintf(paramStr, "%.02f", myChordQual);
+          
+          u8g2.drawStr(40, 34, paramStr);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
+
+      case INST_ORGAN_NOTES_5:
+      if (stepEditIndex < 0 || stepEditIndex > 15){
+        Serial.print("stepEditIndex is out of bounds");
+        Serial.println(stepEditIndex);
+        stepEditIndex = 0;
+      }
+        u8g2.drawStr(0, 11, "Organ notes 5");
+       myRootNote = currPattern->pattern[23][stepEditIndex];
+        u8g2.drawStr(0, 24, "root:");
+        u8g2.drawStr(0, 34, "oct:");
+        u8g2.drawStr(0, 44, "vol: ");
+        sprintf(volStr, "%.02f", currPattern->velocity[23][0]);
+        u8g2.drawStr(30, 44, volStr);
+        if (myRootNote > 0){
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+          float myChordQual = currPattern->parameter[36][stepEditIndex];
+          sprintf(paramStr, "%.02f", myChordQual);
+          
+          u8g2.drawStr(40, 34, paramStr);
+        } else {
+          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        sprintf(stepNumStr, "%i", stepEditIndex);
+        u8g2.drawStr(70, 35, stepNumStr);
+        break;
       }
         u8g2.setFontMode(0);
         u8g2.setDrawColor(1);
@@ -2195,7 +2398,7 @@ void displayLCD(bool demoMode)
           u8g2.drawBox(0, 15 + 10 * cursorLoc, 27, 11); // selection box on menu for navigation
         }
       }
-      if (currInst == 16 || currInst == 17 || currInst == 18 || currInst == 19){ // organ and guitar chords
+      if (currInst > 15 && currInst < 24){ // organ and guitar chords
         u8g2.setDrawColor(2);
         if (paramSel) // draw a selection box
         {
@@ -2549,7 +2752,7 @@ void UpdateDataEnc()
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
-          if (currInst > 7 && currInst < 21){ // bank A sample kit
+          if (currInst > 7 && currInst < 24){ // bank A sample kit
             if (paramSel) // if cursor is modifying parameter
             {
               switch (cursorLoc) // figure out which parameter is being modified
@@ -2604,6 +2807,22 @@ void UpdateDataEnc()
                 case INST_ORGAN_NOTES:
                   currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] + 1;
                   if (currPattern->pattern[19][stepEditIndex] > 12) currPattern->pattern[19][stepEditIndex] = 1;
+                  break;
+                case INST_ORGAN_NOTES_2:
+                  currPattern->pattern[20][stepEditIndex] = currPattern->pattern[20][stepEditIndex] + 1;
+                  if (currPattern->pattern[20][stepEditIndex] > 12) currPattern->pattern[20][stepEditIndex] = 1;
+                  break;
+                case INST_ORGAN_NOTES_3:
+                  currPattern->pattern[21][stepEditIndex] = currPattern->pattern[21][stepEditIndex] + 1;
+                  if (currPattern->pattern[21][stepEditIndex] > 12) currPattern->pattern[21][stepEditIndex] = 1;
+                  break;
+                case INST_ORGAN_NOTES_4:
+                  currPattern->pattern[22][stepEditIndex] = currPattern->pattern[22][stepEditIndex] + 1;
+                  if (currPattern->pattern[22][stepEditIndex] > 12) currPattern->pattern[22][stepEditIndex] = 1;
+                  break;
+                case INST_ORGAN_NOTES_5:
+                  currPattern->pattern[23][stepEditIndex] = currPattern->pattern[23][stepEditIndex] + 1;
+                  if (currPattern->pattern[23][stepEditIndex] > 12) currPattern->pattern[23][stepEditIndex] = 1;
                   break;
                 }
                 break;
@@ -2667,6 +2886,30 @@ void UpdateDataEnc()
                       currPattern->parameter[28][stepEditIndex] = 3;
                     }
                   break;
+                case INST_ORGAN_NOTES_2:
+                    currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[30][stepEditIndex] > 3){ // cycle back to beginning of list
+                      currPattern->parameter[30][stepEditIndex] = 3;
+                    }
+                  break;
+                case INST_ORGAN_NOTES_3:
+                    currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[32][stepEditIndex] > 3){ // cycle back to beginning of list
+                      currPattern->parameter[32][stepEditIndex] = 3;
+                    }
+                  break;
+                case INST_ORGAN_NOTES_4:
+                    currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[34][stepEditIndex] > 3){ // cycle back to beginning of list
+                      currPattern->parameter[34][stepEditIndex] = 3;
+                    }
+                  break;
+                case INST_ORGAN_NOTES_5:
+                    currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] + 1; // increment chord type
+                    if (currPattern->parameter[36][stepEditIndex] > 3){ // cycle back to beginning of list
+                      currPattern->parameter[36][stepEditIndex] = 3;
+                    }
+                  break;
                 }
                 break;
   
@@ -2728,6 +2971,22 @@ void UpdateDataEnc()
                 case INST_ORGAN_NOTES:
                   currPattern->velocity[19][0] += parameterInc;
                   mixer7.gain(0, currPattern->velocity[19][0]);
+                  break;
+                case INST_ORGAN_NOTES_2:
+                  currPattern->velocity[20][0] += parameterInc;
+                  mixer7.gain(1, currPattern->velocity[20][0]);
+                  break;
+                case INST_ORGAN_NOTES_3:
+                  currPattern->velocity[21][0] += parameterInc;
+                  mixer7.gain(2, currPattern->velocity[21][0]);
+                  break;
+                case INST_ORGAN_NOTES_4:
+                  currPattern->velocity[22][0] += parameterInc;
+                  mixer7.gain(3, currPattern->velocity[22][0]);
+                  break;
+                case INST_ORGAN_NOTES_5:
+                  currPattern->velocity[23][0] += parameterInc;
+                  mixer8.gain(0, currPattern->velocity[23][0]);
                   break;
                 }
                 break;
@@ -2856,6 +3115,22 @@ void UpdateDataEnc()
                   currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] - 1;
                   if (currPattern->pattern[19][stepEditIndex] < 1) currPattern->pattern[19][stepEditIndex] = 12;
                   break;
+              case INST_ORGAN_NOTES_2:
+                  currPattern->pattern[20][stepEditIndex] = currPattern->pattern[20][stepEditIndex] - 1;
+                  if (currPattern->pattern[20][stepEditIndex] < 1) currPattern->pattern[20][stepEditIndex] = 12;
+                  break;
+              case INST_ORGAN_NOTES_3:
+                  currPattern->pattern[21][stepEditIndex] = currPattern->pattern[21][stepEditIndex] - 1;
+                  if (currPattern->pattern[21][stepEditIndex] < 1) currPattern->pattern[21][stepEditIndex] = 12;
+                  break;
+              case INST_ORGAN_NOTES_4:
+                  currPattern->pattern[22][stepEditIndex] = currPattern->pattern[22][stepEditIndex] - 1;
+                  if (currPattern->pattern[22][stepEditIndex] < 1) currPattern->pattern[22][stepEditIndex] = 12;
+                  break;
+              case INST_ORGAN_NOTES_5:
+                  currPattern->pattern[23][stepEditIndex] = currPattern->pattern[24][stepEditIndex] - 1;
+                  if (currPattern->pattern[23][stepEditIndex] < 1) currPattern->pattern[24][stepEditIndex] = 12;
+                  break;
               }
               break;
 
@@ -2934,8 +3209,34 @@ void UpdateDataEnc()
                       currPattern->parameter[28][stepEditIndex] = -3;
                     }
                     break;
+              case INST_ORGAN_NOTES_2:
+                    currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[30][stepEditIndex] < -3){ // cycle back to beginning of list
+                      currPattern->parameter[30][stepEditIndex] = -3;
+                    }
+                    break;
+              case INST_ORGAN_NOTES_3:
+                    currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[32][stepEditIndex] < -3){ // cycle back to beginning of list
+                      currPattern->parameter[32][stepEditIndex] = -3;
+                    }
+                    break;
+              case INST_ORGAN_NOTES_4:
+                    currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[34][stepEditIndex] < -3){ // cycle back to beginning of list
+                      currPattern->parameter[34][stepEditIndex] = -3;
+                    }
+                    break;
+              case INST_ORGAN_NOTES_5:
+                    currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] - 1; // increment chord type
+                    if (currPattern->parameter[36][stepEditIndex] < -3){ // cycle back to beginning of list
+                      currPattern->parameter[36][stepEditIndex] = -3;
+                    }
+                    break;
               }
               break;
+
+              
 
             case 2:             // param 2 (length) selected
               switch (currInst) // check which instrument is being modified
@@ -2995,6 +3296,22 @@ void UpdateDataEnc()
               case INST_ORGAN_NOTES:
                   currPattern->velocity[19][0] -= parameterInc;
                   mixer7.gain(0, currPattern->velocity[19][0]);
+                  break;
+              case INST_ORGAN_NOTES_2:
+                  currPattern->velocity[20][0] -= parameterInc;
+                  mixer7.gain(1, currPattern->velocity[20][0]);
+                  break;
+              case INST_ORGAN_NOTES_3:
+                  currPattern->velocity[21][0] -= parameterInc;
+                  mixer7.gain(2, currPattern->velocity[21][0]);
+                  break;
+              case INST_ORGAN_NOTES_4:
+                  currPattern->velocity[22][0] -= parameterInc;
+                  mixer7.gain(3, currPattern->velocity[22][0]);
+                  break;
+              case INST_ORGAN_NOTES_5:
+                  currPattern->velocity[23][0] -= parameterInc;
+                  mixer8.gain(0, currPattern->velocity[23][0]);
                   break;
               }
               break;
