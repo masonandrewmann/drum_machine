@@ -4,7 +4,7 @@
 #include <SD.h>
 #include <CSV_Parser.h>
 #include <U8g2lib.h>
-//#include "frames.h"
+// #include "frames.h"
 #include "Pattern.h"
 #include "Song.h"
 #include <TeensyVariablePlayback.h>
@@ -19,9 +19,9 @@
 #define LCD_CS 10
 #define LCD_RST 24
 
-#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
-//#define AUDIO_BLOCK_LEN 10000000
-//#define AUDIO_OFFSET     5000000
+#define GRANULAR_MEMORY_SIZE 12800 // enough for 290 ms at 44.1 kHz
+// #define AUDIO_BLOCK_LEN 10000000
+// #define AUDIO_OFFSET     5000000
 
 #define SDCARD_CS_PIN BUILTIN_SDCARD
 
@@ -102,13 +102,14 @@ enum ledDisplayStates
   DISP_INST_BANK
 };
 
-enum playMode{
+enum playMode
+{
   PLAY_PATTERN,
   PLAY_SONG
 };
 
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
-//EXTMEM char myAudioBlock[AUDIO_BLOCK_LEN]; // block of memory for audio
+// EXTMEM char myAudioBlock[AUDIO_BLOCK_LEN]; // block of memory for audio
 //                         9099342
 EXTMEM Song SongStorage[16][16];
 EXTMEM Pattern PatternStorage[16][16];
@@ -118,7 +119,6 @@ EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
 //------EXTERNAL QSPI RAM CHIP SECTION END------
- 
 
 // Pattern variables
 Pattern *currPattern;
@@ -144,10 +144,10 @@ AudioPlayArrayResmp playSdRaw6; // xy=321,513
 AudioPlayArrayResmp playSdRaw7; // xy=321,513
 AudioPlayArrayResmp playSdRaw8; // xy=321,513
 
-//bank A break
+// bank A break
 AudioPlayArrayResmp playSdRaw9; // xy=321,513
 
-//bank B
+// bank B
 AudioPlayArrayResmp playSdRaw10; // xy=321,513
 AudioPlayArrayResmp playSdRaw11; // xy=321,513
 AudioPlayArrayResmp playSdRaw12; // xy=321,513
@@ -168,211 +168,112 @@ AudioPlayArrayResmp playSdRaw25; // xy=321,513
 newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
 
 newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
-  // 0 - Cmaj
-  // 1 - Cmin
-  // 2 - C7
-  // 3 - Cmaj7
-  // 4 - Cmin7
-  // 5 - Cdim
-  // 6 - Caug
+                                            // 0 - Cmaj
+                                            // 1 - Cmin
+                                            // 2 - C7
+                                            // 3 - Cmaj7
+                                            // 4 - Cmin7
+                                            // 5 - Cdim
+                                            // 6 - Caug
 
 newdigate::audiosample *organNotes[8];
-
-
 
 newdigate::audiosample *sample9;
 newdigate::audiosample *sample10;
 
-//// GUItool: begin automatically generated code
-//AudioSynthSimpleDrum     drum2;          //xy=55,814
-//AudioSynthSimpleDrum     drum3;          //xy=55,858
-////AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
-//AudioSynthSimpleDrum     drum1;          //xy=71,754
-////AudioPlaySdRaw           playSdRaw1;     //xy=93,353
-////AudioPlaySdRaw           playSdRaw2;     //xy=96,395
-////AudioPlaySdRaw           playSdRaw3;     //xy=112,440
-////AudioPlaySdRaw           playSdRaw7;     //xy=112,616
-////AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
-////AudioPlaySdRaw           playSdRaw6;     //xy=113,577
-////AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
-////AudioPlaySdRaw           playSdRaw4;     //xy=116,490
-////AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
-////AudioPlaySdRaw           playSdRaw5;     //xy=116,536
-////AudioPlaySdRaw           playSdRaw10;    //xy=116,966
-////AudioPlaySdRaw           playSdRaw8;     //xy=122,660
-////AudioPlaySdRaw           playSdRaw14;    //xy=146,1347
-////AudioPlaySdRaw           playSdRaw16;    //xy=148,1419
-////AudioPlaySdRaw           playSdRaw15;    //xy=151,1383
-////AudioPlaySdRaw           playSdRaw21;    //xy=150,1638
-////AudioPlaySdRaw           playSdRaw20;    //xy=151,1595
-////AudioPlaySdRaw           playSdRaw17;    //xy=152,1464
-////AudioPlaySdRaw           playSdRaw18;    //xy=153,1512
-////AudioPlaySdRaw           playSdRaw19;    //xy=154,1551
-////AudioPlaySdRaw           playSdRaw25;    //xy=163,1838
-////AudioPlaySdRaw           playSdRaw23;    //xy=164,1753
-////AudioPlaySdRaw           playSdRaw24;    //xy=164,1793
-////AudioPlaySdRaw           playSdRaw22;    //xy=166,1713
-//AudioMixer4              mixer4;         //xy=224,762
-//AudioEffectGranular      granular1;      //xy=228,917
-//AudioEffectGranular      granular5;      //xy=299,1091
-//AudioEffectGranular      granular4;      //xy=300,1049
-//AudioEffectGranular      granular3;      //xy=301,1003
-//AudioEffectGranular      granular2;      //xy=303,963
-//AudioMixer4              mixer7;         //xy=324,1366
-//AudioMixer4              mixer8;         //xy=325,1528
-//AudioMixer4              mixer9;         //xy=334,1738
-//AudioMixer4              mixer1;         //xy=342,380
-//AudioMixer4              mixer2;         //xy=385,599
-//AudioMixer4              mixer6;         //xy=497,1007
-//AudioMixer4              mixer3;         //xy=610,595
-//AudioOutputI2S           i2s1;           //xy=780,526
-//AudioMixer4              mixer5;         //xy=860,1053
-//AudioConnection          patchCord1(drum2, 0, mixer4, 1);
-//AudioConnection          patchCord2(drum3, 0, mixer4, 2);
-//AudioConnection          patchCord3(playSdRaw9, granular1);
-//AudioConnection          patchCord4(drum1, 0, mixer4, 0);
-//AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
-//AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
-//AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
-//AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
-//AudioConnection          patchCord9(playSdRaw12, granular4);
-//AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
-//AudioConnection          patchCord11(playSdRaw13, granular5);
-//AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
-//AudioConnection          patchCord13(playSdRaw11, granular3);
-//AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
-//AudioConnection          patchCord15(playSdRaw10, granular2);
-//AudioConnection          patchCord16(playSdRaw8, 0, mixer2, 3);
-//AudioConnection          patchCord17(playSdRaw14, 0, mixer7, 0);
-//AudioConnection          patchCord18(playSdRaw16, 0, mixer7, 2);
-//AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
-//AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
-//AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
-//AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
-//AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
-//AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
-//AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
-//AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
-//AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
-//AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
-//AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
-//AudioConnection          patchCord30(granular1, 0, mixer4, 3);
-//AudioConnection          patchCord31(granular5, 0, mixer6, 3);
-//AudioConnection          patchCord32(granular4, 0, mixer6, 2);
-//AudioConnection          patchCord33(granular3, 0, mixer6, 1);
-//AudioConnection          patchCord34(granular2, 0, mixer6, 0);
-//AudioConnection          patchCord35(mixer7, 0, mixer5, 1);
-//AudioConnection          patchCord36(mixer8, 0, mixer5, 2);
-//AudioConnection          patchCord37(mixer9, 0, mixer5, 3);
-//AudioConnection          patchCord38(mixer1, 0, mixer3, 0);
-//AudioConnection          patchCord39(mixer2, 0, mixer3, 1);
-//AudioConnection          patchCord40(mixer6, 0, mixer5, 0);
-//AudioConnection          patchCord41(mixer3, 0, i2s1, 0);
-//AudioConnection          patchCord42(mixer3, 0, i2s1, 1);
-//AudioConnection          patchCord43(mixer5, 0, mixer3, 3);
-//AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
-//// GUItool: end automatically generated code
-
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
-
 // GUItool: begin automatically generated code
-AudioSynthSimpleDrum     drum2;          //xy=55,814
-AudioSynthSimpleDrum     drum3;          //xy=55,858
-//AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
-AudioSynthSimpleDrum     drum1;          //xy=71,754
-//AudioPlaySdRaw           playSdRaw1;     //xy=93,353
-//AudioPlaySdRaw           playSdRaw2;     //xy=96,395
-//AudioPlaySdRaw           playSdRaw3;     //xy=112,440
-//AudioPlaySdRaw           playSdRaw7;     //xy=112,616
-//AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
-//AudioPlaySdRaw           playSdRaw6;     //xy=113,577
-//AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
-//AudioPlaySdRaw           playSdRaw4;     //xy=116,490
-//AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
-//AudioPlaySdRaw           playSdRaw5;     //xy=116,536
-//AudioPlaySdRaw           playSdRaw10;    //xy=116,966
-//AudioPlaySdRaw           playSdRaw8;     //xy=122,660
-//AudioPlaySdRaw           playSdRaw14;    //xy=146,1347
-//AudioPlaySdRaw           playSdRaw16;    //xy=148,1419
-//AudioPlaySdRaw           playSdRaw15;    //xy=151,1383
-//AudioPlaySdRaw           playSdRaw21;    //xy=150,1638
-//AudioPlaySdRaw           playSdRaw20;    //xy=151,1595
-//AudioPlaySdRaw           playSdRaw17;    //xy=152,1464
-//AudioPlaySdRaw           playSdRaw18;    //xy=153,1512
-//AudioPlaySdRaw           playSdRaw19;    //xy=154,1551
-//AudioPlaySdRaw           playSdRaw25;    //xy=163,1838
-//AudioPlaySdRaw           playSdRaw23;    //xy=164,1753
-//AudioPlaySdRaw           playSdRaw24;    //xy=164,1793
-//AudioPlaySdRaw           playSdRaw22;    //xy=166,1713
-AudioMixer4              mixer4;         //xy=224,762
-AudioEffectGranular      granular1;      //xy=228,917
-AudioEffectGranular      granular5;      //xy=299,1091
-AudioEffectGranular      granular4;      //xy=300,1049
-AudioEffectGranular      granular3;      //xy=301,1003
-AudioEffectGranular      granular2;      //xy=303,963
-AudioMixer4              mixer7;         //xy=324,1366
-AudioMixer4              mixer8;         //xy=325,1528
-AudioMixer4              mixer9;         //xy=334,1738
-AudioMixer4              mixer1;         //xy=342,380
-AudioMixer4              mixer2;         //xy=385,599
-AudioMixer4              mixer6;         //xy=497,1007
-AudioMixer4              mixer3;         //xy=610,595
-AudioEffectBitcrusher    bitcrusher2;    //xy=768,604
-AudioEffectBitcrusher    bitcrusher1;    //xy=772,569
-AudioMixer4              mixer5;         //xy=860,1053
-AudioOutputI2S           i2s1;           //xy=941,571
-AudioConnection          patchCord1(drum2, 0, mixer4, 1);
-AudioConnection          patchCord2(drum3, 0, mixer4, 2);
-AudioConnection          patchCord3(playSdRaw9, granular1);
-AudioConnection          patchCord4(drum1, 0, mixer4, 0);
-AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
-AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
-AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
-AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
-AudioConnection          patchCord9(playSdRaw12, granular4);
-AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
-AudioConnection          patchCord11(playSdRaw13, granular5);
-AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
-AudioConnection          patchCord13(playSdRaw11, granular3);
-AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
-AudioConnection          patchCord15(playSdRaw10, granular2);
-AudioConnection          patchCord16(playSdRaw8, 0, mixer2, 3);
-AudioConnection          patchCord17(playSdRaw14, 0, mixer7, 0);
-AudioConnection          patchCord18(playSdRaw16, 0, mixer7, 2);
-AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
-AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
-AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
-AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
-AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
-AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
-AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
-AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
-AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
-AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
-AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
-AudioConnection          patchCord30(granular1, 0, mixer4, 3);
-AudioConnection          patchCord31(granular5, 0, mixer6, 3);
-AudioConnection          patchCord32(granular4, 0, mixer6, 2);
-AudioConnection          patchCord33(granular3, 0, mixer6, 1);
-AudioConnection          patchCord34(granular2, 0, mixer6, 0);
-AudioConnection          patchCord35(mixer7, 0, mixer5, 1);
-AudioConnection          patchCord36(mixer8, 0, mixer5, 2);
-AudioConnection          patchCord37(mixer9, 0, mixer5, 3);
-AudioConnection          patchCord38(mixer1, 0, mixer3, 0);
-AudioConnection          patchCord39(mixer2, 0, mixer3, 1);
-AudioConnection          patchCord40(mixer6, 0, mixer5, 0);
-AudioConnection          patchCord41(mixer3, bitcrusher1);
-AudioConnection          patchCord42(mixer3, bitcrusher2);
-AudioConnection          patchCord43(bitcrusher2, 0, i2s1, 1);
-AudioConnection          patchCord44(bitcrusher1, 0, i2s1, 0);
-AudioConnection          patchCord45(mixer5, 0, mixer3, 3);
-AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
+AudioSynthSimpleDrum drum2; // xy=55,814
+AudioSynthSimpleDrum drum3; // xy=55,858
+// AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
+AudioSynthSimpleDrum drum1; // xy=71,754
+// AudioPlaySdRaw           playSdRaw1;     //xy=93,353
+// AudioPlaySdRaw           playSdRaw2;     //xy=96,395
+// AudioPlaySdRaw           playSdRaw3;     //xy=112,440
+// AudioPlaySdRaw           playSdRaw7;     //xy=112,616
+// AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
+// AudioPlaySdRaw           playSdRaw6;     //xy=113,577
+// AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
+// AudioPlaySdRaw           playSdRaw4;     //xy=116,490
+// AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
+// AudioPlaySdRaw           playSdRaw5;     //xy=116,536
+// AudioPlaySdRaw           playSdRaw10;    //xy=116,966
+// AudioPlaySdRaw           playSdRaw8;     //xy=122,660
+// AudioPlaySdRaw           playSdRaw14;    //xy=146,1347
+// AudioPlaySdRaw           playSdRaw16;    //xy=148,1419
+// AudioPlaySdRaw           playSdRaw15;    //xy=151,1383
+// AudioPlaySdRaw           playSdRaw21;    //xy=150,1638
+// AudioPlaySdRaw           playSdRaw20;    //xy=151,1595
+// AudioPlaySdRaw           playSdRaw17;    //xy=152,1464
+// AudioPlaySdRaw           playSdRaw18;    //xy=153,1512
+// AudioPlaySdRaw           playSdRaw19;    //xy=154,1551
+// AudioPlaySdRaw           playSdRaw25;    //xy=163,1838
+// AudioPlaySdRaw           playSdRaw23;    //xy=164,1753
+// AudioPlaySdRaw           playSdRaw24;    //xy=164,1793
+// AudioPlaySdRaw           playSdRaw22;    //xy=166,1713
+AudioMixer4 mixer4;                // xy=224,762
+AudioEffectGranular granular1;     // xy=228,917
+AudioEffectGranular granular5;     // xy=299,1091
+AudioEffectGranular granular4;     // xy=300,1049
+AudioEffectGranular granular3;     // xy=301,1003
+AudioEffectGranular granular2;     // xy=303,963
+AudioMixer4 mixer7;                // xy=324,1366
+AudioMixer4 mixer8;                // xy=325,1528
+AudioMixer4 mixer9;                // xy=334,1738
+AudioMixer4 mixer1;                // xy=342,380
+AudioMixer4 mixer2;                // xy=385,599
+AudioMixer4 mixer6;                // xy=497,1007
+AudioMixer4 mixer3;                // xy=610,595
+AudioEffectBitcrusher bitcrusher2; // xy=768,604
+AudioEffectBitcrusher bitcrusher1; // xy=772,569
+AudioMixer4 mixer5;                // xy=860,1053
+AudioOutputI2S i2s1;               // xy=941,571
+AudioConnection patchCord1(drum2, 0, mixer4, 1);
+AudioConnection patchCord2(drum3, 0, mixer4, 2);
+AudioConnection patchCord3(playSdRaw9, granular1);
+AudioConnection patchCord4(drum1, 0, mixer4, 0);
+AudioConnection patchCord5(playSdRaw1, 0, mixer1, 0);
+AudioConnection patchCord6(playSdRaw2, 0, mixer1, 1);
+AudioConnection patchCord7(playSdRaw3, 0, mixer1, 2);
+AudioConnection patchCord8(playSdRaw7, 0, mixer2, 2);
+AudioConnection patchCord9(playSdRaw12, granular4);
+AudioConnection patchCord10(playSdRaw6, 0, mixer2, 1);
+AudioConnection patchCord11(playSdRaw13, granular5);
+AudioConnection patchCord12(playSdRaw4, 0, mixer1, 3);
+AudioConnection patchCord13(playSdRaw11, granular3);
+AudioConnection patchCord14(playSdRaw5, 0, mixer2, 0);
+AudioConnection patchCord15(playSdRaw10, granular2);
+AudioConnection patchCord16(playSdRaw8, 0, mixer2, 3);
+AudioConnection patchCord17(playSdRaw14, 0, mixer7, 0);
+AudioConnection patchCord18(playSdRaw16, 0, mixer7, 2);
+AudioConnection patchCord19(playSdRaw15, 0, mixer7, 1);
+AudioConnection patchCord20(playSdRaw21, 0, mixer8, 3);
+AudioConnection patchCord21(playSdRaw20, 0, mixer8, 2);
+AudioConnection patchCord22(playSdRaw17, 0, mixer7, 3);
+AudioConnection patchCord23(playSdRaw18, 0, mixer8, 0);
+AudioConnection patchCord24(playSdRaw19, 0, mixer8, 1);
+AudioConnection patchCord25(playSdRaw25, 0, mixer9, 3);
+AudioConnection patchCord26(playSdRaw23, 0, mixer9, 1);
+AudioConnection patchCord27(playSdRaw24, 0, mixer9, 2);
+AudioConnection patchCord28(playSdRaw22, 0, mixer9, 0);
+AudioConnection patchCord29(mixer4, 0, mixer3, 2);
+AudioConnection patchCord30(granular1, 0, mixer4, 3);
+AudioConnection patchCord31(granular5, 0, mixer6, 3);
+AudioConnection patchCord32(granular4, 0, mixer6, 2);
+AudioConnection patchCord33(granular3, 0, mixer6, 1);
+AudioConnection patchCord34(granular2, 0, mixer6, 0);
+AudioConnection patchCord35(mixer7, 0, mixer5, 1);
+AudioConnection patchCord36(mixer8, 0, mixer5, 2);
+AudioConnection patchCord37(mixer9, 0, mixer5, 3);
+AudioConnection patchCord38(mixer1, 0, mixer3, 0);
+AudioConnection patchCord39(mixer2, 0, mixer3, 1);
+AudioConnection patchCord40(mixer6, 0, mixer5, 0);
+AudioConnection patchCord41(mixer3, bitcrusher1);
+AudioConnection patchCord42(mixer3, bitcrusher2);
+AudioConnection patchCord43(bitcrusher2, 0, i2s1, 1);
+AudioConnection patchCord44(bitcrusher1, 0, i2s1, 0);
+AudioConnection patchCord45(mixer5, 0, mixer3, 3);
+AudioControlSGTL5000 sgtl5000_1; // xy=713,316
 // GUItool: end automatically generated code
-
 
 // transport variables
 float tempo = 120;
@@ -462,19 +363,17 @@ int instBankNum = 0;
 int pattBankNum = 0;
 int songBankNum = 0;
 
-//playback stuff
+// playback stuff
 int playMode = PLAY_PATTERN;
 int songPlayStep = 0;
 int patternPlaySection = 0;
-int patternViewSection = 0; // which part of pattern are we in: 1-16, 17-32, 33-48 or 49-64? poorly named variable :~(
 
-//chord playback
+// chord playback
 long stepEditIndex = 0;
 char rootNotes[12][6] = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
 char chordQual[7][6] = {"maj", "min", "7", "maj7", "min7", "dim", "aug"};
 int chordCursorLoc = 0;
 int instChordTypes[3] = {0, 0, 0};
-
 
 void setup()
 {
@@ -490,7 +389,7 @@ void setup()
   pinMode(SH_CP, OUTPUT); // clock pin
   pinMode(ST_CP, OUTPUT); // latch
   pinMode(DS, OUTPUT);    // data pin
-  
+
   // inittialize a bunch of arrays
   for (int i = 0; i < 16; i++)
   {
@@ -519,7 +418,7 @@ void setup()
   sr0LED[5] = 1;
   sr3LED[7] = 1;
 
-    // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
+  // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
   uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
                 sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
 
@@ -535,7 +434,7 @@ void setup()
   // make two blank variables for the step LEDs, not necessary i could just define them below
   uint8_t sr4 = 0b00000000;
   uint8_t sr5 = 0b00000000;
-  
+
   // send all shift register values out
   digitalWrite(ST_CP, LOW);
   shiftOut(DS, SH_CP, MSBFIRST, sr5);
@@ -556,50 +455,20 @@ void setup()
   //  if (!SerialFlash.begin(flashChipSelect)) {
   //    Serial.println("Unable to access SPI Flash chip");
   //  }
-//    for(int i = 0; i < AUDIO_BLOCK_LEN;i++){
-//      myAudioBlock[i] = 2;
-//    }
+  //    for(int i = 0; i < AUDIO_BLOCK_LEN;i++){
+  //      myAudioBlock[i] = 2;
+  //    }
 
-    // load patterns from SD Card
-    Serial.println("Reading patterns from SD");
-    PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
-    PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
-    PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
-    PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
-    PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
-    PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
-    PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
-    PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
-  
-    PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
-    PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-    PatternStorage[0][10].readFromSD("/PATTERNS/A/1.CSV");
-    PatternStorage[0][11].readFromSD("/PATTERNS/A/2.CSV");
-    PatternStorage[0][12].readFromSD("/PATTERNS/A/3.CSV");
-    PatternStorage[0][13].readFromSD("/PATTERNS/A/4.CSV");
-    PatternStorage[0][14].readFromSD("/PATTERNS/A/5.CSV");
-    PatternStorage[0][15].readFromSD("/PATTERNS/A/6.CSV");
-    Serial.println("Done reading patterns!");
-    PatternStorage[0][14].printPattern();
-  
-      Serial.println("Reading songs from SD");
-    SongStorage[0][0].readFromSD("/SONGS/A/1.CSV");
-    SongStorage[0][1].readFromSD("/SONGS/A/2.CSV");
-    SongStorage[0][2].readFromSD("/SONGS/A/3.CSV");
-    SongStorage[0][3].readFromSD("/SONGS/A/4.CSV");
-    SongStorage[0][4].readFromSD("/SONGS/A/5.CSV");
-    SongStorage[0][5].readFromSD("/SONGS/A/6.CSV");
-    SongStorage[0][6].readFromSD("/SONGS/A/7.CSV");
-    SongStorage[0][7].readFromSD("/SONGS/A/8.CSV");
-  
-    SongStorage[0][8].readFromSD("/SONGS/A/9.CSV");
-    SongStorage[0][9].readFromSD("/SONGS/A/10.CSV");
-    SongStorage[0][10].readFromSD("/SONGS/A/11.CSV");
-    SongStorage[0][11].readFromSD("/SONGS/A/12.CSV");
-    SongStorage[0][12].readFromSD("/SONGS/A/13.CSV");
-    SongStorage[0][13].readFromSD("/SONGS/A/14.CSV");
-    SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
-    SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
+  // load patterns from SD Card ::: NOTE THIS TAKES LIKE 10 SEC TO LOAD ALL BANKS
+   for (int j = 0; j < 1; j++){ // limit on j determines how many banks to load
+        for (int i = 0; i < 16; i++){
+            char myFullArr[25];
+            sprintf(myFullArr, "/PATTERNS/%i/%i.CSV", j+1, i+1);
+            PatternStorage[j][i].readFromSD((const char*)myFullArr);
+            sprintf(myFullArr, "/SONGS/%i/%i.CSV", j+1, i+1);
+            SongStorage[j][i].readFromSD(myFullArr);
+        }
+    }
 
   // digital drum initialization
   drum1.frequency(60);
@@ -682,7 +551,7 @@ void setup()
   kitSamples[0][5] = loader.loadSample("DRUMS/CASIOSK1/CB_HI.RAW");
   kitSamples[0][6] = loader.loadSample("DRUMS/CASIOSK1/SKLOTOM.RAW");
   kitSamples[0][7] = loader.loadSample("DRUMS/CASIOSK1/SKHITOM.RAW");
-  
+
   kitSamples[0][0] = loader.loadSample("DRUMS/CASIOSK1/KICK.RAW");
   kitSamples[0][1] = loader.loadSample("DRUMS/CASIOSK1/SNARE.RAW");
 
@@ -737,9 +606,9 @@ void setup()
   organNotes[4] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[5] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW"); 
+  organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
 
-PatternStorage[0][14].printPattern();
+
   for (int i = 0; i < 4; i++)
   { // mute all digital mixers
     mixer1.gain(i, 0);
@@ -786,9 +655,9 @@ PatternStorage[0][14].printPattern();
   mixer4.gain(2, 1);   // digi drum 3
   mixer4.gain(3, 2);   // playSdRaw9
 
-  //granular setup
+  // granular setup
   granular1.begin(granularMemory1, GRANULAR_MEMORY_SIZE);
-  granular1.beginPitchShift(50);
+  //  granular1.beginPitchShift(50);
 
   granular2.begin(granularMemory2, GRANULAR_MEMORY_SIZE);
   granular2.beginPitchShift(50);
@@ -803,7 +672,7 @@ PatternStorage[0][14].printPattern();
   bitcrusher1.sampleRate(44100);
   bitcrusher2.bits(16);
   bitcrusher2.sampleRate(44100);
-  
+
   // initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins) / sizeof(muxAddressPins[0]); i++)
   {
@@ -833,7 +702,7 @@ PatternStorage[0][14].printPattern();
   patternNum = 0;
 
   currSong = &SongStorage[0][0];
-  
+
   currStepTime = millis();
 }
 
@@ -844,9 +713,8 @@ void loop()
     displayLCD(false);
     lcdTimeout = millis() + 100;
   }
-//  Serial.println("enter mux read");
+  
   readMux(false); // read inputs and process them
-//  Serial.println("exit mux read");
 
   // steps
   if (transportState == PLAYING)
@@ -861,52 +729,29 @@ void loop()
           currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]]; // actually grab the pattern from memory
           patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
         }
-        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
-        endChords(); // turn off any chords that need to be turned off on this step
-  
-        // clockOutput(); //send clock signal out external output
-  
-        for (int i = 0; i < 24; i++)
-        { // send triggers of all instruments to be played at this step
-          if (currStep != -1 && currPattern->pattern[i][currStep])
-          {
-            int myParam = 0; // initialize myParam to zero for instruments that don't need it
-//            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
-//              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
-//            }
-            trigNote(i, myParam);                          // trigger correct instrument and send the parameter
-          }
-        }
-        float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
-        if (currStep % 2 == 0)
-        { // set timing for steps, accounting for swing
-          currStepTime = currStepTime + stepLen * (1.0 + swingAmt);
-        }
-        else
-        {
-          currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
-        }
       } else if (playMode == PLAY_SONG){
         if (currStep == (int)currPattern->settings[2] - 1)
-        {                                                                    // last step off pattern, time to move to the next one
+        {                 // last step off pattern, time to move to the next one
           songPlayStep++; // increment the song pattern index
-          if(currSong->patterns[songPlayStep] == -1){
+          if (currSong->patterns[songPlayStep] == -1)
+          {
             songPlayStep = 0;
           }
           currPattern = &PatternStorage[0][currSong->patterns[songPlayStep]]; // grab the next pattern from memory
         }
+      }
         currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
-        Serial.println(currStep);
-
+        endChords();     
         
         for (int i = 0; i < 24; i++)
         { // send triggers of all instruments to be played at this step
           if (currStep != -1 && currPattern->pattern[i][currStep])
           {
-            int myParam = 0; // initialize myParam to zero for instruments that don't need it
-//            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20)
-//              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
-            trigNote(i, myParam);                          // trigger correct instrument and send the parameter
+            int myParam = 0;      // initialize myParam to zero for instruments that don't need it
+                                  //            if (i == 16 || i == 17 || i == 18 || i == 19 || i == 20){
+                                  //              myParam = currPattern->pattern[i][currStep]; // grab the parameter for chord/break sample voices
+                                  //            }
+            trigNote(i, myParam); // trigger correct instrument and send the parameter
           }
         }
         float swingAmt = map(controlPots[10], 1023, 0, 0, 0.4); // parse swing amount
@@ -918,26 +763,31 @@ void loop()
         {
           currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
         }
+      if (currStep < 16)
+      {
+        patternPlaySection = 0;
       }
-
-        if(currStep < 16){
-          patternPlaySection = 0;
-        } else if(currStep > 15 && currStep < 32){
-          patternPlaySection = 1;
-        } else if(currStep > 31 && currStep < 48){
-          patternPlaySection = 2;
-        } else if (currStep > 47 && currStep < 64){
-          patternPlaySection = 3;
-        }
+      else if (currStep > 15 && currStep < 32)
+      {
+        patternPlaySection = 1;
+      }
+      else if (currStep > 31 && currStep < 48)
+      {
+        patternPlaySection = 2;
+      }
+      else if (currStep > 47 && currStep < 64)
+      {
+        patternPlaySection = 3;
+      }
     }
   }
+  
   for (int i = 0; i < 16; i++) // check if hardware output pulses need to finish
   {
     if (outPulseTimes[i] != 0) // only check active pulses
     {
       if (millis() > outPulseTimes[i]) // check if the pulse should be done
       {
-        //        Serial.println("PULSE COMPLETE");
         outPulseTimes[i] = 0;
         switch (i) // turn off the corresponding LEDs and stop the samples. TODO: maybe output pulses length should be timed separately from the sample cutoffs
         {
@@ -1108,34 +958,36 @@ void readMux(bool printEn)
     controlPots[13] = inputs[5][5]; // analog aux in 3
     controlPots[14] = inputs[5][6]; // analog aux in 4
     controlPots[15] = inputs[5][7]; // analog aux in 5
-//    float mySpeed = ((float)controlPots[7] / 1023.0) * 1.5 + 0.5;
-//    Serial.println(mySpeed);
-//    granular2.setSpeed(pow(2, 2/12));
+                                    //    float mySpeed = ((float)controlPots[7] / 1023.0) * 1.5 + 0.5;
+                                    //    Serial.println(mySpeed);
+                                    //    granular2.setSpeed(pow(2, 2/12));
     // check if any control buttons have been pressed
 
     int bitDepth = (int)map(controlPots[7], 0, 1023, 17, 1);
-    if (bitDepth == 17){
+    if (bitDepth == 17)
+    {
       bitDepth = 16;
     }
 
     int sampleRateVal = (int)map(controlPots[8], 0, 1023, 44100, 1000);
-    if (sampleRateVal > 43900){
+    if (sampleRateVal > 43900)
+    {
       sampleRateVal = 44100;
     }
-    
-//    Serial.print("bits: ");
-//    Serial.println(bitDepth);
-//
-//    Serial.print("samplerate: ");
-//    Serial.println(sampleRateVal);
-//    Serial.println();
+
+    //    Serial.print("bits: ");
+    //    Serial.println(bitDepth);
+    //
+    //    Serial.print("samplerate: ");
+    //    Serial.println(sampleRateVal);
+    //    Serial.println();
 
     bitcrusher1.bits(bitDepth);
     bitcrusher2.bits(bitDepth);
 
     bitcrusher1.sampleRate(sampleRateVal);
     bitcrusher2.sampleRate(sampleRateVal);
-    
+
     for (int i = 0; i < 16; i++)
     {
       if ((controlButtons[i] != controlButtonsPrev[i]))
@@ -1176,111 +1028,115 @@ void readMux(bool printEn)
             sr3LED[1] = 1;
             uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
                           sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-          
+
             uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
                           sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-          
+
             uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
                           sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-          
+
             uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
                           sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-          
+
             // make two blank variables for the step LEDs, not necessary i could just define them below
             uint8_t sr4 = 0b00000000;
             uint8_t sr5 = 0b00000000;
 
-              // send all shift register values out
-              digitalWrite(ST_CP, LOW);
-              shiftOut(DS, SH_CP, MSBFIRST, sr5);
-              shiftOut(DS, SH_CP, MSBFIRST, sr4);
-              shiftOut(DS, SH_CP, MSBFIRST, sr3);
-              shiftOut(DS, SH_CP, MSBFIRST, sr2);
-              shiftOut(DS, SH_CP, MSBFIRST, sr1);
-              shiftOut(DS, SH_CP, MSBFIRST, sr0);
-              digitalWrite(ST_CP, HIGH);
+            // send all shift register values out
+            digitalWrite(ST_CP, LOW);
+            shiftOut(DS, SH_CP, MSBFIRST, sr5);
+            shiftOut(DS, SH_CP, MSBFIRST, sr4);
+            shiftOut(DS, SH_CP, MSBFIRST, sr3);
+            shiftOut(DS, SH_CP, MSBFIRST, sr2);
+            shiftOut(DS, SH_CP, MSBFIRST, sr1);
+            shiftOut(DS, SH_CP, MSBFIRST, sr0);
+            digitalWrite(ST_CP, HIGH);
             // save all patterns in bank A for now, maybe make this more elegant later
-            PatternStorage[0][0].writePatternToSD("/PATTERNS/A/1.CSV");
-            PatternStorage[0][1].writePatternToSD("/PATTERNS/A/2.CSV");
-            PatternStorage[0][2].writePatternToSD("/PATTERNS/A/3.CSV");
-            PatternStorage[0][3].writePatternToSD("/PATTERNS/A/4.CSV");
-            PatternStorage[0][4].writePatternToSD("/PATTERNS/A/5.CSV");
-            PatternStorage[0][5].writePatternToSD("/PATTERNS/A/6.CSV");
-            PatternStorage[0][6].writePatternToSD("/PATTERNS/A/7.CSV");
-            PatternStorage[0][7].writePatternToSD("/PATTERNS/A/8.CSV");
-            PatternStorage[0][8].writePatternToSD("/PATTERNS/A/9.CSV");
-            PatternStorage[0][9].writePatternToSD("/PATTERNS/A/10.CSV");
-            PatternStorage[0][10].writePatternToSD("/PATTERNS/A/11.CSV");
-            PatternStorage[0][11].writePatternToSD("/PATTERNS/A/12.CSV");
-            PatternStorage[0][12].writePatternToSD("/PATTERNS/A/13.CSV");
-            PatternStorage[0][13].writePatternToSD("/PATTERNS/A/14.CSV");
-            PatternStorage[0][14].writePatternToSD("/PATTERNS/A/15.CSV");
-            PatternStorage[0][15].writePatternToSD("/PATTERNS/A/16.CSV");
+            PatternStorage[0][0].writePatternToSD("/PATTERNS/1/1.CSV");
+            PatternStorage[0][1].writePatternToSD("/PATTERNS/1/2.CSV");
+            PatternStorage[0][2].writePatternToSD("/PATTERNS/1/3.CSV");
+            PatternStorage[0][3].writePatternToSD("/PATTERNS/1/4.CSV");
+            PatternStorage[0][4].writePatternToSD("/PATTERNS/1/5.CSV");
+            PatternStorage[0][5].writePatternToSD("/PATTERNS/1/6.CSV");
+            PatternStorage[0][6].writePatternToSD("/PATTERNS/1/7.CSV");
+            PatternStorage[0][7].writePatternToSD("/PATTERNS/1/8.CSV");
+            PatternStorage[0][8].writePatternToSD("/PATTERNS/1/9.CSV");
+            PatternStorage[0][9].writePatternToSD("/PATTERNS/1/10.CSV");
+            PatternStorage[0][10].writePatternToSD("/PATTERNS/1/11.CSV");
+            PatternStorage[0][11].writePatternToSD("/PATTERNS/1/12.CSV");
+            PatternStorage[0][12].writePatternToSD("/PATTERNS/1/13.CSV");
+            PatternStorage[0][13].writePatternToSD("/PATTERNS/1/14.CSV");
+            PatternStorage[0][14].writePatternToSD("/PATTERNS/1/15.CSV");
+            PatternStorage[0][15].writePatternToSD("/PATTERNS/1/16.CSV");
 
             // save all songs in bank A for now, maybe make this more elegant later
-            SongStorage[0][0].writeSongToSD("/SONGS/A/1.CSV");
-            SongStorage[0][1].writeSongToSD("/SONGS/A/2.CSV");
-            SongStorage[0][2].writeSongToSD("/SONGS/A/3.CSV");
-            SongStorage[0][3].writeSongToSD("/SONGS/A/4.CSV");
-            SongStorage[0][4].writeSongToSD("/SONGS/A/5.CSV");
-            SongStorage[0][5].writeSongToSD("/SONGS/A/6.CSV");
-            SongStorage[0][6].writeSongToSD("/SONGS/A/7.CSV");
-            SongStorage[0][7].writeSongToSD("/SONGS/A/8.CSV");
-            SongStorage[0][8].writeSongToSD("/SONGS/A/9.CSV");
-            SongStorage[0][9].writeSongToSD("/SONGS/A/10.CSV");
-            SongStorage[0][10].writeSongToSD("/SONGS/A/11.CSV");
-            SongStorage[0][11].writeSongToSD("/SONGS/A/12.CSV");
-            SongStorage[0][12].writeSongToSD("/SONGS/A/13.CSV");
-            SongStorage[0][13].writeSongToSD("/SONGS/A/14.CSV");
-            SongStorage[0][14].writeSongToSD("/SONGS/A/15.CSV");
-            SongStorage[0][15].writeSongToSD("/SONGS/A/16.CSV");
+            SongStorage[0][0].writeSongToSD("/SONGS/1/1.CSV");
+            SongStorage[0][1].writeSongToSD("/SONGS/1/2.CSV");
+            SongStorage[0][2].writeSongToSD("/SONGS/1/3.CSV");
+            SongStorage[0][3].writeSongToSD("/SONGS/1/4.CSV");
+            SongStorage[0][4].writeSongToSD("/SONGS/1/5.CSV");
+            SongStorage[0][5].writeSongToSD("/SONGS/1/6.CSV");
+            SongStorage[0][6].writeSongToSD("/SONGS/1/7.CSV");
+            SongStorage[0][7].writeSongToSD("/SONGS/1/8.CSV");
+            SongStorage[0][8].writeSongToSD("/SONGS/1/9.CSV");
+            SongStorage[0][9].writeSongToSD("/SONGS/1/10.CSV");
+            SongStorage[0][10].writeSongToSD("/SONGS/1/11.CSV");
+            SongStorage[0][11].writeSongToSD("/SONGS/1/12.CSV");
+            SongStorage[0][12].writeSongToSD("/SONGS/1/13.CSV");
+            SongStorage[0][13].writeSongToSD("/SONGS/1/14.CSV");
+            SongStorage[0][14].writeSongToSD("/SONGS/1/15.CSV");
+            SongStorage[0][15].writeSongToSD("/SONGS/1/16.CSV");
 
             sr3LED[1] = 0;
-             sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-                          sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-          
-             sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-                          sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-          
-             sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-                          sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-          
-             sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-                          sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-          
+            sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
+                  sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
+
+            sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
+                  sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
+
+            sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
+                  sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
+
+            sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
+                  sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
+
             // make two blank variables for the step LEDs, not necessary i could just define them below
-             sr4 = 0b00000000;
-             sr5 = 0b00000000;
-              // send all shift register values out
-          digitalWrite(ST_CP, LOW);
-          shiftOut(DS, SH_CP, MSBFIRST, sr5);
-          shiftOut(DS, SH_CP, MSBFIRST, sr4);
-          shiftOut(DS, SH_CP, MSBFIRST, sr3);
-          shiftOut(DS, SH_CP, MSBFIRST, sr2);
-          shiftOut(DS, SH_CP, MSBFIRST, sr1);
-          shiftOut(DS, SH_CP, MSBFIRST, sr0);
-          digitalWrite(ST_CP, HIGH);
-          
+            sr4 = 0b00000000;
+            sr5 = 0b00000000;
+            // send all shift register values out
+            digitalWrite(ST_CP, LOW);
+            shiftOut(DS, SH_CP, MSBFIRST, sr5);
+            shiftOut(DS, SH_CP, MSBFIRST, sr4);
+            shiftOut(DS, SH_CP, MSBFIRST, sr3);
+            shiftOut(DS, SH_CP, MSBFIRST, sr2);
+            shiftOut(DS, SH_CP, MSBFIRST, sr1);
+            shiftOut(DS, SH_CP, MSBFIRST, sr0);
+            digitalWrite(ST_CP, HIGH);
           }
           else
           { // save RELEASED
           }
           break;
 
-        case 2: // shift -----> now write
-          if (controlButtons[i] == LOW)// shift->write PRESSED
-          { 
-//            patternWrite = !patternWrite;
-//            sr3LED[2] = patternWrite;
-            if (controlState == SONG_SEL){ // entering song write mode from song sel mode
+        case 2:                         // shift -----> now write
+          if (controlButtons[i] == LOW) // shift->write PRESSED
+          {
+            //            patternWrite = !patternWrite;
+            //            sr3LED[2] = patternWrite;
+            if (controlState == SONG_SEL)
+            { // entering song write mode from song sel mode
               controlState = SONG_WRITE;
               lcdState = LCD_SONG_WRITE;
-            } else if (controlState == SONG_WRITE){ // entering song store mode from song write mode
+            }
+            else if (controlState == SONG_WRITE)
+            {                                          // entering song store mode from song write mode
               currSong->patterns[songWriteIndex] = -1; // add stop point to song
-              for (int i = songWriteIndex + 1; i < 65; i++){ // clear everything after the stop point
+              for (int i = songWriteIndex + 1; i < 65; i++)
+              { // clear everything after the stop point
                 currSong->patterns[i] = -1;
               }
-              if (songWriteIndex == 0){
+              if (songWriteIndex == 0)
+              {
                 currSong->patterns[0] = 0;
                 currSong->patterns[1] = -1;
               }
@@ -1341,10 +1197,14 @@ void readMux(bool printEn)
               currPattern->settings[1] = kitSel; // place kit into pattern memory
               controlState = STEP_SEL;           // exit kit selection mode
               lcdState = LCD_INST_PROP;          // exit kit selection display
-            } else if(controlButtons[5] == LOW){ // if pattern being held down, enter length selection mode
+            }
+            else if (controlButtons[5] == LOW)
+            { // if pattern being held down, enter length selection mode
               controlState = LENGTH_SEL;
               lcdState = LCD_LENGTH_SEL;
-            } else if (controlState == LENGTH_SEL){
+            }
+            else if (controlState == LENGTH_SEL)
+            {
               controlState = STEP_SEL;
               lcdState = LCD_INST_PROP;
             }
@@ -1371,30 +1231,32 @@ void readMux(bool printEn)
         case 8: // bank
           if (controlButtons[i] == LOW)
           { // bank PRESSED
-            switch(controlState){
-              case PATTERN_SEL: 
-                prevControlState = controlState;
-                prevLcdState = lcdState;
-                controlState = PATTERN_BANK_SEL;
-                lcdState = LCD_PATT_BANK;
-                break;
-              case SONG_SEL:
-                prevControlState = controlState;
-                prevLcdState = lcdState;
-                controlState = SONG_BANK_SEL;
-                lcdState = LCD_SONG_BANK;
-                break;
-              case STEP_SEL:
-                prevControlState = controlState;
-                prevLcdState = lcdState;
-                controlState = INST_BANK_SEL;
-                lcdState = LCD_INST_BANK;
-                break;
+            switch (controlState)
+            {
+            case PATTERN_SEL:
+              prevControlState = controlState;
+              prevLcdState = lcdState;
+              controlState = PATTERN_BANK_SEL;
+              lcdState = LCD_PATT_BANK;
+              break;
+            case SONG_SEL:
+              prevControlState = controlState;
+              prevLcdState = lcdState;
+              controlState = SONG_BANK_SEL;
+              lcdState = LCD_SONG_BANK;
+              break;
+            case STEP_SEL:
+              prevControlState = controlState;
+              prevLcdState = lcdState;
+              controlState = INST_BANK_SEL;
+              lcdState = LCD_INST_BANK;
+              break;
             }
           }
           else
           { // bank RELEASED
-            if( controlState == PATTERN_BANK_SEL || controlState == SONG_BANK_SEL || controlState == INST_BANK_SEL){
+            if (controlState == PATTERN_BANK_SEL || controlState == SONG_BANK_SEL || controlState == INST_BANK_SEL)
+            {
               controlState = prevControlState;
               lcdState = prevLcdState;
             }
@@ -1439,7 +1301,6 @@ void readMux(bool printEn)
               sr1LED[1] = 0;
               Serial.println("Paused!");
               stopSamples(); // force stop playing all samples
-             
             }
             else
             {
@@ -1464,14 +1325,17 @@ void readMux(bool printEn)
             sr1LED[1] = 0;
             songPlayStep = 0;
             transportState = STOPPED;
-            
-            currStep = -1;         // jump back to start of pattern
-            
-            if (playMode == PLAY_PATTERN){
+
+            currStep = -1; // jump back to start of pattern
+
+            if (playMode == PLAY_PATTERN)
+            {
               patternQueueIndex = 0; // jump back to start of song
               currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
-              patternNum = patternQueue[patternQueueIndex];   
-            } else if (playMode == PLAY_SONG){
+              patternNum = patternQueue[patternQueueIndex];
+            }
+            else if (playMode == PLAY_SONG)
+            {
               songPlayStep = 0;
               currPattern = &PatternStorage[0][currSong->patterns[0]];
             }
@@ -1487,8 +1351,10 @@ void readMux(bool printEn)
         case 14: // forwards
           if (controlButtons[i] == LOW)
           { // forwards PRESSED
-            if(transportState != PLAYING){
-              if(++patternPlaySection > 3) {
+            if (transportState != PLAYING)
+            {
+              if (++patternPlaySection > 3)
+              {
                 patternPlaySection = 3;
               }
             }
@@ -1501,8 +1367,10 @@ void readMux(bool printEn)
         case 15: // backwards
           if (controlButtons[i] == LOW)
           { // backwards PRESSED
-            if(transportState != PLAYING){
-              if(--patternPlaySection < 0) patternPlaySection = 0;
+            if (transportState != PLAYING)
+            {
+              if (--patternPlaySection < 0)
+                patternPlaySection = 0;
             }
           }
           else
@@ -1533,101 +1401,123 @@ void readMux(bool printEn)
 
           currPattern->pattern[currInst][myInd] = !currPattern->pattern[currInst][myInd]; // record buttom press into current pattern array
           stepEditIndex = myInd;
-          
-          if(currInst == 16 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+
+          if (currInst == 16 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[16][prevStep] > 0){ // retrieve it
+            if (currPattern->pattern[16][prevStep] > 0)
+            { // retrieve it
               currPattern->pattern[16][myInd] = currPattern->pattern[16][prevStep];
-              currPattern->parameter[22][myInd] = currPattern->parameter[22][prevStep]; 
+              currPattern->parameter[22][myInd] = currPattern->parameter[22][prevStep];
             }
           }
 
-          if(currInst == 17 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 17 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[17][prevStep] > 0){
+            if (currPattern->pattern[17][prevStep] > 0)
+            {
               currPattern->pattern[17][myInd] = currPattern->pattern[17][prevStep];
-              currPattern->parameter[24][myInd] = currPattern->parameter[24][prevStep]; 
+              currPattern->parameter[24][myInd] = currPattern->parameter[24][prevStep];
             }
           }
 
-          if(currInst == 18 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 18 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[18][prevStep] > 0){
+            if (currPattern->pattern[18][prevStep] > 0)
+            {
               currPattern->pattern[18][myInd] = currPattern->pattern[18][prevStep];
-              currPattern->parameter[26][myInd] = currPattern->parameter[26][prevStep]; 
+              currPattern->parameter[26][myInd] = currPattern->parameter[26][prevStep];
             }
           }
 
-          if(currInst == 19 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 19 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[19][prevStep] > 0){
+            if (currPattern->pattern[19][prevStep] > 0)
+            {
               currPattern->pattern[19][myInd] = currPattern->pattern[19][prevStep];
-              currPattern->parameter[28][myInd] = currPattern->parameter[28][prevStep]; 
-              currPattern->parameter[29][myInd] = currPattern->parameter[29][prevStep]; 
+              currPattern->parameter[28][myInd] = currPattern->parameter[28][prevStep];
+              currPattern->parameter[29][myInd] = currPattern->parameter[29][prevStep];
             }
           }
 
-          if(currInst == 20 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 20 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[20][prevStep] > 0){
+            if (currPattern->pattern[20][prevStep] > 0)
+            {
               currPattern->pattern[20][myInd] = currPattern->pattern[20][prevStep];
-              currPattern->parameter[30][myInd] = currPattern->parameter[30][prevStep]; 
-              currPattern->parameter[31][myInd] = currPattern->parameter[31][prevStep]; 
+              currPattern->parameter[30][myInd] = currPattern->parameter[30][prevStep];
+              currPattern->parameter[31][myInd] = currPattern->parameter[31][prevStep];
             }
           }
 
-          if(currInst == 21 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 21 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[21][prevStep] > 0){
+            if (currPattern->pattern[21][prevStep] > 0)
+            {
               currPattern->pattern[21][myInd] = currPattern->pattern[21][prevStep];
-              currPattern->parameter[32][myInd] = currPattern->parameter[32][prevStep]; 
-              currPattern->parameter[33][myInd] = currPattern->parameter[33][prevStep]; 
+              currPattern->parameter[32][myInd] = currPattern->parameter[32][prevStep];
+              currPattern->parameter[33][myInd] = currPattern->parameter[33][prevStep];
             }
           }
 
-          if(currInst == 22 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 22 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[22][prevStep] > 0){
+            if (currPattern->pattern[22][prevStep] > 0)
+            {
               currPattern->pattern[22][myInd] = currPattern->pattern[22][prevStep];
-              currPattern->parameter[34][myInd] = currPattern->parameter[34][prevStep]; 
-              currPattern->parameter[35][myInd] = currPattern->parameter[35][prevStep]; 
+              currPattern->parameter[34][myInd] = currPattern->parameter[34][prevStep];
+              currPattern->parameter[35][myInd] = currPattern->parameter[35][prevStep];
             }
           }
 
-          if(currInst == 23 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+          if (currInst == 23 && currPattern->pattern[currInst][myInd] > 0)
+          { // for programming chords, grab the params from previous step
             int prevStep = myInd - 1;
-            if (prevStep == -1){
+            if (prevStep == -1)
+            {
               prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[23][prevStep] > 0){
+            if (currPattern->pattern[23][prevStep] > 0)
+            {
               currPattern->pattern[23][myInd] = currPattern->pattern[23][prevStep];
-              currPattern->parameter[36][myInd] = currPattern->parameter[36][prevStep]; 
-              currPattern->parameter[37][myInd] = currPattern->parameter[37][prevStep]; 
+              currPattern->parameter[36][myInd] = currPattern->parameter[36][prevStep];
+              currPattern->parameter[37][myInd] = currPattern->parameter[37][prevStep];
             }
           }
-
-          
         }
       }
       break;
@@ -1642,46 +1532,49 @@ void readMux(bool printEn)
       }
       break;
 
-    case PATTERN_SEL:   // mode for selecting pattern
-        for (int i = 0; i < 16; i++)
+    case PATTERN_SEL: // mode for selecting pattern
+      for (int i = 0; i < 16; i++)
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
+          playMode = PLAY_PATTERN;
+          if (transportState == PLAYING) // if playing, we wait for current pattern to end before switching over
           {
-            playMode = PLAY_PATTERN;
-            if (transportState == PLAYING) // if playing, we wait for current pattern to end before switching over
-            {
-              patternQueue[0] = i; // set pressed pattern to index 0
-              patternQueueLen = 1; // set length of queue to 2
-            }
-            else // if not playing we can jump to new pattern immediately
-            {
-              patternQueueIndex = 0;
-              patternQueueLen = 1;                 // set length of queue to 2
-              currPattern = &PatternStorage[0][i]; // grab the new pattern from memory
-              patternQueue[0] = i;                 // put pattern num at the first place in queue
-              patternNum = i;                      // set pattern num to the one you pressed
-            }
+            patternQueue[0] = i; // set pressed pattern to index 0
+            patternQueueLen = 1; // set length of queue to 2
+          }
+          else // if not playing we can jump to new pattern immediately
+          {
+            patternQueueIndex = 0;
+            patternQueueLen = 1;                 // set length of queue to 2
+            currPattern = &PatternStorage[0][i]; // grab the new pattern from memory
+            patternQueue[0] = i;                 // put pattern num at the first place in queue
+            patternNum = i;                      // set pattern num to the one you pressed
           }
         }
+      }
       break;
     case SONG_SEL:
       // INSERT CODE HERE FOR SELECTING SONGS
-     for (int i = 0; i < 16; i++)
+      for (int i = 0; i < 16; i++)
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
+          currSong = &SongStorage[0][i];
+          playMode = PLAY_SONG;
+          currStep = -1;
+          if (currSong->patterns[0] == -1)
           {
-            currSong = &SongStorage[0][i];
-            playMode = PLAY_SONG;
-            currStep = -1;
-            if (currSong->patterns[0] == -1){
-              currPattern = &PatternStorage[0][0];
-            } else {
-              currPattern = &PatternStorage[0][currSong->patterns[0]];  
-            }
-            songNum = i;
+            currPattern = &PatternStorage[0][0];
           }
+          else
+          {
+            currPattern = &PatternStorage[0][currSong->patterns[0]];
+          }
+          songNum = i;
         }
-        
+      }
+
       break;
 
     case BANK_SEL:
@@ -1689,48 +1582,49 @@ void readMux(bool printEn)
       // WILL NEED TO WRITE SEPARATE CODE FOR INST BANKS VS PATTERN BANKS VS SONG BANKS + maybe some sort of sample bank idk
       break;
     case SONG_WRITE:
-        for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
+          currSong->patterns[songWriteIndex] = i;
+          songWriteIndex++;
+          if (songWriteIndex > 63)
           {
-            currSong->patterns[songWriteIndex] = i;
-            songWriteIndex++;
-            if (songWriteIndex > 63){
-              // pattern is full!!!! do something about it
-              currSong->patterns[64] = -1;
-              lcdState = LCD_SONG_SEL;
-              controlState = SONG_SEL;
-            }
+            // pattern is full!!!! do something about it
+            currSong->patterns[64] = -1;
+            lcdState = LCD_SONG_SEL;
+            controlState = SONG_SEL;
           }
         }
+      }
       break;
-      case INST_BANK_SEL:
-        for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+    case INST_BANK_SEL:
+      for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
-          {
-            instBankNum = i;
-          }
+          instBankNum = i;
         }
-        break;
-      case SONG_BANK_SEL:
-        for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      }
+      break;
+    case SONG_BANK_SEL:
+      for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
-          {
-            songBankNum = i;
-          }
+          songBankNum = i;
         }
-        break;
-      case PATTERN_BANK_SEL:
-        for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      }
+      break;
+    case PATTERN_BANK_SEL:
+      for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
-          {
-            pattBankNum = i;
-          }
+          pattBankNum = i;
         }
-        break;
+      }
+      break;
     }
 
     drum1.frequency(map(controlPots[0], 1023, 0, 60, 700)); // set drum 1 freq from param pot
@@ -1816,7 +1710,8 @@ void readMux(bool printEn)
       int myInd = getButtonOffset(i, patternPlaySection);
       stepLEDs[i] = currPattern->pattern[currInst][myInd];
     }
-    if (currStep >= 0){
+    if (currStep >= 0)
+    {
       stepLEDs[currStep % 16] = 1; // light up the playhead/current step
     }
     break;
@@ -1834,7 +1729,10 @@ void readMux(bool printEn)
     {
       stepLEDs[i] = 0;
     }
-    stepLEDs[songNum] = 1;
+    if (playMode == PLAY_SONG){
+      stepLEDs[songNum] = 1;
+    }
+    
     break;
   case DISP_INST:
     for (int i = 0; i < 16; i++)
@@ -1870,19 +1768,20 @@ void readMux(bool printEn)
   sr0LED[3] = 0;
   sr0LED[4] = 0;
   sr0LED[5] = 0;
-  switch(patternPlaySection){
-    case 0: 
-      sr0LED[5] = 1;
-      break;
-    case 1:
-      sr0LED[4] = 1;
-      break;
-    case 2: 
-      sr0LED[3] = 1;
-      break;
-    case 3:
-      sr0LED[2] = 1;
-      break;
+  switch (patternPlaySection)
+  {
+  case 0:
+    sr0LED[5] = 1;
+    break;
+  case 1:
+    sr0LED[4] = 1;
+    break;
+  case 2:
+    sr0LED[3] = 1;
+    break;
+  case 3:
+    sr0LED[2] = 1;
+    break;
   }
   // arrange step LED states we just defined into 8-bit numbers to send to shift registers
   sr4 = stepLEDs[0] | stepLEDs[1] << 1 | stepLEDs[2] << 2 | stepLEDs[3] << 3 |
@@ -2073,104 +1972,127 @@ void trigNote(int instNum, int instParam)
     pulseLen = playSdRaw8.lengthMillis() * (currPattern->parameter[21][0] / 100.0) / currPattern->parameter[20][0];
     playSdRaw8.playRaw(kitSamples[(int)currPattern->settings[1]][7]->sampledata, kitSamples[(int)currPattern->settings[1]][7]->samplesize / 2, 1);
     break;
-    
+
   case INST_ORGAN_CHORDS:
-    if (currStep >= 0){
-        playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
-    float mySpeed = pow(2, (currPattern->pattern[16][currStep] - 1)/12.0);
-    granular2.setSpeed(mySpeed);
+    if (currStep >= 0)
+    {
+      playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
+      float mySpeed = pow(2, (currPattern->pattern[16][currStep] - 1) / 12.0);
+      granular2.setSpeed(mySpeed);
     }
     break;
 
   case INST_GUITAR_CHORDS:
-    if (currStep >= 0){
-        playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
-      float mySpeed = pow(2, (currPattern->pattern[17][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
+      float mySpeed = pow(2, (currPattern->pattern[17][currStep] - 1) / 12.0);
       granular3.setSpeed(mySpeed);
     }
     break;
-    
+
   case INST_GUITAR_ONE:
-    if (currStep >= 0){
-        playSdRaw12.playRaw(chordSamples[2][(int)currPattern->parameter[26][currStep]]->sampledata, chordSamples[2][(int)currPattern->parameter[26][currStep]]->samplesize / 2, 1);
-      float mySpeed = pow(2, (currPattern->pattern[18][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      playSdRaw12.playRaw(chordSamples[2][(int)currPattern->parameter[26][currStep]]->sampledata, chordSamples[2][(int)currPattern->parameter[26][currStep]]->samplesize / 2, 1);
+      float mySpeed = pow(2, (currPattern->pattern[18][currStep] - 1) / 12.0);
       granular4.setSpeed(mySpeed);
     }
     break;
 
   case INST_ORGAN_NOTES:
-    if (currStep >= 0){
-      float mySpeed = pow(2, (currPattern->pattern[19][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      float mySpeed = pow(2, (currPattern->pattern[19][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[28][currStep];
-      if(myOct > 0){
+      if (myOct > 0)
+      {
         mySpeed = mySpeed * (2 * myOct);
-      } else if (myOct < 0){
-        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-        playSdRaw14.setPlaybackRate(mySpeed);
-        playSdRaw14.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      else if (myOct < 0)
+      {
+        mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
+      }
+      playSdRaw14.setPlaybackRate(mySpeed);
+      playSdRaw14.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
 
   case INST_ORGAN_NOTES_2:
-    if (currStep >= 0){
-      float mySpeed = pow(2, (currPattern->pattern[20][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      float mySpeed = pow(2, (currPattern->pattern[20][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[30][currStep];
-      if(myOct > 0){
+      if (myOct > 0)
+      {
         mySpeed = mySpeed * (2 * myOct);
-      } else if (myOct < 0){
-        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-        playSdRaw15.setPlaybackRate(mySpeed);
-        playSdRaw15.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      else if (myOct < 0)
+      {
+        mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
+      }
+      playSdRaw15.setPlaybackRate(mySpeed);
+      playSdRaw15.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
 
   case INST_ORGAN_NOTES_3:
-    if (currStep >= 0){
-      float mySpeed = pow(2, (currPattern->pattern[21][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      float mySpeed = pow(2, (currPattern->pattern[21][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[32][currStep];
-      if(myOct > 0){
+      if (myOct > 0)
+      {
         mySpeed = mySpeed * (2 * myOct);
-      } else if (myOct < 0){
-        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-        playSdRaw16.setPlaybackRate(mySpeed);
-        playSdRaw16.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      else if (myOct < 0)
+      {
+        mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
+      }
+      playSdRaw16.setPlaybackRate(mySpeed);
+      playSdRaw16.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
 
   case INST_ORGAN_NOTES_4:
-    if (currStep >= 0){
-      float mySpeed = pow(2, (currPattern->pattern[22][currStep] - 1)/12.0);
+    if (currStep >= 0)
+    {
+      float mySpeed = pow(2, (currPattern->pattern[22][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[34][currStep];
-      if(myOct > 0){
+      if (myOct > 0)
+      {
         mySpeed = mySpeed * (2 * myOct);
-      } else if (myOct < 0){
-        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-        playSdRaw17.setPlaybackRate(mySpeed);
-        playSdRaw17.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      else if (myOct < 0)
+      {
+        mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
+      }
+      playSdRaw17.setPlaybackRate(mySpeed);
+      playSdRaw17.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
 
-  case INST_ORGAN_NOTES_5:                  
-    if (currStep >= 0){
-      float mySpeed = pow(2, (currPattern->pattern[23][currStep] - 1)/12.0);
+  case INST_ORGAN_NOTES_5:
+    if (currStep >= 0)
+    {
+      float mySpeed = pow(2, (currPattern->pattern[23][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[36][currStep];
-      if(myOct > 0){
+      if (myOct > 0)
+      {
         mySpeed = mySpeed * (2 * myOct);
-      } else if (myOct < 0){
-        mySpeed = mySpeed * (0.5 * (1/(-1 * myOct)));
       }
-        playSdRaw18.setPlaybackRate(mySpeed * -1);
-        playSdRaw18.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      else if (myOct < 0)
+      {
+        mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
+      }
+      playSdRaw18.setPlaybackRate(mySpeed * -1);
+      playSdRaw18.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
     }
     break;
-  
   }
-  if (instNum < 16){
-  outPulseTimes[instNum] = millis() + pulseLen; // send the pulse end time to or pulse timer array
+  if (instNum < 16)
+  {
+    outPulseTimes[instNum] = millis() + pulseLen; // send the pulse end time to or pulse timer array
   }
 }
 
@@ -2183,15 +2105,15 @@ void trigNote(int instNum, int instParam)
 // **************************************************************************************************/
 void clockOutput()
 {
-//  Serial.print("PATTERN STEP: ");
-//  Serial.print(currStep); // prints current pattern number
-//  Serial.print("   ");
-//
-//  for (int i = 0; i < 16; i++)
-//  {
-//    Serial.print(currPattern->pattern[i][currStep]); // prints which instruments are played on this step
-//  }
-//  Serial.println(" ");
+  //  Serial.print("PATTERN STEP: ");
+  //  Serial.print(currStep); // prints current pattern number
+  //  Serial.print("   ");
+  //
+  //  for (int i = 0; i < 16; i++)
+  //  {
+  //    Serial.print(currPattern->pattern[i][currStep]); // prints which instruments are played on this step
+  //  }
+  //  Serial.println(" ");
 }
 
 ///**************************************************************************************************
@@ -2228,28 +2150,28 @@ void displayLCD(bool demoMode)
 
   switch (lcdState) // determine what we want to display on the LCD
   {
-  case LCD_DEMO:                        // Demo mode! show a cute little animation
-//    if (millis() > LCDFrameTimer + 500) // only swap frames every half second
-//    {
-//      u8g2.clearBuffer();      // clear the internal memory
-//      switch (starsFrameCount) // which frame are we on?
-//      {
-//      case 0:
-//        u8g2.drawXBMP(0, 0, 84, 48, frame1); // display first frame
-//        starsFrameCount = 1;                 // move to the other frame
-//        break;
-//      case 1:
-//        u8g2.drawXBMP(0, 0, 84, 48, frame2); // display second frame
-//        starsFrameCount = 0;                 // move to the other frame
-//        break;
-//      }
-//      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-//                                          //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
-//      u8g2.drawStr(20, 30, " <3");        // write something to the internal memory
-//      u8g2.drawStr(40, 44, "drums!");     // write something to the internal memory
-//      u8g2.sendBuffer();                  // transfer internal memory to the display
-//      LCDFrameTimer = millis();
-//    }
+  case LCD_DEMO: // Demo mode! show a cute little animation
+                 //    if (millis() > LCDFrameTimer + 500) // only swap frames every half second
+                 //    {
+                 //      u8g2.clearBuffer();      // clear the internal memory
+                 //      switch (starsFrameCount) // which frame are we on?
+                 //      {
+                 //      case 0:
+                 //        u8g2.drawXBMP(0, 0, 84, 48, frame1); // display first frame
+                 //        starsFrameCount = 1;                 // move to the other frame
+                 //        break;
+                 //      case 1:
+                 //        u8g2.drawXBMP(0, 0, 84, 48, frame2); // display second frame
+                 //        starsFrameCount = 0;                 // move to the other frame
+                 //        break;
+                 //      }
+                 //      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+                 //                                          //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
+                 //      u8g2.drawStr(20, 30, " <3");        // write something to the internal memory
+                 //      u8g2.drawStr(40, 44, "drums!");     // write something to the internal memory
+                 //      u8g2.sendBuffer();                  // transfer internal memory to the display
+                 //      LCDFrameTimer = millis();
+                 //    }
     break;
 
   case LCD_INST_PROP: // mode for displaying paramter of selected instrument, and allows you to edit them
@@ -2262,7 +2184,7 @@ void displayLCD(bool demoMode)
       char envStr[30];                    // char array for envelope value
       int32_t myRootNote;
       char stepNumStr[30]; // display num of curr edit step
-      switch (currInst) // set name string and parameters, these are unique to each instrument so i have this dumb huge switch statement :~(
+      switch (currInst)    // set name string and parameters, these are unique to each instrument so i have this dumb huge switch statement :~(
       {
       case INST_BD:
         u8g2.drawStr(0, 11, "Bass Drum");
@@ -2337,7 +2259,8 @@ void displayLCD(bool demoMode)
         sprintf(envStr, "%.01f", currPattern->parameter[21][0]);
         break;
       case INST_ORGAN_CHORDS:
-        if (stepEditIndex < 0 || stepEditIndex > 63){
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
           Serial.print("stepEditIndex is out of bounds");
           Serial.println(stepEditIndex);
           stepEditIndex = 0;
@@ -2349,201 +2272,231 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[16][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[22][stepEditIndex];
           u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_GUITAR_CHORDS:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Guitar chords");
-       myRootNote = currPattern->pattern[17][stepEditIndex];
+        myRootNote = currPattern->pattern[17][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "chord:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[17][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[24][stepEditIndex];
           u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
-
       case INST_GUITAR_ONE:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Guitar oneshots");
-       myRootNote = currPattern->pattern[18][stepEditIndex];
+        myRootNote = currPattern->pattern[18][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "chord:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[18][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[26][stepEditIndex];
           u8g2.drawStr(40, 34, chordQual[(int)myChordQual]);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_ORGAN_NOTES:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Organ notes");
-       myRootNote = currPattern->pattern[19][stepEditIndex];
+        myRootNote = currPattern->pattern[19][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[19][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[28][stepEditIndex];
           sprintf(paramStr, "%.02f", myChordQual);
-          
+
           u8g2.drawStr(40, 34, paramStr);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_ORGAN_NOTES_2:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Organ notes 2");
-       myRootNote = currPattern->pattern[20][stepEditIndex];
+        myRootNote = currPattern->pattern[20][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[20][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[30][stepEditIndex];
           sprintf(paramStr, "%.02f", myChordQual);
-          
+
           u8g2.drawStr(40, 34, paramStr);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_ORGAN_NOTES_3:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Organ notes 3");
-       myRootNote = currPattern->pattern[21][stepEditIndex];
+        myRootNote = currPattern->pattern[21][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[21][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[32][stepEditIndex];
           sprintf(paramStr, "%.02f", myChordQual);
-          
+
           u8g2.drawStr(40, 34, paramStr);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_ORGAN_NOTES_4:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Organ notes 4");
-       myRootNote = currPattern->pattern[22][stepEditIndex];
+        myRootNote = currPattern->pattern[22][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[22][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[34][stepEditIndex];
           sprintf(paramStr, "%.02f", myChordQual);
-          
+
           u8g2.drawStr(40, 34, paramStr);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
 
       case INST_ORGAN_NOTES_5:
-      if (stepEditIndex < 0 || stepEditIndex > 63){
-        Serial.print("stepEditIndex is out of bounds");
-        Serial.println(stepEditIndex);
-        stepEditIndex = 0;
-      }
+        if (stepEditIndex < 0 || stepEditIndex > 63)
+        {
+          Serial.print("stepEditIndex is out of bounds");
+          Serial.println(stepEditIndex);
+          stepEditIndex = 0;
+        }
         u8g2.drawStr(0, 11, "Organ notes 5");
-       myRootNote = currPattern->pattern[23][stepEditIndex];
+        myRootNote = currPattern->pattern[23][stepEditIndex];
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
         sprintf(volStr, "%.02f", currPattern->velocity[23][0]);
         u8g2.drawStr(30, 44, volStr);
-        if (myRootNote > 0){
-          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);  
+        if (myRootNote > 0)
+        {
+          u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
           float myChordQual = currPattern->parameter[36][stepEditIndex];
           sprintf(paramStr, "%.02f", myChordQual);
-          
+
           u8g2.drawStr(40, 34, paramStr);
-        } else {
-          u8g2.drawStr(40, 24, "N.C."); 
+        }
+        else
+        {
+          u8g2.drawStr(40, 24, "N.C.");
         }
         sprintf(stepNumStr, "%i", stepEditIndex);
         u8g2.drawStr(70, 35, stepNumStr);
         break;
       }
-        u8g2.setFontMode(0);
-        u8g2.setDrawColor(1);
-        char instNumStr[30]; // display num of curr inst
-        sprintf(instNumStr, "%i", currInst);
-        u8g2.drawStr(70, 45, instNumStr);
+      u8g2.setFontMode(0);
+      u8g2.setDrawColor(1);
+      char instNumStr[30]; // display num of curr inst
+      sprintf(instNumStr, "%i", currInst);
+      u8g2.drawStr(70, 45, instNumStr);
       if (currInst >= 8 && currInst < 16) // draw all the parameter stuff on the screen for instruments that need them
       {
         u8g2.setFontMode(0);
@@ -2565,34 +2518,39 @@ void displayLCD(bool demoMode)
           u8g2.drawBox(0, 15 + 10 * cursorLoc, 27, 11); // selection box on menu for navigation
         }
       }
-      if (currInst > 15 && currInst < 24){ // organ and guitar chords
+      if (currInst > 15 && currInst < 24)
+      { // organ and guitar chords
         u8g2.setDrawColor(2);
         if (paramSel) // draw a selection box
         {
-          switch(cursorLoc){
-            case 0:
-              u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
-              break;
-            case 1:
-              u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
-              break;
-            case 2:
-              u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
-              break;
+          switch (cursorLoc)
+          {
+          case 0:
+            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+            break;
+          case 1:
+            u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
+            break;
+          case 2:
+            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+            break;
           }
-//          if(cursorLoc == 2){
-//            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
-//          } else if (cursorLoc == 1) {
-//            u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
-//          } else {
-//            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
-//          }
+          //          if(cursorLoc == 2){
+          //            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+          //          } else if (cursorLoc == 1) {
+          //            u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
+          //          } else {
+          //            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+          //          }
         }
         else
         {
-          if(cursorLoc != 2){
+          if (cursorLoc != 2)
+          {
             u8g2.drawBox(0, 15 + 10 * cursorLoc, 36, 11); // selection box on menu for navigation
-          } else {
+          }
+          else
+          {
             u8g2.drawBox(0, 15 + 10 * cursorLoc, 26, 11); // selection box on menu for navigation
           }
         }
@@ -2631,7 +2589,7 @@ void displayLCD(bool demoMode)
     }
     break;
   case LCD_SONG_WRITE:
-  if (millis() > LCDFrameTimer + 10)
+    if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
@@ -2645,21 +2603,26 @@ void displayLCD(bool demoMode)
     }
     break;
   case LCD_SONG_SEL:
-  if (millis() > LCDFrameTimer + 10)
+    if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      u8g2.drawStr(0, 14, "Song number"); // draw kit names
-      char songNumStr[30];
-      sprintf(songNumStr, "%i", songNum+1);
-      u8g2.drawStr(30, 34, songNumStr);
+      if(playMode == PLAY_SONG){
+        u8g2.drawStr(0, 14, "Song number"); 
+        char songNumStr[30];
+        sprintf(songNumStr, "%i", songNum + 1);
+        u8g2.drawStr(30, 34, songNumStr);
+      } else {
+        u8g2.drawStr(0, 14, "Select a song <3"); 
+      }
+
       u8g2.sendBuffer();
     }
     break;
   case LCD_PATT_SEL:
-  if (millis() > LCDFrameTimer + 10)
+    if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
@@ -2707,7 +2670,7 @@ void displayLCD(bool demoMode)
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      u8g2.drawStr(0, 14, "Song bank sel"); 
+      u8g2.drawStr(0, 14, "Song bank sel");
       char songBankStr[30];
       sprintf(songBankStr, "%i", songBankNum + 1);
       u8g2.drawStr(30, 34, songBankStr);
@@ -2716,52 +2679,56 @@ void displayLCD(bool demoMode)
     break;
 
   case LCD_LENGTH_SEL:
-    if (millis() > LCDFrameTimer + 10){
+    if (millis() > LCDFrameTimer + 10)
+    {
       u8g2.clearBuffer();                 // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      u8g2.drawStr(0, 14, "Pattern Length"); 
+      u8g2.drawStr(0, 14, "Pattern Length");
       char patLenStr[30];
       sprintf(patLenStr, "%i", (int)currPattern->settings[2]);
       u8g2.drawStr(30, 34, patLenStr);
-//      switch(patternPlaySection){
-//        case 0:
-//          for(int i = 0; i < currPattern->settings[2]; i++){
-//            u8g2.drawPixel(20 + i * 2, 40);
-//          }
-//          break;
-//        case 1:
-//          for(int i = 0; i < currPattern->settings[2]; i++){
-//            u8g2.drawPixel(20 + i * 2, 40);
-//          }
-//          break;
-//        case 2:
-//            for(int i = 0; i < currPattern->settings[2]; i++){
-//            u8g2.drawPixel(20 + i * 2, 40);
-//          }
-//          break;
-//        case 3:
-//                    for(int i = 0; i < currPattern->settings[2]; i++){
-//            u8g2.drawPixel(20 + i * 2, 40);
-//          }
-//          break;
-//      }
+      //      switch(patternPlaySection){
+      //        case 0:
+      //          for(int i = 0; i < currPattern->settings[2]; i++){
+      //            u8g2.drawPixel(20 + i * 2, 40);
+      //          }
+      //          break;
+      //        case 1:
+      //          for(int i = 0; i < currPattern->settings[2]; i++){
+      //            u8g2.drawPixel(20 + i * 2, 40);
+      //          }
+      //          break;
+      //        case 2:
+      //            for(int i = 0; i < currPattern->settings[2]; i++){
+      //            u8g2.drawPixel(20 + i * 2, 40);
+      //          }
+      //          break;
+      //        case 3:
+      //                    for(int i = 0; i < currPattern->settings[2]; i++){
+      //            u8g2.drawPixel(20 + i * 2, 40);
+      //          }
+      //          break;
+      //      }
       int myPattLen = (int)currPattern->settings[2];
-//      int totalSections = 0;
-//      if( myPattLen > 48){
-//        int totalSections = 3;
-//      } else if (myPattLen > 32){
-//        int totalSections = 2;
-//      } else if (myPattLen > 16){
-//        int totalSections = 1;
-//      }
+      //      int totalSections = 0;
+      //      if( myPattLen > 48){
+      //        int totalSections = 3;
+      //      } else if (myPattLen > 32){
+      //        int totalSections = 2;
+      //      } else if (myPattLen > 16){
+      //        int totalSections = 1;
+      //      }
       int i = 0;
-      while(myPattLen > 0){
-        for (int j = 0; j < 16; j++){
+      while (myPattLen > 0)
+      {
+        for (int j = 0; j < 16; j++)
+        {
           u8g2.drawPixel(20 + j * 2, 40 + i * 2);
           myPattLen--;
-          if(myPattLen < 1){
+          if (myPattLen < 1)
+          {
             break;
           }
         }
@@ -2984,15 +2951,19 @@ void UpdateDataEnc()
           kitSel = (kitSel + 1);
           if (kitSel > 2)
             kitSel = 2;
-        } else if (controlState == LENGTH_SEL){
+        }
+        else if (controlState == LENGTH_SEL)
+        {
           currPattern->settings[2] = currPattern->settings[2] + 1;
-          if(currPattern->settings[2] > 64){
+          if (currPattern->settings[2] > 64)
+          {
             currPattern->settings[2] = 64;
           }
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
-          if (currInst > 7 && currInst < 24){ // bank A sample kit
+          if (currInst > 7 && currInst < 24)
+          {               // bank A sample kit
             if (paramSel) // if cursor is modifying parameter
             {
               switch (cursorLoc) // figure out which parameter is being modified
@@ -3034,35 +3005,43 @@ void UpdateDataEnc()
                   break;
                 case INST_ORGAN_CHORDS:
                   currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] + 1;
-                  if (currPattern->pattern[16][stepEditIndex] > 12) currPattern->pattern[16][stepEditIndex] = 1;
+                  if (currPattern->pattern[16][stepEditIndex] > 12)
+                    currPattern->pattern[16][stepEditIndex] = 1;
                   break;
                 case INST_GUITAR_CHORDS:
                   currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] + 1;
-                  if (currPattern->pattern[17][stepEditIndex] > 12) currPattern->pattern[17][stepEditIndex] = 1;
+                  if (currPattern->pattern[17][stepEditIndex] > 12)
+                    currPattern->pattern[17][stepEditIndex] = 1;
                   break;
                 case INST_GUITAR_ONE:
                   currPattern->pattern[18][stepEditIndex] = currPattern->pattern[18][stepEditIndex] + 1;
-                  if (currPattern->pattern[18][stepEditIndex] > 12) currPattern->pattern[18][stepEditIndex] = 1;
+                  if (currPattern->pattern[18][stepEditIndex] > 12)
+                    currPattern->pattern[18][stepEditIndex] = 1;
                   break;
                 case INST_ORGAN_NOTES:
                   currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] + 1;
-                  if (currPattern->pattern[19][stepEditIndex] > 12) currPattern->pattern[19][stepEditIndex] = 1;
+                  if (currPattern->pattern[19][stepEditIndex] > 12)
+                    currPattern->pattern[19][stepEditIndex] = 1;
                   break;
                 case INST_ORGAN_NOTES_2:
                   currPattern->pattern[20][stepEditIndex] = currPattern->pattern[20][stepEditIndex] + 1;
-                  if (currPattern->pattern[20][stepEditIndex] > 12) currPattern->pattern[20][stepEditIndex] = 1;
+                  if (currPattern->pattern[20][stepEditIndex] > 12)
+                    currPattern->pattern[20][stepEditIndex] = 1;
                   break;
                 case INST_ORGAN_NOTES_3:
                   currPattern->pattern[21][stepEditIndex] = currPattern->pattern[21][stepEditIndex] + 1;
-                  if (currPattern->pattern[21][stepEditIndex] > 12) currPattern->pattern[21][stepEditIndex] = 1;
+                  if (currPattern->pattern[21][stepEditIndex] > 12)
+                    currPattern->pattern[21][stepEditIndex] = 1;
                   break;
                 case INST_ORGAN_NOTES_4:
                   currPattern->pattern[22][stepEditIndex] = currPattern->pattern[22][stepEditIndex] + 1;
-                  if (currPattern->pattern[22][stepEditIndex] > 12) currPattern->pattern[22][stepEditIndex] = 1;
+                  if (currPattern->pattern[22][stepEditIndex] > 12)
+                    currPattern->pattern[22][stepEditIndex] = 1;
                   break;
                 case INST_ORGAN_NOTES_5:
                   currPattern->pattern[23][stepEditIndex] = currPattern->pattern[23][stepEditIndex] + 1;
-                  if (currPattern->pattern[23][stepEditIndex] > 12) currPattern->pattern[23][stepEditIndex] = 1;
+                  if (currPattern->pattern[23][stepEditIndex] > 12)
+                    currPattern->pattern[23][stepEditIndex] = 1;
                   break;
                 }
                 break;
@@ -3103,56 +3082,64 @@ void UpdateDataEnc()
                   mixer2.gain(3, currPattern->velocity[15][0]);
                   break;
                 case INST_ORGAN_CHORDS:
-                    currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[22][stepEditIndex] > 6){ // cycle back to beginning of list
-                      currPattern->parameter[22][stepEditIndex] = 0;
-                    }
-                    break;
+                  currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[22][stepEditIndex] > 6)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[22][stepEditIndex] = 0;
+                  }
+                  break;
                 case INST_GUITAR_CHORDS:
-                    currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[24][stepEditIndex] > 6){ // cycle back to beginning of list
-                      currPattern->parameter[24][stepEditIndex] = 0;
-                    }
+                  currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[24][stepEditIndex] > 6)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[24][stepEditIndex] = 0;
+                  }
                   break;
                 case INST_GUITAR_ONE:
-                    currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[26][stepEditIndex] > 6){ // cycle back to beginning of list
-                      currPattern->parameter[26][stepEditIndex] = 0;
-                    }
+                  currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[26][stepEditIndex] > 6)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[26][stepEditIndex] = 0;
+                  }
                   break;
                 case INST_ORGAN_NOTES:
-                    currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[28][stepEditIndex] > 3){ // cycle back to beginning of list
-                      currPattern->parameter[28][stepEditIndex] = 3;
-                    }
+                  currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[28][stepEditIndex] > 3)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[28][stepEditIndex] = 3;
+                  }
                   break;
                 case INST_ORGAN_NOTES_2:
-                    currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[30][stepEditIndex] > 3){ // cycle back to beginning of list
-                      currPattern->parameter[30][stepEditIndex] = 3;
-                    }
+                  currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[30][stepEditIndex] > 3)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[30][stepEditIndex] = 3;
+                  }
                   break;
                 case INST_ORGAN_NOTES_3:
-                    currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[32][stepEditIndex] > 3){ // cycle back to beginning of list
-                      currPattern->parameter[32][stepEditIndex] = 3;
-                    }
+                  currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[32][stepEditIndex] > 3)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[32][stepEditIndex] = 3;
+                  }
                   break;
                 case INST_ORGAN_NOTES_4:
-                    currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[34][stepEditIndex] > 3){ // cycle back to beginning of list
-                      currPattern->parameter[34][stepEditIndex] = 3;
-                    }
+                  currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[34][stepEditIndex] > 3)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[34][stepEditIndex] = 3;
+                  }
                   break;
                 case INST_ORGAN_NOTES_5:
-                    currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] + 1; // increment chord type
-                    if (currPattern->parameter[36][stepEditIndex] > 3){ // cycle back to beginning of list
-                      currPattern->parameter[36][stepEditIndex] = 3;
-                    }
+                  currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] + 1; // increment chord type
+                  if (currPattern->parameter[36][stepEditIndex] > 3)
+                  { // cycle back to beginning of list
+                    currPattern->parameter[36][stepEditIndex] = 3;
+                  }
                   break;
                 }
                 break;
-  
+
               case 2:             // param 2 (length) selected
                 switch (currInst) // figure out which instrument we are modifying the envelope parameter on
                 {
@@ -3238,7 +3225,7 @@ void UpdateDataEnc()
               if (cursorLoc > 2)
                 cursorLoc = 2;
             }
-          } 
+          }
         }
 
         dataEncState = 2; // CW 2
@@ -3281,9 +3268,12 @@ void UpdateDataEnc()
           kitSel = (kitSel - 1);
           if (kitSel < 0)
             kitSel = 0;
-        } else if (controlState == LENGTH_SEL){
+        }
+        else if (controlState == LENGTH_SEL)
+        {
           currPattern->settings[2] = currPattern->settings[2] - 1;
-          if(currPattern->settings[2] < 1){
+          if (currPattern->settings[2] < 1)
+          {
             currPattern->settings[2] = 1;
           }
         }
@@ -3345,37 +3335,45 @@ void UpdateDataEnc()
                 playSdRaw8.setPlaybackRate(currPattern->parameter[20][0]);
                 break;
               case INST_ORGAN_CHORDS:
-                  currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] - 1;
-                  if (currPattern->pattern[16][stepEditIndex] < 1) currPattern->pattern[16][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[16][stepEditIndex] = currPattern->pattern[16][stepEditIndex] - 1;
+                if (currPattern->pattern[16][stepEditIndex] < 1)
+                  currPattern->pattern[16][stepEditIndex] = 12;
+                break;
               case INST_GUITAR_CHORDS:
-                  currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] - 1;
-                  if (currPattern->pattern[17][stepEditIndex] < 1) currPattern->pattern[17][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[17][stepEditIndex] = currPattern->pattern[17][stepEditIndex] - 1;
+                if (currPattern->pattern[17][stepEditIndex] < 1)
+                  currPattern->pattern[17][stepEditIndex] = 12;
+                break;
               case INST_GUITAR_ONE:
-                  currPattern->pattern[18][stepEditIndex] = currPattern->pattern[18][stepEditIndex] - 1;
-                  if (currPattern->pattern[18][stepEditIndex] < 1) currPattern->pattern[18][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[18][stepEditIndex] = currPattern->pattern[18][stepEditIndex] - 1;
+                if (currPattern->pattern[18][stepEditIndex] < 1)
+                  currPattern->pattern[18][stepEditIndex] = 12;
+                break;
               case INST_ORGAN_NOTES:
-                  currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] - 1;
-                  if (currPattern->pattern[19][stepEditIndex] < 1) currPattern->pattern[19][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[19][stepEditIndex] = currPattern->pattern[19][stepEditIndex] - 1;
+                if (currPattern->pattern[19][stepEditIndex] < 1)
+                  currPattern->pattern[19][stepEditIndex] = 12;
+                break;
               case INST_ORGAN_NOTES_2:
-                  currPattern->pattern[20][stepEditIndex] = currPattern->pattern[20][stepEditIndex] - 1;
-                  if (currPattern->pattern[20][stepEditIndex] < 1) currPattern->pattern[20][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[20][stepEditIndex] = currPattern->pattern[20][stepEditIndex] - 1;
+                if (currPattern->pattern[20][stepEditIndex] < 1)
+                  currPattern->pattern[20][stepEditIndex] = 12;
+                break;
               case INST_ORGAN_NOTES_3:
-                  currPattern->pattern[21][stepEditIndex] = currPattern->pattern[21][stepEditIndex] - 1;
-                  if (currPattern->pattern[21][stepEditIndex] < 1) currPattern->pattern[21][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[21][stepEditIndex] = currPattern->pattern[21][stepEditIndex] - 1;
+                if (currPattern->pattern[21][stepEditIndex] < 1)
+                  currPattern->pattern[21][stepEditIndex] = 12;
+                break;
               case INST_ORGAN_NOTES_4:
-                  currPattern->pattern[22][stepEditIndex] = currPattern->pattern[22][stepEditIndex] - 1;
-                  if (currPattern->pattern[22][stepEditIndex] < 1) currPattern->pattern[22][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[22][stepEditIndex] = currPattern->pattern[22][stepEditIndex] - 1;
+                if (currPattern->pattern[22][stepEditIndex] < 1)
+                  currPattern->pattern[22][stepEditIndex] = 12;
+                break;
               case INST_ORGAN_NOTES_5:
-                  currPattern->pattern[23][stepEditIndex] = currPattern->pattern[23][stepEditIndex] - 1;
-                  if (currPattern->pattern[23][stepEditIndex] < 1) currPattern->pattern[23][stepEditIndex] = 12;
-                  break;
+                currPattern->pattern[23][stepEditIndex] = currPattern->pattern[23][stepEditIndex] - 1;
+                if (currPattern->pattern[23][stepEditIndex] < 1)
+                  currPattern->pattern[23][stepEditIndex] = 12;
+                break;
               }
               break;
 
@@ -3431,57 +3429,63 @@ void UpdateDataEnc()
                 mixer2.gain(3, currPattern->velocity[15][0]);
                 break;
               case INST_ORGAN_CHORDS:
-                    currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[22][stepEditIndex] < 0){ // cycle back to beginning of list
-                      currPattern->parameter[22][stepEditIndex] = 6;
-                    }
-                    break;
+                currPattern->parameter[22][stepEditIndex] = currPattern->parameter[22][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[22][stepEditIndex] < 0)
+                { // cycle back to beginning of list
+                  currPattern->parameter[22][stepEditIndex] = 6;
+                }
+                break;
               case INST_GUITAR_CHORDS:
-                    currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[24][stepEditIndex] < 0){ // cycle back to beginning of list
-                      currPattern->parameter[24][stepEditIndex] = 6;
-                    }
-                    break;
+                currPattern->parameter[24][stepEditIndex] = currPattern->parameter[24][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[24][stepEditIndex] < 0)
+                { // cycle back to beginning of list
+                  currPattern->parameter[24][stepEditIndex] = 6;
+                }
+                break;
               case INST_GUITAR_ONE:
-                    currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[26][stepEditIndex] < 0){ // cycle back to beginning of list
-                      currPattern->parameter[26][stepEditIndex] = 6;
-                    }
-                    break;
+                currPattern->parameter[26][stepEditIndex] = currPattern->parameter[26][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[26][stepEditIndex] < 0)
+                { // cycle back to beginning of list
+                  currPattern->parameter[26][stepEditIndex] = 6;
+                }
+                break;
               case INST_ORGAN_NOTES:
-                    currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[28][stepEditIndex] < -3){ // cycle back to beginning of list
-                      currPattern->parameter[28][stepEditIndex] = -3;
-                    }
-                    break;
+                currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[28][stepEditIndex] < -3)
+                { // cycle back to beginning of list
+                  currPattern->parameter[28][stepEditIndex] = -3;
+                }
+                break;
               case INST_ORGAN_NOTES_2:
-                    currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[30][stepEditIndex] < -3){ // cycle back to beginning of list
-                      currPattern->parameter[30][stepEditIndex] = -3;
-                    }
-                    break;
+                currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[30][stepEditIndex] < -3)
+                { // cycle back to beginning of list
+                  currPattern->parameter[30][stepEditIndex] = -3;
+                }
+                break;
               case INST_ORGAN_NOTES_3:
-                    currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[32][stepEditIndex] < -3){ // cycle back to beginning of list
-                      currPattern->parameter[32][stepEditIndex] = -3;
-                    }
-                    break;
+                currPattern->parameter[32][stepEditIndex] = currPattern->parameter[32][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[32][stepEditIndex] < -3)
+                { // cycle back to beginning of list
+                  currPattern->parameter[32][stepEditIndex] = -3;
+                }
+                break;
               case INST_ORGAN_NOTES_4:
-                    currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[34][stepEditIndex] < -3){ // cycle back to beginning of list
-                      currPattern->parameter[34][stepEditIndex] = -3;
-                    }
-                    break;
+                currPattern->parameter[34][stepEditIndex] = currPattern->parameter[34][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[34][stepEditIndex] < -3)
+                { // cycle back to beginning of list
+                  currPattern->parameter[34][stepEditIndex] = -3;
+                }
+                break;
               case INST_ORGAN_NOTES_5:
-                    currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] - 1; // increment chord type
-                    if (currPattern->parameter[36][stepEditIndex] < -3){ // cycle back to beginning of list
-                      currPattern->parameter[36][stepEditIndex] = -3;
-                    }
-                    break;
+                currPattern->parameter[36][stepEditIndex] = currPattern->parameter[36][stepEditIndex] - 1; // increment chord type
+                if (currPattern->parameter[36][stepEditIndex] < -3)
+                { // cycle back to beginning of list
+                  currPattern->parameter[36][stepEditIndex] = -3;
+                }
+                break;
               }
               break;
-
-              
 
             case 2:             // param 2 (length) selected
               switch (currInst) // check which instrument is being modified
@@ -3527,37 +3531,37 @@ void UpdateDataEnc()
                   currPattern->parameter[21][0] = 1;
                 break;
               case INST_ORGAN_CHORDS:
-                  currPattern->velocity[16][0] -= parameterInc;
-                  mixer6.gain(0, currPattern->velocity[16][0]);
-                  break;
+                currPattern->velocity[16][0] -= parameterInc;
+                mixer6.gain(0, currPattern->velocity[16][0]);
+                break;
               case INST_GUITAR_CHORDS:
-                  currPattern->velocity[17][0] -= parameterInc;
-                  mixer6.gain(1, currPattern->velocity[17][0]);
-                  break;
+                currPattern->velocity[17][0] -= parameterInc;
+                mixer6.gain(1, currPattern->velocity[17][0]);
+                break;
               case INST_GUITAR_ONE:
-                  currPattern->velocity[18][0] -= parameterInc;
-                  mixer6.gain(2, currPattern->velocity[18][0]);
-                  break;
+                currPattern->velocity[18][0] -= parameterInc;
+                mixer6.gain(2, currPattern->velocity[18][0]);
+                break;
               case INST_ORGAN_NOTES:
-                  currPattern->velocity[19][0] -= parameterInc;
-                  mixer7.gain(0, currPattern->velocity[19][0]);
-                  break;
+                currPattern->velocity[19][0] -= parameterInc;
+                mixer7.gain(0, currPattern->velocity[19][0]);
+                break;
               case INST_ORGAN_NOTES_2:
-                  currPattern->velocity[20][0] -= parameterInc;
-                  mixer7.gain(1, currPattern->velocity[20][0]);
-                  break;
+                currPattern->velocity[20][0] -= parameterInc;
+                mixer7.gain(1, currPattern->velocity[20][0]);
+                break;
               case INST_ORGAN_NOTES_3:
-                  currPattern->velocity[21][0] -= parameterInc;
-                  mixer7.gain(2, currPattern->velocity[21][0]);
-                  break;
+                currPattern->velocity[21][0] -= parameterInc;
+                mixer7.gain(2, currPattern->velocity[21][0]);
+                break;
               case INST_ORGAN_NOTES_4:
-                  currPattern->velocity[22][0] -= parameterInc;
-                  mixer7.gain(3, currPattern->velocity[22][0]);
-                  break;
+                currPattern->velocity[22][0] -= parameterInc;
+                mixer7.gain(3, currPattern->velocity[22][0]);
+                break;
               case INST_ORGAN_NOTES_5:
-                  currPattern->velocity[23][0] -= parameterInc;
-                  mixer8.gain(0, currPattern->velocity[23][0]);
-                  break;
+                currPattern->velocity[23][0] -= parameterInc;
+                mixer8.gain(0, currPattern->velocity[23][0]);
+                break;
               }
               break;
             }
@@ -3614,10 +3618,10 @@ void recallParameters()
   mixer2.gain(1, currPattern->velocity[13][0]);
   mixer2.gain(2, currPattern->velocity[14][0]);
   mixer2.gain(3, currPattern->velocity[15][0]);
-//  mixer6.gain(0, currPattern->velocity[16][0]);
-//  mixer6.gain(1, currPattern->velocity[17][0]);
-//  mixer6.gain(2, currPattern->velocity[18][0]);
-//  mixer7.gain(0, currPattern->velocity[18][0]);
+  //  mixer6.gain(0, currPattern->velocity[16][0]);
+  //  mixer6.gain(1, currPattern->velocity[17][0]);
+  //  mixer6.gain(2, currPattern->velocity[18][0]);
+  //  mixer7.gain(0, currPattern->velocity[18][0]);
   playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
   playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
   playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
@@ -3675,11 +3679,14 @@ void stopSamples()
 // **************************************************************************************************/
 void endChords()
 {
-  if( currStep >= 0){
-    if(currPattern->pattern[16][currStep] <= 0){
+  if (currStep >= 0)
+  {
+    if (currPattern->pattern[16][currStep] <= 0)
+    {
       playSdRaw10.stop();
     }
-    if(currPattern->pattern[17][currStep] <= 0){
+    if (currPattern->pattern[17][currStep] <= 0)
+    {
       playSdRaw11.stop();
     }
   }
@@ -3689,24 +3696,26 @@ void endChords()
 // * Function getButtonOffset
 // * -------------------------------------------------------------------------------------------------
 // * Overview: gets the index of step you are editing when a step button is pressed, accounting for section of pattern you are in
-// *             i.e. 1-16, 17-32, 33-48 or 49-64. 
+// *             i.e. 1-16, 17-32, 33-48 or 49-64.
 // * Input:
 // * Output: Nothing
 // **************************************************************************************************/
-int getButtonOffset(int buttNum, int pattOffset){
-          int myInd = buttNum;
-          switch(pattOffset){
-            case 0:
-              break;
-            case 1:
-              myInd += 16;
-              break;
-            case 2:
-              myInd += 32;
-              break;
-            case 3:
-              myInd += 48;
-              break;
-          }
-          return myInd;
+int getButtonOffset(int buttNum, int pattOffset)
+{
+  int myInd = buttNum;
+  switch (pattOffset)
+  {
+  case 0:
+    break;
+  case 1:
+    myInd += 16;
+    break;
+  case 2:
+    myInd += 32;
+    break;
+  case 3:
+    myInd += 48;
+    break;
+  }
+  return myInd;
 }

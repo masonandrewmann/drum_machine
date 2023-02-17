@@ -32,7 +32,7 @@ namespace newdigate {
 
     const uint32_t flashloader_default_sd_buffersize = 4 * 1024;
     const uint32_t flash_offset = 0x10000;
-    const uint32_t audio_offset = 5000000; // add 5 megabyte offset for non-audio sample variables, may need to increase if patterns etc get real big
+    const uint32_t audio_offset = 7000000; // add 5 megabyte offset for non-audio sample variables, may need to increase if patterns etc get real big
 
     struct audiosample {
         int16_t *sampledata;

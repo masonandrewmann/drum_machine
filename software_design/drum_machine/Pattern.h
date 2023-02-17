@@ -235,6 +235,8 @@ public:
 
       // copy settings to internal memory
       memcpy(settings, (float *)cp["sett"], 256);
+    } else {
+      Serial.println("Pattern not found");
     }
   }
 
