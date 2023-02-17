@@ -454,6 +454,7 @@ void setup()
 
     // load patterns from SD Card
 <<<<<<< HEAD
+<<<<<<< HEAD
     Serial.println("Reading patterns from SD");
     PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
     PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
@@ -494,6 +495,8 @@ void setup()
     SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
 
 =======
+=======
+>>>>>>> parent of 7fea2cc (fresh morning commit)
   Serial.println("Reading patterns from SD");
   PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
   PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
@@ -533,6 +536,9 @@ void setup()
   SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
   SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
   Serial.println("Done reading songs!");
+<<<<<<< HEAD
+>>>>>>> parent of 7fea2cc (fresh morning commit)
+=======
 >>>>>>> parent of 7fea2cc (fresh morning commit)
 
   // digital drum initialization
