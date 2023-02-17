@@ -100,33 +100,10 @@ enum playMode{
   PLAY_PATTERN,
   PLAY_SONG
 };
-#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
 
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
-EXTMEM Pattern PatternStorage[1][16];
-EXTMEM Song SongStorage[1][16];
-EXTMEM int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
-EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
-EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
-EXTMEM int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
-EXTMEM int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
-EXTMEM newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
-
-EXTMEM newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
-  // 0 - Cmaj
-  // 1 - Cmin
-  // 2 - C7
-  // 3 - Cmaj7
-  // 4 - Cmin7
-  // 5 - Cdim
-  // 6 - Caug
-
-EXTMEM newdigate::audiosample *organNotes[8];
-
-
-
-EXTMEM newdigate::audiosample *sample9;
-EXTMEM newdigate::audiosample *sample10;
+EXTMEM Pattern PatternStorage[16][16];
+EXTMEM Song SongStorage[16][16];
 //------EXTERNAL QSPI RAM CHIP SECTION END------
 
 // Pattern variables
@@ -174,7 +151,23 @@ AudioPlayArrayResmp playSdRaw23; // xy=321,513
 AudioPlayArrayResmp playSdRaw24; // xy=321,513
 AudioPlayArrayResmp playSdRaw25; // xy=321,513
 
+newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
 
+newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
+  // 0 - Cmaj
+  // 1 - Cmin
+  // 2 - C7
+  // 3 - Cmaj7
+  // 4 - Cmin7
+  // 5 - Cdim
+  // 6 - Caug
+
+newdigate::audiosample *organNotes[8];
+
+
+
+newdigate::audiosample *sample9;
+newdigate::audiosample *sample10;
 
 // GUItool: begin automatically generated code
 AudioSynthSimpleDrum     drum2;          //xy=55,814
@@ -268,7 +261,12 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
 
 
 
-
+#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
+int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
+int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
 
 // transport variables
 float tempo = 120;
@@ -453,8 +451,6 @@ void setup()
   //  }
 
     // load patterns from SD Card
-<<<<<<< HEAD
-<<<<<<< HEAD
     Serial.println("Reading patterns from SD");
     PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
     PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
@@ -493,53 +489,7 @@ void setup()
     SongStorage[0][13].readFromSD("/SONGS/A/14.CSV");
     SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
     SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
-
-=======
-=======
->>>>>>> parent of 7fea2cc (fresh morning commit)
-  Serial.println("Reading patterns from SD");
-  PatternStorage[0][0].readFromSD("/PATTERNS/A/1.CSV");
-  PatternStorage[0][1].readFromSD("/PATTERNS/A/2.CSV");
-  PatternStorage[0][2].readFromSD("/PATTERNS/A/3.CSV");
-  PatternStorage[0][3].readFromSD("/PATTERNS/A/4.CSV");
-  PatternStorage[0][4].readFromSD("/PATTERNS/A/5.CSV");
-  PatternStorage[0][5].readFromSD("/PATTERNS/A/6.CSV");
-  PatternStorage[0][6].readFromSD("/PATTERNS/A/7.CSV");
-  PatternStorage[0][7].readFromSD("/PATTERNS/A/8.CSV");
-
-  PatternStorage[0][8].readFromSD("/PATTERNS/A/9.CSV");
-  PatternStorage[0][9].readFromSD("/PATTERNS/A/10.CSV");
-  PatternStorage[0][10].readFromSD("/PATTERNS/A/11.CSV");
-  PatternStorage[0][11].readFromSD("/PATTERNS/A/12.CSV");
-  PatternStorage[0][12].readFromSD("/PATTERNS/A/13.CSV");
-  PatternStorage[0][13].readFromSD("/PATTERNS/A/14.CSV");
-  PatternStorage[0][14].readFromSD("/PATTERNS/A/15.CSV");
-  PatternStorage[0][15].readFromSD("/PATTERNS/A/16.CSV");
-  Serial.println("Done reading patterns!");
-
-    Serial.println("Reading songs from SD");
-  SongStorage[0][0].readFromSD("/SONGS/A/1.CSV");
-  SongStorage[0][1].readFromSD("/SONGS/A/2.CSV");
-  SongStorage[0][2].readFromSD("/SONGS/A/3.CSV");
-  SongStorage[0][3].readFromSD("/SONGS/A/4.CSV");
-  SongStorage[0][4].readFromSD("/SONGS/A/5.CSV");
-  SongStorage[0][5].readFromSD("/SONGS/A/6.CSV");
-  SongStorage[0][6].readFromSD("/SONGS/A/7.CSV");
-  SongStorage[0][7].readFromSD("/SONGS/A/8.CSV");
-
-  SongStorage[0][8].readFromSD("/SONGS/A/9.CSV");
-  SongStorage[0][9].readFromSD("/SONGS/A/10.CSV");
-  SongStorage[0][10].readFromSD("/SONGS/A/11.CSV");
-  SongStorage[0][11].readFromSD("/SONGS/A/12.CSV");
-  SongStorage[0][12].readFromSD("/SONGS/A/13.CSV");
-  SongStorage[0][13].readFromSD("/SONGS/A/14.CSV");
-  SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
-  SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
-  Serial.println("Done reading songs!");
-<<<<<<< HEAD
->>>>>>> parent of 7fea2cc (fresh morning commit)
-=======
->>>>>>> parent of 7fea2cc (fresh morning commit)
+  }
 
   // digital drum initialization
   drum1.frequency(60);
