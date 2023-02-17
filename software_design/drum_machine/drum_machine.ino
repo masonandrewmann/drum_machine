@@ -4,7 +4,7 @@
 #include <SD.h>
 #include <CSV_Parser.h>
 #include <U8g2lib.h>
-#include "frames.h"
+//#include "frames.h"
 #include "Pattern.h"
 #include "Song.h"
 #include <TeensyVariablePlayback.h>
@@ -65,7 +65,8 @@ enum lcdStates
   LCD_PATT_SEL,
   LCD_INST_BANK,
   LCD_PATT_BANK,
-  LCD_SONG_BANK
+  LCD_SONG_BANK,
+  LCD_LENGTH_SEL
 };
 
 enum transportStates
@@ -86,7 +87,8 @@ enum controlStates
   SONG_WRITE,
   INST_BANK_SEL,
   PATTERN_BANK_SEL,
-  SONG_BANK_SEL
+  SONG_BANK_SEL,
+  LENGTH_SEL
 };
 
 enum ledDisplayStates
@@ -181,6 +183,102 @@ newdigate::audiosample *organNotes[8];
 newdigate::audiosample *sample9;
 newdigate::audiosample *sample10;
 
+//// GUItool: begin automatically generated code
+//AudioSynthSimpleDrum     drum2;          //xy=55,814
+//AudioSynthSimpleDrum     drum3;          //xy=55,858
+////AudioPlaySdRaw           playSdRaw9;     //xy=69.5,917
+//AudioSynthSimpleDrum     drum1;          //xy=71,754
+////AudioPlaySdRaw           playSdRaw1;     //xy=93,353
+////AudioPlaySdRaw           playSdRaw2;     //xy=96,395
+////AudioPlaySdRaw           playSdRaw3;     //xy=112,440
+////AudioPlaySdRaw           playSdRaw7;     //xy=112,616
+////AudioPlaySdRaw           playSdRaw12;    //xy=111,1046
+////AudioPlaySdRaw           playSdRaw6;     //xy=113,577
+////AudioPlaySdRaw           playSdRaw13;    //xy=112,1087
+////AudioPlaySdRaw           playSdRaw4;     //xy=116,490
+////AudioPlaySdRaw           playSdRaw11;    //xy=114,1003
+////AudioPlaySdRaw           playSdRaw5;     //xy=116,536
+////AudioPlaySdRaw           playSdRaw10;    //xy=116,966
+////AudioPlaySdRaw           playSdRaw8;     //xy=122,660
+////AudioPlaySdRaw           playSdRaw14;    //xy=146,1347
+////AudioPlaySdRaw           playSdRaw16;    //xy=148,1419
+////AudioPlaySdRaw           playSdRaw15;    //xy=151,1383
+////AudioPlaySdRaw           playSdRaw21;    //xy=150,1638
+////AudioPlaySdRaw           playSdRaw20;    //xy=151,1595
+////AudioPlaySdRaw           playSdRaw17;    //xy=152,1464
+////AudioPlaySdRaw           playSdRaw18;    //xy=153,1512
+////AudioPlaySdRaw           playSdRaw19;    //xy=154,1551
+////AudioPlaySdRaw           playSdRaw25;    //xy=163,1838
+////AudioPlaySdRaw           playSdRaw23;    //xy=164,1753
+////AudioPlaySdRaw           playSdRaw24;    //xy=164,1793
+////AudioPlaySdRaw           playSdRaw22;    //xy=166,1713
+//AudioMixer4              mixer4;         //xy=224,762
+//AudioEffectGranular      granular1;      //xy=228,917
+//AudioEffectGranular      granular5;      //xy=299,1091
+//AudioEffectGranular      granular4;      //xy=300,1049
+//AudioEffectGranular      granular3;      //xy=301,1003
+//AudioEffectGranular      granular2;      //xy=303,963
+//AudioMixer4              mixer7;         //xy=324,1366
+//AudioMixer4              mixer8;         //xy=325,1528
+//AudioMixer4              mixer9;         //xy=334,1738
+//AudioMixer4              mixer1;         //xy=342,380
+//AudioMixer4              mixer2;         //xy=385,599
+//AudioMixer4              mixer6;         //xy=497,1007
+//AudioMixer4              mixer3;         //xy=610,595
+//AudioOutputI2S           i2s1;           //xy=780,526
+//AudioMixer4              mixer5;         //xy=860,1053
+//AudioConnection          patchCord1(drum2, 0, mixer4, 1);
+//AudioConnection          patchCord2(drum3, 0, mixer4, 2);
+//AudioConnection          patchCord3(playSdRaw9, granular1);
+//AudioConnection          patchCord4(drum1, 0, mixer4, 0);
+//AudioConnection          patchCord5(playSdRaw1, 0, mixer1, 0);
+//AudioConnection          patchCord6(playSdRaw2, 0, mixer1, 1);
+//AudioConnection          patchCord7(playSdRaw3, 0, mixer1, 2);
+//AudioConnection          patchCord8(playSdRaw7, 0, mixer2, 2);
+//AudioConnection          patchCord9(playSdRaw12, granular4);
+//AudioConnection          patchCord10(playSdRaw6, 0, mixer2, 1);
+//AudioConnection          patchCord11(playSdRaw13, granular5);
+//AudioConnection          patchCord12(playSdRaw4, 0, mixer1, 3);
+//AudioConnection          patchCord13(playSdRaw11, granular3);
+//AudioConnection          patchCord14(playSdRaw5, 0, mixer2, 0);
+//AudioConnection          patchCord15(playSdRaw10, granular2);
+//AudioConnection          patchCord16(playSdRaw8, 0, mixer2, 3);
+//AudioConnection          patchCord17(playSdRaw14, 0, mixer7, 0);
+//AudioConnection          patchCord18(playSdRaw16, 0, mixer7, 2);
+//AudioConnection          patchCord19(playSdRaw15, 0, mixer7, 1);
+//AudioConnection          patchCord20(playSdRaw21, 0, mixer8, 3);
+//AudioConnection          patchCord21(playSdRaw20, 0, mixer8, 2);
+//AudioConnection          patchCord22(playSdRaw17, 0, mixer7, 3);
+//AudioConnection          patchCord23(playSdRaw18, 0, mixer8, 0);
+//AudioConnection          patchCord24(playSdRaw19, 0, mixer8, 1);
+//AudioConnection          patchCord25(playSdRaw25, 0, mixer9, 3);
+//AudioConnection          patchCord26(playSdRaw23, 0, mixer9, 1);
+//AudioConnection          patchCord27(playSdRaw24, 0, mixer9, 2);
+//AudioConnection          patchCord28(playSdRaw22, 0, mixer9, 0);
+//AudioConnection          patchCord29(mixer4, 0, mixer3, 2);
+//AudioConnection          patchCord30(granular1, 0, mixer4, 3);
+//AudioConnection          patchCord31(granular5, 0, mixer6, 3);
+//AudioConnection          patchCord32(granular4, 0, mixer6, 2);
+//AudioConnection          patchCord33(granular3, 0, mixer6, 1);
+//AudioConnection          patchCord34(granular2, 0, mixer6, 0);
+//AudioConnection          patchCord35(mixer7, 0, mixer5, 1);
+//AudioConnection          patchCord36(mixer8, 0, mixer5, 2);
+//AudioConnection          patchCord37(mixer9, 0, mixer5, 3);
+//AudioConnection          patchCord38(mixer1, 0, mixer3, 0);
+//AudioConnection          patchCord39(mixer2, 0, mixer3, 1);
+//AudioConnection          patchCord40(mixer6, 0, mixer5, 0);
+//AudioConnection          patchCord41(mixer3, 0, i2s1, 0);
+//AudioConnection          patchCord42(mixer3, 0, i2s1, 1);
+//AudioConnection          patchCord43(mixer5, 0, mixer3, 3);
+//AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
+//// GUItool: end automatically generated code
+
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
 // GUItool: begin automatically generated code
 AudioSynthSimpleDrum     drum2;          //xy=55,814
 AudioSynthSimpleDrum     drum3;          //xy=55,858
@@ -223,8 +321,10 @@ AudioMixer4              mixer1;         //xy=342,380
 AudioMixer4              mixer2;         //xy=385,599
 AudioMixer4              mixer6;         //xy=497,1007
 AudioMixer4              mixer3;         //xy=610,595
-AudioOutputI2S           i2s1;           //xy=780,526
+AudioEffectBitcrusher    bitcrusher2;    //xy=768,604
+AudioEffectBitcrusher    bitcrusher1;    //xy=772,569
 AudioMixer4              mixer5;         //xy=860,1053
+AudioOutputI2S           i2s1;           //xy=941,571
 AudioConnection          patchCord1(drum2, 0, mixer4, 1);
 AudioConnection          patchCord2(drum3, 0, mixer4, 2);
 AudioConnection          patchCord3(playSdRaw9, granular1);
@@ -265,11 +365,14 @@ AudioConnection          patchCord37(mixer9, 0, mixer5, 3);
 AudioConnection          patchCord38(mixer1, 0, mixer3, 0);
 AudioConnection          patchCord39(mixer2, 0, mixer3, 1);
 AudioConnection          patchCord40(mixer6, 0, mixer5, 0);
-AudioConnection          patchCord41(mixer3, 0, i2s1, 0);
-AudioConnection          patchCord42(mixer3, 0, i2s1, 1);
-AudioConnection          patchCord43(mixer5, 0, mixer3, 3);
+AudioConnection          patchCord41(mixer3, bitcrusher1);
+AudioConnection          patchCord42(mixer3, bitcrusher2);
+AudioConnection          patchCord43(bitcrusher2, 0, i2s1, 1);
+AudioConnection          patchCord44(bitcrusher1, 0, i2s1, 0);
+AudioConnection          patchCord45(mixer5, 0, mixer3, 3);
 AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
 // GUItool: end automatically generated code
+
 
 // transport variables
 float tempo = 120;
@@ -362,7 +465,8 @@ int songBankNum = 0;
 //playback stuff
 int playMode = PLAY_PATTERN;
 int songPlayStep = 0;
-int patternSection = 0; // which part of pattern are we in: 1-16, 17-32, 33-48 or 49-64? poorly named variable :~(
+int patternPlaySection = 0;
+int patternViewSection = 0; // which part of pattern are we in: 1-16, 17-32, 33-48 or 49-64? poorly named variable :~(
 
 //chord playback
 long stepEditIndex = 0;
@@ -694,6 +798,11 @@ PatternStorage[0][14].printPattern();
   granular4.beginPitchShift(50);
   granular5.begin(granularMemory5, GRANULAR_MEMORY_SIZE);
   granular5.beginPitchShift(50);
+
+  bitcrusher1.bits(16);
+  bitcrusher1.sampleRate(44100);
+  bitcrusher2.bits(16);
+  bitcrusher2.sampleRate(44100);
   
   // initialize MUX address pins
   for (int i = 0; i < sizeof(muxAddressPins) / sizeof(muxAddressPins[0]); i++)
@@ -746,13 +855,13 @@ void loop()
     {
       recallParameters(); // update parameters for this step
       if (playMode == PLAY_PATTERN){
-        if (currStep == 15)
+        if (currStep == (int)currPattern->settings[2] - 1)
         {                                                                    // last step off pattern, time to move to the next one
           patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;     // step to the next pattern in sequence
           currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]]; // actually grab the pattern from memory
           patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
         }
-        currStep = (currStep + 1) % 16; // move step pointer to next step
+        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
         endChords(); // turn off any chords that need to be turned off on this step
   
         // clockOutput(); //send clock signal out external output
@@ -778,7 +887,7 @@ void loop()
           currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
         }
       } else if (playMode == PLAY_SONG){
-        if (currStep == 15)
+        if (currStep == (int)currPattern->settings[2] - 1)
         {                                                                    // last step off pattern, time to move to the next one
           songPlayStep++; // increment the song pattern index
           if(currSong->patterns[songPlayStep] == -1){
@@ -786,7 +895,9 @@ void loop()
           }
           currPattern = &PatternStorage[0][currSong->patterns[songPlayStep]]; // grab the next pattern from memory
         }
-        currStep = (currStep + 1) % 16; // move step pointer to next step
+        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
+        Serial.println(currStep);
+
         
         for (int i = 0; i < 24; i++)
         { // send triggers of all instruments to be played at this step
@@ -808,6 +919,16 @@ void loop()
           currStepTime = currStepTime + stepLen * (1.0 - swingAmt);
         }
       }
+
+        if(currStep < 16){
+          patternPlaySection = 0;
+        } else if(currStep > 15 && currStep < 32){
+          patternPlaySection = 1;
+        } else if(currStep > 31 && currStep < 48){
+          patternPlaySection = 2;
+        } else if (currStep > 47 && currStep < 64){
+          patternPlaySection = 3;
+        }
     }
   }
   for (int i = 0; i < 16; i++) // check if hardware output pulses need to finish
@@ -991,6 +1112,30 @@ void readMux(bool printEn)
 //    Serial.println(mySpeed);
 //    granular2.setSpeed(pow(2, 2/12));
     // check if any control buttons have been pressed
+
+    int bitDepth = (int)map(controlPots[7], 0, 1023, 17, 1);
+    if (bitDepth == 17){
+      bitDepth = 16;
+    }
+
+    int sampleRateVal = (int)map(controlPots[8], 0, 1023, 44100, 1000);
+    if (sampleRateVal > 43900){
+      sampleRateVal = 44100;
+    }
+    
+//    Serial.print("bits: ");
+//    Serial.println(bitDepth);
+//
+//    Serial.print("samplerate: ");
+//    Serial.println(sampleRateVal);
+//    Serial.println();
+
+    bitcrusher1.bits(bitDepth);
+    bitcrusher2.bits(bitDepth);
+
+    bitcrusher1.sampleRate(sampleRateVal);
+    bitcrusher2.sampleRate(sampleRateVal);
+    
     for (int i = 0; i < 16; i++)
     {
       if ((controlButtons[i] != controlButtonsPrev[i]))
@@ -1196,6 +1341,12 @@ void readMux(bool printEn)
               currPattern->settings[1] = kitSel; // place kit into pattern memory
               controlState = STEP_SEL;           // exit kit selection mode
               lcdState = LCD_INST_PROP;          // exit kit selection display
+            } else if(controlButtons[5] == LOW){ // if pattern being held down, enter length selection mode
+              controlState = LENGTH_SEL;
+              lcdState = LCD_LENGTH_SEL;
+            } else if (controlState == LENGTH_SEL){
+              controlState = STEP_SEL;
+              lcdState = LCD_INST_PROP;
             }
             else // if in paramter selection mode, swap between menu navigation and data entry
             {
@@ -1336,7 +1487,11 @@ void readMux(bool printEn)
         case 14: // forwards
           if (controlButtons[i] == LOW)
           { // forwards PRESSED
-            if(++patternSection > 3) patternSection = 3;
+            if(transportState != PLAYING){
+              if(++patternPlaySection > 3) {
+                patternPlaySection = 3;
+              }
+            }
           }
           else
           { // forwards RELEASED
@@ -1346,7 +1501,9 @@ void readMux(bool printEn)
         case 15: // backwards
           if (controlButtons[i] == LOW)
           { // backwards PRESSED
-            if(--patternSection < 0) patternSection = 0;
+            if(transportState != PLAYING){
+              if(--patternPlaySection < 0) patternPlaySection = 0;
+            }
           }
           else
           { // backwards RELEASED
@@ -1372,99 +1529,101 @@ void readMux(bool printEn)
         {
           // THIS CURRENTLY CAUSES ERRORS BECAUSE THERE ARE MORE BANKS/INST INDICES THAN THERE ARE INSTRUMENTS IN PATTERN OBJECT
           // THIS RESULTS IN AN OUT OF BOUNDS ERROR IF YOU TRY TO ACCESS ANY INSTRUMENT GREATER THAN I THINK 20 OR 21
-          currPattern->pattern[currInst][i] = !currPattern->pattern[currInst][i]; // record buttom press into current pattern array
-          stepEditIndex = i;
+          int myInd = getButtonOffset(i, patternPlaySection);
+
+          currPattern->pattern[currInst][myInd] = !currPattern->pattern[currInst][myInd]; // record buttom press into current pattern array
+          stepEditIndex = myInd;
           
-          if(currInst == 16 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 16 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
-            if(currPattern->pattern[16][prevStep] > 0){
-              currPattern->pattern[16][i] = currPattern->pattern[16][prevStep];
-              currPattern->parameter[22][i] = currPattern->parameter[22][prevStep]; 
+            if(currPattern->pattern[16][prevStep] > 0){ // retrieve it
+              currPattern->pattern[16][myInd] = currPattern->pattern[16][prevStep];
+              currPattern->parameter[22][myInd] = currPattern->parameter[22][prevStep]; 
             }
           }
 
-          if(currInst == 17 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 17 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[17][prevStep] > 0){
-              currPattern->pattern[17][i] = currPattern->pattern[17][prevStep];
-              currPattern->parameter[24][i] = currPattern->parameter[24][prevStep]; 
+              currPattern->pattern[17][myInd] = currPattern->pattern[17][prevStep];
+              currPattern->parameter[24][myInd] = currPattern->parameter[24][prevStep]; 
             }
           }
 
-          if(currInst == 18 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 18 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[18][prevStep] > 0){
-              currPattern->pattern[18][i] = currPattern->pattern[18][prevStep];
-              currPattern->parameter[26][i] = currPattern->parameter[26][prevStep]; 
+              currPattern->pattern[18][myInd] = currPattern->pattern[18][prevStep];
+              currPattern->parameter[26][myInd] = currPattern->parameter[26][prevStep]; 
             }
           }
 
-          if(currInst == 19 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 19 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[19][prevStep] > 0){
-              currPattern->pattern[19][i] = currPattern->pattern[19][prevStep];
-              currPattern->parameter[28][i] = currPattern->parameter[28][prevStep]; 
-              currPattern->parameter[29][i] = currPattern->parameter[29][prevStep]; 
+              currPattern->pattern[19][myInd] = currPattern->pattern[19][prevStep];
+              currPattern->parameter[28][myInd] = currPattern->parameter[28][prevStep]; 
+              currPattern->parameter[29][myInd] = currPattern->parameter[29][prevStep]; 
             }
           }
 
-          if(currInst == 20 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 20 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[20][prevStep] > 0){
-              currPattern->pattern[20][i] = currPattern->pattern[20][prevStep];
-              currPattern->parameter[30][i] = currPattern->parameter[30][prevStep]; 
-              currPattern->parameter[31][i] = currPattern->parameter[31][prevStep]; 
+              currPattern->pattern[20][myInd] = currPattern->pattern[20][prevStep];
+              currPattern->parameter[30][myInd] = currPattern->parameter[30][prevStep]; 
+              currPattern->parameter[31][myInd] = currPattern->parameter[31][prevStep]; 
             }
           }
 
-          if(currInst == 21 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 21 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[21][prevStep] > 0){
-              currPattern->pattern[21][i] = currPattern->pattern[21][prevStep];
-              currPattern->parameter[32][i] = currPattern->parameter[32][prevStep]; 
-              currPattern->parameter[33][i] = currPattern->parameter[33][prevStep]; 
+              currPattern->pattern[21][myInd] = currPattern->pattern[21][prevStep];
+              currPattern->parameter[32][myInd] = currPattern->parameter[32][prevStep]; 
+              currPattern->parameter[33][myInd] = currPattern->parameter[33][prevStep]; 
             }
           }
 
-          if(currInst == 22 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 22 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[22][prevStep] > 0){
-              currPattern->pattern[22][i] = currPattern->pattern[22][prevStep];
-              currPattern->parameter[34][i] = currPattern->parameter[34][prevStep]; 
-              currPattern->parameter[35][i] = currPattern->parameter[35][prevStep]; 
+              currPattern->pattern[22][myInd] = currPattern->pattern[22][prevStep];
+              currPattern->parameter[34][myInd] = currPattern->parameter[34][prevStep]; 
+              currPattern->parameter[35][myInd] = currPattern->parameter[35][prevStep]; 
             }
           }
 
-          if(currInst == 23 && currPattern->pattern[currInst][i] > 0){ // for programming chords, grab the params from previous step
-            int prevStep = i - 1;
+          if(currInst == 23 && currPattern->pattern[currInst][myInd] > 0){ // for programming chords, grab the params from previous step
+            int prevStep = myInd - 1;
             if (prevStep == -1){
-              prevStep = 15;
+              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
             }
             if(currPattern->pattern[23][prevStep] > 0){
-              currPattern->pattern[23][i] = currPattern->pattern[23][prevStep];
-              currPattern->parameter[36][i] = currPattern->parameter[36][prevStep]; 
-              currPattern->parameter[37][i] = currPattern->parameter[37][prevStep]; 
+              currPattern->pattern[23][myInd] = currPattern->pattern[23][prevStep];
+              currPattern->parameter[36][myInd] = currPattern->parameter[36][prevStep]; 
+              currPattern->parameter[37][myInd] = currPattern->parameter[37][prevStep]; 
             }
           }
 
@@ -1654,10 +1813,11 @@ void readMux(bool printEn)
   case DISP_STEPS:
     for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
     {
-      stepLEDs[i] = currPattern->pattern[currInst][i];
+      int myInd = getButtonOffset(i, patternPlaySection);
+      stepLEDs[i] = currPattern->pattern[currInst][myInd];
     }
     if (currStep >= 0){
-      stepLEDs[currStep] = 1; // light up the playhead/current step
+      stepLEDs[currStep % 16] = 1; // light up the playhead/current step
     }
     break;
 
@@ -1710,7 +1870,7 @@ void readMux(bool printEn)
   sr0LED[3] = 0;
   sr0LED[4] = 0;
   sr0LED[5] = 0;
-  switch(patternSection){
+  switch(patternPlaySection){
     case 0: 
       sr0LED[5] = 1;
       break;
@@ -2069,27 +2229,27 @@ void displayLCD(bool demoMode)
   switch (lcdState) // determine what we want to display on the LCD
   {
   case LCD_DEMO:                        // Demo mode! show a cute little animation
-    if (millis() > LCDFrameTimer + 500) // only swap frames every half second
-    {
-      u8g2.clearBuffer();      // clear the internal memory
-      switch (starsFrameCount) // which frame are we on?
-      {
-      case 0:
-        u8g2.drawXBMP(0, 0, 84, 48, frame1); // display first frame
-        starsFrameCount = 1;                 // move to the other frame
-        break;
-      case 1:
-        u8g2.drawXBMP(0, 0, 84, 48, frame2); // display second frame
-        starsFrameCount = 0;                 // move to the other frame
-        break;
-      }
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-                                          //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
-      u8g2.drawStr(20, 30, " <3");        // write something to the internal memory
-      u8g2.drawStr(40, 44, "drums!");     // write something to the internal memory
-      u8g2.sendBuffer();                  // transfer internal memory to the display
-      LCDFrameTimer = millis();
-    }
+//    if (millis() > LCDFrameTimer + 500) // only swap frames every half second
+//    {
+//      u8g2.clearBuffer();      // clear the internal memory
+//      switch (starsFrameCount) // which frame are we on?
+//      {
+//      case 0:
+//        u8g2.drawXBMP(0, 0, 84, 48, frame1); // display first frame
+//        starsFrameCount = 1;                 // move to the other frame
+//        break;
+//      case 1:
+//        u8g2.drawXBMP(0, 0, 84, 48, frame2); // display second frame
+//        starsFrameCount = 0;                 // move to the other frame
+//        break;
+//      }
+//      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+//                                          //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
+//      u8g2.drawStr(20, 30, " <3");        // write something to the internal memory
+//      u8g2.drawStr(40, 44, "drums!");     // write something to the internal memory
+//      u8g2.sendBuffer();                  // transfer internal memory to the display
+//      LCDFrameTimer = millis();
+//    }
     break;
 
   case LCD_INST_PROP: // mode for displaying paramter of selected instrument, and allows you to edit them
@@ -2177,7 +2337,7 @@ void displayLCD(bool demoMode)
         sprintf(envStr, "%.01f", currPattern->parameter[21][0]);
         break;
       case INST_ORGAN_CHORDS:
-        if (stepEditIndex < 0 || stepEditIndex > 15){
+        if (stepEditIndex < 0 || stepEditIndex > 63){
           Serial.print("stepEditIndex is out of bounds");
           Serial.println(stepEditIndex);
           stepEditIndex = 0;
@@ -2201,7 +2361,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_GUITAR_CHORDS:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2226,7 +2386,7 @@ void displayLCD(bool demoMode)
 
 
       case INST_GUITAR_ONE:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2250,7 +2410,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_ORGAN_NOTES:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2276,7 +2436,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_ORGAN_NOTES_2:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2302,7 +2462,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_ORGAN_NOTES_3:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2328,7 +2488,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_ORGAN_NOTES_4:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2354,7 +2514,7 @@ void displayLCD(bool demoMode)
         break;
 
       case INST_ORGAN_NOTES_5:
-      if (stepEditIndex < 0 || stepEditIndex > 15){
+      if (stepEditIndex < 0 || stepEditIndex > 63){
         Serial.print("stepEditIndex is out of bounds");
         Serial.println(stepEditIndex);
         stepEditIndex = 0;
@@ -2409,12 +2569,24 @@ void displayLCD(bool demoMode)
         u8g2.setDrawColor(2);
         if (paramSel) // draw a selection box
         {
-          if(cursorLoc != 2){
-            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
-          } else {
-            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+          switch(cursorLoc){
+            case 0:
+              u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+              break;
+            case 1:
+              u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
+              break;
+            case 2:
+              u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+              break;
           }
-          
+//          if(cursorLoc == 2){
+//            u8g2.drawBox(30, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+//          } else if (cursorLoc == 1) {
+//            u8g2.drawBox(40, 15 + 10 * cursorLoc, 26, 11); // selection box on parameter being edited
+//          } else {
+//            u8g2.drawBox(40, 15 + 10 * cursorLoc, 36, 11); // selection box on parameter being edited
+//          }
         }
         else
         {
@@ -2535,10 +2707,66 @@ void displayLCD(bool demoMode)
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      u8g2.drawStr(0, 14, "Song bank sel"); // draw kit names
+      u8g2.drawStr(0, 14, "Song bank sel"); 
       char songBankStr[30];
       sprintf(songBankStr, "%i", songBankNum + 1);
       u8g2.drawStr(30, 34, songBankStr);
+      u8g2.sendBuffer();
+    }
+    break;
+
+  case LCD_LENGTH_SEL:
+    if (millis() > LCDFrameTimer + 10){
+      u8g2.clearBuffer();                 // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+      u8g2.setFontMode(0);
+      u8g2.setDrawColor(1);
+      u8g2.drawStr(0, 14, "Pattern Length"); 
+      char patLenStr[30];
+      sprintf(patLenStr, "%i", (int)currPattern->settings[2]);
+      u8g2.drawStr(30, 34, patLenStr);
+//      switch(patternPlaySection){
+//        case 0:
+//          for(int i = 0; i < currPattern->settings[2]; i++){
+//            u8g2.drawPixel(20 + i * 2, 40);
+//          }
+//          break;
+//        case 1:
+//          for(int i = 0; i < currPattern->settings[2]; i++){
+//            u8g2.drawPixel(20 + i * 2, 40);
+//          }
+//          break;
+//        case 2:
+//            for(int i = 0; i < currPattern->settings[2]; i++){
+//            u8g2.drawPixel(20 + i * 2, 40);
+//          }
+//          break;
+//        case 3:
+//                    for(int i = 0; i < currPattern->settings[2]; i++){
+//            u8g2.drawPixel(20 + i * 2, 40);
+//          }
+//          break;
+//      }
+      int myPattLen = (int)currPattern->settings[2];
+//      int totalSections = 0;
+//      if( myPattLen > 48){
+//        int totalSections = 3;
+//      } else if (myPattLen > 32){
+//        int totalSections = 2;
+//      } else if (myPattLen > 16){
+//        int totalSections = 1;
+//      }
+      int i = 0;
+      while(myPattLen > 0){
+        for (int j = 0; j < 16; j++){
+          u8g2.drawPixel(20 + j * 2, 40 + i * 2);
+          myPattLen--;
+          if(myPattLen < 1){
+            break;
+          }
+        }
+        i++;
+      }
       u8g2.sendBuffer();
     }
     break;
@@ -2756,6 +2984,11 @@ void UpdateDataEnc()
           kitSel = (kitSel + 1);
           if (kitSel > 2)
             kitSel = 2;
+        } else if (controlState == LENGTH_SEL){
+          currPattern->settings[2] = currPattern->settings[2] + 1;
+          if(currPattern->settings[2] > 64){
+            currPattern->settings[2] = 64;
+          }
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
@@ -3048,6 +3281,11 @@ void UpdateDataEnc()
           kitSel = (kitSel - 1);
           if (kitSel < 0)
             kitSel = 0;
+        } else if (controlState == LENGTH_SEL){
+          currPattern->settings[2] = currPattern->settings[2] - 1;
+          if(currPattern->settings[2] < 1){
+            currPattern->settings[2] = 1;
+          }
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
@@ -3135,8 +3373,8 @@ void UpdateDataEnc()
                   if (currPattern->pattern[22][stepEditIndex] < 1) currPattern->pattern[22][stepEditIndex] = 12;
                   break;
               case INST_ORGAN_NOTES_5:
-                  currPattern->pattern[23][stepEditIndex] = currPattern->pattern[24][stepEditIndex] - 1;
-                  if (currPattern->pattern[23][stepEditIndex] < 1) currPattern->pattern[24][stepEditIndex] = 12;
+                  currPattern->pattern[23][stepEditIndex] = currPattern->pattern[23][stepEditIndex] - 1;
+                  if (currPattern->pattern[23][stepEditIndex] < 1) currPattern->pattern[23][stepEditIndex] = 12;
                   break;
               }
               break;
@@ -3445,4 +3683,30 @@ void endChords()
       playSdRaw11.stop();
     }
   }
+}
+
+///**************************************************************************************************
+// * Function getButtonOffset
+// * -------------------------------------------------------------------------------------------------
+// * Overview: gets the index of step you are editing when a step button is pressed, accounting for section of pattern you are in
+// *             i.e. 1-16, 17-32, 33-48 or 49-64. 
+// * Input:
+// * Output: Nothing
+// **************************************************************************************************/
+int getButtonOffset(int buttNum, int pattOffset){
+          int myInd = buttNum;
+          switch(pattOffset){
+            case 0:
+              break;
+            case 1:
+              myInd += 16;
+              break;
+            case 2:
+              myInd += 32;
+              break;
+            case 3:
+              myInd += 48;
+              break;
+          }
+          return myInd;
 }
