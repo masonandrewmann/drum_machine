@@ -609,13 +609,13 @@ void setup()
   chordSamples[1][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
   chordSamples[1][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
 
-  chordSamples[2][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
-  chordSamples[2][1] = loader.loadSample("SAMPLES/ORGAN/CMIN.RAW");
-  chordSamples[2][2] = loader.loadSample("SAMPLES/ORGAN/C7.RAW");
-  chordSamples[2][3] = loader.loadSample("SAMPLES/ORGAN/CMAJ7.RAW");
-  chordSamples[2][4] = loader.loadSample("SAMPLES/ORGAN/CMIN7.RAW");
-  chordSamples[2][5] = loader.loadSample("SAMPLES/ORGAN/CDIM.RAW");
-  chordSamples[2][6] = loader.loadSample("SAMPLES/ORGAN/CAUG.RAW");
+  chordSamples[2][0] = loader.loadSample("SAMPLES/STRING/CMAJ.RAW");
+  chordSamples[2][1] = loader.loadSample("SAMPLES/STRING/CMIN.RAW");
+  chordSamples[2][2] = loader.loadSample("SAMPLES/STRING/C7.RAW");
+  chordSamples[2][3] = loader.loadSample("SAMPLES/STRING/CMAJ7.RAW");
+  chordSamples[2][4] = loader.loadSample("SAMPLES/STRING/CMIN7.RAW");
+  chordSamples[2][5] = loader.loadSample("SAMPLES/STRING/CDIM.RAW");
+  chordSamples[2][6] = loader.loadSample("SAMPLES/STRING/CAUG.RAW");
 
   organNotes[0] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[1] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");

@@ -1,7 +1,7 @@
 class Pattern
 {
 public:
-  int32_t pattern[21][16] = {
+  int32_t pattern[24][16] = {
       // array of active steps for each instrument
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 - BD
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 1 - S
@@ -23,33 +23,39 @@ public:
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 17 - Guitar chords
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 18 - Guitar Oneshots
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 19 - Organ notes
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 20 - Breaks
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 20 - Organ notes 2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 21 - Organ notes 3
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 22 - Organ notes 4
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 23 - Organ notes 5
   };
-  float velocity[21][16] = {
+  float velocity[24][16] = {
       // array of volumes per step for each instrument
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // BD
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // S
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // CYN1
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // CYN2
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // GLITCH
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // DIGI1
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // DIGI2
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // DIGI3
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP1
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP2
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP3
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP4
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP5
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP6
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP7
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // SMP8
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Organ Chords
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Guitar chords
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Guitar Oneshots
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // Organ notes
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // Breaks
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 - BD
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 1 - S
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 2 - CYN1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 3 - CYN2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 4 - GLITCH
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 5 - DIGI1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 6 - DIGI2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 7 - DIGI3
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 8 - SMP1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 9 - SMP2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 10 - SMP3
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 11 - SMP4
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 12 - SMP5
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 13 - SMP6
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 14 - SMP7
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 15 - SMP8
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 16 - Organ Chords
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 17 - Guitar chords
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 18 - Guitar Oneshots
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 19 - Organ notes
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 20 - Organ notes 2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 21 - Organ notes 3
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 22 - Organ notes 4
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 23 - Organ notes 5
   };
-  float parameter[33][16] = {
+  float parameter[38][16] = {
       // array of parameters by step for each instrument
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 0 - DIGI1 P1
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 1 -DIGI1 P2
@@ -81,9 +87,15 @@ public:
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 27 - Guitar oneshots p2
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 28 - organ notes p1
       {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 29 - organ notes p2
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 30 - break pitch
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 31 - break p1
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 32 - break p2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 30 - organ notes 2 p1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 31 - organ notes 2 p2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 32 - organ notes 3 p1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 33 - organ notes 3 p2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 34 - organ notes 4 p1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 35 - organ notes 4 p2
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // 36 - organ notes 5 p1
+      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // 37 - organ notes 5 p2
+
   };
 
   float settings[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // array of global settings for pattern
@@ -121,7 +133,7 @@ public:
   void readFromSD(const char *path) // READS PATTERN FROM CSV ON SD CARD
   {
     // format for drum pattern: data types of each column in CSV
-    CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLLLfffLfffLfffLfffLfffLfffLfffLffffLfffLfffLfffLfffLffff", /*has_header*/ true, /*delimiter*/ ',');
+    CSV_Parser cp(/*format*/ "LfLfLfLfLfLfLLLfLLLfLLLfffLfffLfffLfffLfffLfffLfffLffffLfffLfffLfffLfffLfffLfffLfffLfff", /*has_header*/ true, /*delimiter*/ ',');
 
     if (cp.readSDfile(path))
     {
@@ -150,7 +162,10 @@ public:
       memcpy(pattern[17], (int32_t *)cp["gc"], 64);
       memcpy(pattern[18], (int32_t *)cp["go"], 64);
       memcpy(pattern[19], (int32_t *)cp["on"], 64);
-      memcpy(pattern[20], (int32_t *)cp["br"], 64);
+      memcpy(pattern[20], (int32_t *)cp["on2"], 64);
+      memcpy(pattern[21], (int32_t *)cp["on3"], 64);
+      memcpy(pattern[22], (int32_t *)cp["on4"], 64);
+      memcpy(pattern[23], (int32_t *)cp["on5"], 64);
 
       // copy velocities to internal memory
       memcpy(velocity[0], (float *)cp["kv"], 64);
@@ -173,8 +188,11 @@ public:
       memcpy(velocity[17], (float *)cp["gcv"], 64);
       memcpy(velocity[18], (float *)cp["gov"], 64);
       memcpy(velocity[19], (float *)cp["onv"], 64);
-      memcpy(velocity[20], (float *)cp["brv"], 64);
-
+      memcpy(velocity[20], (float *)cp["on2v"], 64);
+      memcpy(velocity[21], (float *)cp["on3v"], 64);
+      memcpy(velocity[22], (float *)cp["on4v"], 64);
+      memcpy(velocity[23], (float *)cp["on5v"], 64);
+      
       // copy parameters to internal memory
       memcpy(parameter[0], (float *)cp["d1p"], 64);
       memcpy(parameter[1], (float *)cp["d1pp"], 64);
@@ -206,9 +224,14 @@ public:
       memcpy(parameter[27], (float *)cp["gop2"], 64);
       memcpy(parameter[28], (float *)cp["onp1"], 64);
       memcpy(parameter[29], (float *)cp["onp2"], 64);
-      memcpy(parameter[30], (float *)cp["brpi"], 64);
-      memcpy(parameter[31], (float *)cp["brp1"], 64);
-      memcpy(parameter[32], (float *)cp["brp2"], 64);
+      memcpy(parameter[30], (float *)cp["on2p1"], 64);
+      memcpy(parameter[31], (float *)cp["on2p2"], 64);
+      memcpy(parameter[32], (float *)cp["on3p1"], 64);
+      memcpy(parameter[33], (float *)cp["on3p2"], 64);
+      memcpy(parameter[34], (float *)cp["on4p1"], 64);
+      memcpy(parameter[35], (float *)cp["on4p2"], 64);
+      memcpy(parameter[36], (float *)cp["on5p1"], 64);
+      memcpy(parameter[37], (float *)cp["on5p2"], 64);
 
       // copy settings to internal memory
       memcpy(settings, (float *)cp["sett"], 64);
@@ -227,7 +250,7 @@ public:
     //      //print out the pattern
     for (int i = 0; i < 16; i++)
     {
-      for (int j = 0; j < 21; j++)
+      for (int j = 0; j < 24; j++)
       {
         Serial.print(pattern[j][i]);
         Serial.print(" ");
@@ -238,7 +261,7 @@ public:
     // print out the velocities
     for (int i = 0; i < 16; i++)
     {
-      for (int j = 0; j < 21; j++)
+      for (int j = 0; j < 24; j++)
       {
         Serial.print(velocity[j][i]);
         Serial.print(" ");
@@ -248,7 +271,7 @@ public:
     // print out the digital voice parameters
     for (int i = 0; i < 16; i++)
     {
-      for (int j = 0; j < 33; j++)
+      for (int j = 0; j < 38; j++)
       {
         Serial.print(parameter[j][i]);
         Serial.print(" ");
@@ -288,7 +311,7 @@ public:
     if (myFile)
     {
 //      Serial.println("Writing headers to new CSV"); // writing header row to CSV
-      myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp,sett,oc,ocv,ocp1,ocp2,gc,gcv,gcp1,gcp2,go,gov,gop1,gop2,on,onv,onp1,onp2,br,brv,brpi,brp1,brp2");
+      myFile.println("kk,kv,s,sv,c1,c1v,c2,c2v,g,gv,d1,d1v,d1p,d1pp,d2,d2v,d2p,d2pp,d3,d3v,d3p,d3pp,s1,s1v,s1p,s1pp,s2,s2v,s2p,s2pp,s3,s3v,s3p,s3pp,s4,s4v,s4p,s4pp,s5,s5v,s5p,s5pp,s6,s6v,s6p,s6pp,s7,s7v,s7p,s7pp,s8,s8v,s8p,s8pp,sett,oc,ocv,ocp1,ocp2,gc,gcv,gcp1,gcp2,go,gov,gop1,gop2,on,onv,onp1,onp2,on2,on2v,on2p1,on2p2,on3,on3v,on3p1,on3p2,on4,on4v,on4p1,on4p2,on5,on5v,on5p1,on5p2");
 //      Serial.println("Headers written");
 
       // writing all pattern data to CSV
@@ -457,7 +480,7 @@ public:
         myFile.print(parameter[29][i]);
         myFile.print(",");
 
-        myFile.print(pattern[20][i]); // breaks
+        myFile.print(pattern[20][i]); // Organ notes 2
         myFile.print(",");
         myFile.print(velocity[20][i]);
         myFile.print(",");
@@ -465,7 +488,32 @@ public:
         myFile.print(",");
         myFile.print(parameter[31][i]);
         myFile.print(",");
-        myFile.println(parameter[32][i]);
+
+        myFile.print(pattern[21][i]); // Organ notes 3
+        myFile.print(",");
+        myFile.print(velocity[21][i]);
+        myFile.print(",");
+        myFile.print(parameter[32][i]);
+        myFile.print(",");
+        myFile.print(parameter[33][i]);
+        myFile.print(",");
+
+        myFile.print(pattern[22][i]); // Organ notes 4
+        myFile.print(",");
+        myFile.print(velocity[22][i]);
+        myFile.print(",");
+        myFile.print(parameter[34][i]);
+        myFile.print(",");
+        myFile.print(parameter[35][i]);
+        myFile.print(",");
+
+        myFile.print(pattern[23][i]); // Organ notes 5
+        myFile.print(",");
+        myFile.print(velocity[23][i]);
+        myFile.print(",");
+        myFile.print(parameter[36][i]);
+        myFile.print(",");
+        myFile.println(parameter[37][i]);
       }
       myFile.close();
     }
@@ -483,13 +531,13 @@ public:
   {
     for (int i = 0; i < 16; i++)
     {
-      for (int j = 0; j < 21; j++)
+      for (int j = 0; j < 24; j++)
       {
         pattern[j][i] = 0;
         velocity[j][i] = 0;
       }
 
-      for (int j = 0; j < 33; j++)
+      for (int j = 0; j < 8; j++)
       {
         parameter[j][i] = 0;
       }
