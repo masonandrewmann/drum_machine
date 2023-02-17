@@ -100,10 +100,33 @@ enum playMode{
   PLAY_PATTERN,
   PLAY_SONG
 };
+#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
 
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
-EXTMEM Pattern PatternStorage[16][16];
-EXTMEM Song SongStorage[16][16];
+EXTMEM Pattern PatternStorage[1][16];
+EXTMEM Song SongStorage[1][16];
+EXTMEM int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
+EXTMEM int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
+EXTMEM newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
+
+EXTMEM newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
+  // 0 - Cmaj
+  // 1 - Cmin
+  // 2 - C7
+  // 3 - Cmaj7
+  // 4 - Cmin7
+  // 5 - Cdim
+  // 6 - Caug
+
+EXTMEM newdigate::audiosample *organNotes[8];
+
+
+
+EXTMEM newdigate::audiosample *sample9;
+EXTMEM newdigate::audiosample *sample10;
 //------EXTERNAL QSPI RAM CHIP SECTION END------
 
 // Pattern variables
@@ -151,23 +174,7 @@ AudioPlayArrayResmp playSdRaw23; // xy=321,513
 AudioPlayArrayResmp playSdRaw24; // xy=321,513
 AudioPlayArrayResmp playSdRaw25; // xy=321,513
 
-newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
 
-newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
-  // 0 - Cmaj
-  // 1 - Cmin
-  // 2 - C7
-  // 3 - Cmaj7
-  // 4 - Cmin7
-  // 5 - Cdim
-  // 6 - Caug
-
-newdigate::audiosample *organNotes[8];
-
-
-
-newdigate::audiosample *sample9;
-newdigate::audiosample *sample10;
 
 // GUItool: begin automatically generated code
 AudioSynthSimpleDrum     drum2;          //xy=55,814
@@ -261,12 +268,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=713,316
 
 
 
-#define GRANULAR_MEMORY_SIZE 12800  // enough for 290 ms at 44.1 kHz
-int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
-int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
+
 
 // transport variables
 float tempo = 120;
@@ -489,7 +491,7 @@ void setup()
     SongStorage[0][13].readFromSD("/SONGS/A/14.CSV");
     SongStorage[0][14].readFromSD("/SONGS/A/15.CSV");
     SongStorage[0][15].readFromSD("/SONGS/A/16.CSV");
-  }
+
 
   // digital drum initialization
   drum1.frequency(60);
