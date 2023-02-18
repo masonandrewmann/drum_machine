@@ -111,8 +111,8 @@ enum playMode
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
 // EXTMEM char myAudioBlock[AUDIO_BLOCK_LEN]; // block of memory for audio
 //                         9099342
-EXTMEM Song SongStorage[16][16];
-EXTMEM Pattern PatternStorage[16][16];
+EXTMEM Song SongStorage[1][16];
+EXTMEM Pattern PatternStorage[1][16];
 EXTMEM int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
