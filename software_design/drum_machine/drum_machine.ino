@@ -4,7 +4,6 @@
 #include <SD.h>
 #include <CSV_Parser.h>
 #include <U8g2lib.h>
-// #include "frames.h"
 #include "Pattern.h"
 #include "Song.h"
 #include <TeensyVariablePlayback.h>
@@ -88,7 +87,8 @@ enum controlStates
   INST_BANK_SEL,
   PATTERN_BANK_SEL,
   SONG_BANK_SEL,
-  LENGTH_SEL
+  LENGTH_SEL,
+  PLAY_STEP_SEL
 };
 
 enum ledDisplayStates
@@ -288,6 +288,7 @@ int ledDisplayState = DISP_STEPS;
 int lcdState = LCD_INST_PROP;
 int lastLcdState = LCD_INST_PROP;
 bool tempoLcdFlag = true;
+int prevState = STEP_SEL;
 
 // Shift Register Pins
 int SH_CP = 31; // Contact SH_CP - Clock
@@ -418,32 +419,7 @@ void setup()
   sr0LED[5] = 1;
   sr3LED[7] = 1;
 
-  // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
-  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-
-  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-
-  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-
-  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-
-  // make two blank variables for the step LEDs, not necessary i could just define them below
-  uint8_t sr4 = 0b00000000;
-  uint8_t sr5 = 0b00000000;
-
-  // send all shift register values out
-  digitalWrite(ST_CP, LOW);
-  shiftOut(DS, SH_CP, MSBFIRST, sr5);
-  shiftOut(DS, SH_CP, MSBFIRST, sr4);
-  shiftOut(DS, SH_CP, MSBFIRST, sr3);
-  shiftOut(DS, SH_CP, MSBFIRST, sr2);
-  shiftOut(DS, SH_CP, MSBFIRST, sr1);
-  shiftOut(DS, SH_CP, MSBFIRST, sr0);
-  digitalWrite(ST_CP, HIGH);
+  writeShiftRegisters();
   // flash setup
   //----SD CARD setup
   if (!(SD.begin(SDCARD_CS_PIN)))
@@ -602,41 +578,14 @@ void setup()
   chordSamples[2][6] = loader.loadSample("SAMPLES/STRING/CAUG.RAW");
 
   organNotes[0] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  organNotes[1] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  organNotes[2] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
-  organNotes[3] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
+  organNotes[1] = loader.loadSample("SAMPLES/NOTES/BASS.RAW");
+  organNotes[2] = loader.loadSample("SAMPLES/NOTES/BASSUPCLK.RAW");
+  organNotes[3] = loader.loadSample("SAMPLES/NOTES/SINE.RAW");
   organNotes[4] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[5] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[6] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
   organNotes[7] = loader.loadSample("SAMPLES/NOTES/STRING.RAW");
 
-  for (int i = 0; i < 4; i++)
-  { // mute all digital mixers
-    mixer1.gain(i, 0);
-    mixer2.gain(i, 0);
-    mixer3.gain(i, 0);
-    mixer4.gain(i, 0);
-  }
-
-  // play and stop all samplers to associate sample data with the player
-  playSdRaw1.playRaw(kitSamples[0][0]->sampledata, kitSamples[0][0]->samplesize / 2, 1);
-  playSdRaw1.stop();
-  playSdRaw2.playRaw(kitSamples[0][1]->sampledata, kitSamples[0][1]->samplesize / 2, 1);
-  playSdRaw2.stop();
-  playSdRaw3.playRaw(kitSamples[0][2]->sampledata, kitSamples[0][2]->samplesize / 2, 1);
-  playSdRaw3.stop();
-  playSdRaw4.playRaw(kitSamples[0][3]->sampledata, kitSamples[0][3]->samplesize / 2, 1);
-  playSdRaw4.stop();
-  playSdRaw5.playRaw(kitSamples[0][4]->sampledata, kitSamples[0][4]->samplesize / 2, 1);
-  playSdRaw5.stop();
-  playSdRaw6.playRaw(kitSamples[0][5]->sampledata, kitSamples[0][5]->samplesize / 2, 1);
-  playSdRaw6.stop();
-  playSdRaw7.playRaw(kitSamples[0][6]->sampledata, kitSamples[0][6]->samplesize / 2, 1);
-  playSdRaw7.stop();
-  playSdRaw8.playRaw(kitSamples[0][7]->sampledata, kitSamples[0][7]->samplesize / 2, 1);
-  playSdRaw8.stop();
-  playSdRaw9.playRaw(sample9->sampledata, sample9->samplesize / 2, 1);
-  playSdRaw9.stop();
 
   // set all mixer gains
   mixer1.gain(0, 1);   // playSdRaw1
@@ -655,7 +604,27 @@ void setup()
   mixer4.gain(1, 1);   // digi drum 2
   mixer4.gain(2, 1);   // digi drum 3
   mixer4.gain(3, 2);   // playSdRaw9
-
+  mixer5.gain(0, 1);   // playSdRaw5
+  mixer5.gain(1, 1);   // playSdRaw6
+  mixer5.gain(2, 1);   // playSdRaw7
+  mixer5.gain(3, 1);   // playSdRaw8
+  mixer6.gain(0, 1);   // playSdRaw5
+  mixer6.gain(1, 1);   // playSdRaw6
+  mixer6.gain(2, 1);   // playSdRaw7
+  mixer6.gain(3, 1);   // playSdRaw8
+  mixer7.gain(0, 1);   // playSdRaw5
+  mixer7.gain(1, 1);   // playSdRaw6
+  mixer7.gain(2, 1);   // playSdRaw7
+  mixer7.gain(3, 1);   // playSdRaw8
+  mixer8.gain(0, 1);   // playSdRaw5
+  mixer8.gain(1, 1);   // playSdRaw6
+  mixer8.gain(2, 1);   // playSdRaw7
+  mixer8.gain(3, 1);   // playSdRaw8
+  mixer9.gain(0, 1);   // playSdRaw5
+  mixer9.gain(1, 1);   // playSdRaw6
+  mixer9.gain(2, 1);   // playSdRaw7
+  mixer9.gain(3, 1);   // playSdRaw8
+  
   // granular setup
   granular1.begin(granularMemory1, GRANULAR_MEMORY_SIZE);
   //  granular1.beginPitchShift(50);
@@ -715,6 +684,21 @@ void loop()
     lcdTimeout = millis() + 100;
   }
 
+//  mixer1.gain(0, 1);
+//  mixer1.gain(1, 1);
+//  mixer1.gain(2, 1);
+//  mixer1.gain(3, 1);
+//
+//  mixer2.gain(0, 1);
+//  mixer2.gain(1, 1);
+//  mixer2.gain(2, 1);
+//  mixer2.gain(3, 1);
+
+//  mixer3.gain(0, 1);
+//  mixer3.gain(1, 1);
+//  mixer3.gain(2, 1);
+//  mixer3.gain(3, 1);
+  
   readMux(false); // read inputs and process them
 
   // steps
@@ -1015,19 +999,6 @@ void readMux(bool printEn)
         case 1: // save
           if (controlButtons[i] == LOW)
           { // save PRESSED
-            //            String patternPath = "/PATTERNS/A/" + String(patternNum) + ".CSV";
-            //            Serial.print("WRITING ");
-            //            Serial.println(patternPath);
-            //            char patternBuf[patternPath.length()];
-            //            patternPath.toCharArray(patternBuf, patternPath.length());
-            //
-            ////            currPattern->writePatternToSD("/PATTERNS/A/BEEP.CSV");
-            //            String myPath = "/PATTERNS/A/";
-            //            String myEnd = ".CSV";
-            //            myPath = myPath + to_string(patternNum + 1) + myEnd;
-            //            Serial.print("writing: ");
-            //            Serial.println(myPath);
-            //            currPattern->writePatternToSD(patternBuf);
             // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
             sr3LED[1] = 1;
             uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
@@ -1278,6 +1249,12 @@ void readMux(bool printEn)
         case 12: // playpause
           if (controlButtons[i] == LOW)
           { // playpause PRESSED
+            prevState = controlState;
+            controlState = PLAY_STEP_SEL;
+          }
+          else
+          { // playpause RELEASED
+            controlState = prevState;
             if (transportState == PLAYING)
             {
               transportState = PAUSED;
@@ -1294,9 +1271,6 @@ void readMux(bool printEn)
               Serial.println("Playing!");
             }
           }
-          else
-          { // playpause RELEASED
-          }
 
           break;
 
@@ -1309,7 +1283,7 @@ void readMux(bool printEn)
             songPlayStep = 0;
             transportState = STOPPED;
 
-            currStep = -1; // jump back to start of pattern
+            
 
             if (playMode == PLAY_PATTERN)
             {
@@ -1319,11 +1293,12 @@ void readMux(bool printEn)
             }
             else if (playMode == PLAY_SONG)
             {
-              songPlayStep = 0;
-              currPattern = &PatternStorage[0][currSong->patterns[0]];
+                songPlayStep = 0;
+                currPattern = &PatternStorage[0][currSong->patterns[0]];
             }
             stopSamples(); // force stop playing all samples
             Serial.println("Stopped!");
+            currStep = -1; // jump back to start of pattern
           }
           else
           { // stop RELEASED
@@ -1380,126 +1355,26 @@ void readMux(bool printEn)
         {
           // THIS CURRENTLY CAUSES ERRORS BECAUSE THERE ARE MORE BANKS/INST INDICES THAN THERE ARE INSTRUMENTS IN PATTERN OBJECT
           // THIS RESULTS IN AN OUT OF BOUNDS ERROR IF YOU TRY TO ACCESS ANY INSTRUMENT GREATER THAN I THINK 20 OR 21
-          int myInd = getButtonOffset(i, patternPlaySection);
-
+//          int myInd = getButtonOffset(i, patternPlaySection);
+          int myInd = i + 16 * patternPlaySection;
           currPattern->pattern[currInst][myInd] = !currPattern->pattern[currInst][myInd]; // record buttom press into current pattern array
           stepEditIndex = myInd;
-
-          if (currInst == 16 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[16][prevStep] > 0)
-            { // retrieve it
-              currPattern->pattern[16][myInd] = currPattern->pattern[16][prevStep];
-              currPattern->parameter[22][myInd] = currPattern->parameter[22][prevStep];
-            }
-          }
-
-          if (currInst == 17 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[17][prevStep] > 0)
-            {
-              currPattern->pattern[17][myInd] = currPattern->pattern[17][prevStep];
-              currPattern->parameter[24][myInd] = currPattern->parameter[24][prevStep];
-            }
-          }
-
-          if (currInst == 18 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[18][prevStep] > 0)
-            {
-              currPattern->pattern[18][myInd] = currPattern->pattern[18][prevStep];
-              currPattern->parameter[26][myInd] = currPattern->parameter[26][prevStep];
-            }
-          }
-
-          if (currInst == 19 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[19][prevStep] > 0)
-            {
-              currPattern->pattern[19][myInd] = currPattern->pattern[19][prevStep];
-              currPattern->parameter[28][myInd] = currPattern->parameter[28][prevStep];
-              currPattern->parameter[29][myInd] = currPattern->parameter[29][prevStep];
-            }
-          }
-
-          if (currInst == 20 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[20][prevStep] > 0)
-            {
-              currPattern->pattern[20][myInd] = currPattern->pattern[20][prevStep];
-              currPattern->parameter[30][myInd] = currPattern->parameter[30][prevStep];
-              currPattern->parameter[31][myInd] = currPattern->parameter[31][prevStep];
-            }
-          }
-
-          if (currInst == 21 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[21][prevStep] > 0)
-            {
-              currPattern->pattern[21][myInd] = currPattern->pattern[21][prevStep];
-              currPattern->parameter[32][myInd] = currPattern->parameter[32][prevStep];
-              currPattern->parameter[33][myInd] = currPattern->parameter[33][prevStep];
-            }
-          }
-
-          if (currInst == 22 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[22][prevStep] > 0)
-            {
-              currPattern->pattern[22][myInd] = currPattern->pattern[22][prevStep];
-              currPattern->parameter[34][myInd] = currPattern->parameter[34][prevStep];
-              currPattern->parameter[35][myInd] = currPattern->parameter[35][prevStep];
-            }
-          }
-
-          if (currInst == 23 && currPattern->pattern[currInst][myInd] > 0)
-          { // for programming chords, grab the params from previous step
-            int prevStep = myInd - 1;
-            if (prevStep == -1)
-            {
-              prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
-            }
-            if (currPattern->pattern[23][prevStep] > 0)
-            {
-              currPattern->pattern[23][myInd] = currPattern->pattern[23][prevStep];
-              currPattern->parameter[36][myInd] = currPattern->parameter[36][prevStep];
-              currPattern->parameter[37][myInd] = currPattern->parameter[37][prevStep];
-            }
+          int ofs = 0;
+          for (int i = 16; i < 24; i++){
+             if(currPattern->pattern[currInst][myInd] > 0){
+              int prevStep = myInd - 1;
+              if (prevStep == -1)
+              {
+                prevStep = currPattern->settings[2] - 1; // if first step, grab from last step
+              }
+              if (currPattern->pattern[currInst][prevStep] > 0)
+              { // retrieve it
+                currPattern->pattern[currInst][myInd] = currPattern->pattern[currInst][prevStep];
+                currPattern->parameter[currInst + 6 + ofs][myInd] = currPattern->parameter[currInst + 6 + ofs][prevStep];
+                currPattern->parameter[currInst + 7 + ofs][myInd] = currPattern->parameter[currInst + 7 + ofs][prevStep];
+              }
+             }
+             ofs += 1;
           }
         }
       }
@@ -1511,6 +1386,8 @@ void readMux(bool printEn)
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
           currInst = i + 16 * instBankNum; // set current instrument to the one that was pressed offsetting by 16 for each bank
+          controlState = STEP_SEL;
+          lcdState = LCD_INST_PROP;                                                                                                                                                                                                                                                                                                                          
         }
       }
       break;
@@ -1608,6 +1485,15 @@ void readMux(bool printEn)
         }
       }
       break;
+
+    case PLAY_STEP_SEL:
+      for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
+      {
+        if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
+        {
+            currStep = i + 16 * patternPlaySection - 1;
+        }
+      }
     }
 
     drum1.frequency(map(controlPots[0], 1023, 0, 60, 700)); // set drum 1 freq from param pot
@@ -1643,7 +1529,8 @@ void readMux(bool printEn)
     }
   }
 
-  // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
+//  writeShiftRegisters();
+// grab LED states and pack them into 8-bit numbers to be sent out the shift registers
   uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
                 sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
 
@@ -1690,7 +1577,7 @@ void readMux(bool printEn)
   case DISP_STEPS:
     for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
     {
-      int myInd = getButtonOffset(i, patternPlaySection);
+      int myInd = i + 16 * patternPlaySection;
       stepLEDs[i] = currPattern->pattern[currInst][myInd];
     }
     if (currStep >= 0)
@@ -2016,7 +1903,7 @@ void trigNote(int instNum, int instParam)
         mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
       }
       playSdRaw15.setPlaybackRate(mySpeed);
-      playSdRaw15.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      playSdRaw15.playRaw(organNotes[1]->sampledata, organNotes[1]->samplesize / 2, 1);
     }
     break;
 
@@ -2034,7 +1921,7 @@ void trigNote(int instNum, int instParam)
         mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
       }
       playSdRaw16.setPlaybackRate(mySpeed);
-      playSdRaw16.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      playSdRaw16.playRaw(organNotes[2]->sampledata, organNotes[2]->samplesize / 2, 1);
     }
     break;
 
@@ -2052,7 +1939,7 @@ void trigNote(int instNum, int instParam)
         mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
       }
       playSdRaw17.setPlaybackRate(mySpeed);
-      playSdRaw17.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      playSdRaw17.playRaw(organNotes[3]->sampledata, organNotes[3]->samplesize / 2, 1);
     }
     break;
 
@@ -2070,7 +1957,7 @@ void trigNote(int instNum, int instParam)
         mySpeed = mySpeed * (0.5 * (1 / (-1 * myOct)));
       }
       playSdRaw18.setPlaybackRate(mySpeed * -1);
-      playSdRaw18.playRaw(organNotes[0]->sampledata, organNotes[0]->samplesize / 2, 1);
+      playSdRaw18.playRaw(organNotes[4]->sampledata, organNotes[4]->samplesize / 2, 1);
     }
     break;
   }
@@ -2676,37 +2563,7 @@ void displayLCD(bool demoMode)
       char patLenStr[30];
       sprintf(patLenStr, "%i", (int)currPattern->settings[2]);
       u8g2.drawStr(30, 34, patLenStr);
-      //      switch(patternPlaySection){
-      //        case 0:
-      //          for(int i = 0; i < currPattern->settings[2]; i++){
-      //            u8g2.drawPixel(20 + i * 2, 40);
-      //          }
-      //          break;
-      //        case 1:
-      //          for(int i = 0; i < currPattern->settings[2]; i++){
-      //            u8g2.drawPixel(20 + i * 2, 40);
-      //          }
-      //          break;
-      //        case 2:
-      //            for(int i = 0; i < currPattern->settings[2]; i++){
-      //            u8g2.drawPixel(20 + i * 2, 40);
-      //          }
-      //          break;
-      //        case 3:
-      //                    for(int i = 0; i < currPattern->settings[2]; i++){
-      //            u8g2.drawPixel(20 + i * 2, 40);
-      //          }
-      //          break;
-      //      }
       int myPattLen = (int)currPattern->settings[2];
-      //      int totalSections = 0;
-      //      if( myPattLen > 48){
-      //        int totalSections = 3;
-      //      } else if (myPattLen > 32){
-      //        int totalSections = 2;
-      //      } else if (myPattLen > 16){
-      //        int totalSections = 1;
-      //      }
       int i = 0;
       while (myPattLen > 0)
       {
@@ -3597,14 +3454,24 @@ void UpdateDataEnc()
 // **************************************************************************************************/
 void recallParameters()
 {
-  mixer1.gain(0, currPattern->velocity[8][0]);
-  mixer1.gain(1, currPattern->velocity[9][0]);
-  mixer1.gain(2, currPattern->velocity[10][0]);
-  mixer1.gain(3, currPattern->velocity[11][0]);
-  mixer2.gain(0, currPattern->velocity[12][0]);
-  mixer2.gain(1, currPattern->velocity[13][0]);
-  mixer2.gain(2, currPattern->velocity[14][0]);
-  mixer2.gain(3, currPattern->velocity[15][0]);
+//  Serial.println(currPattern->velocity[8][0]);
+//  Serial.println(currPattern->velocity[9][0]);
+//  Serial.println(currPattern->velocity[10][0]);
+//  Serial.println(currPattern->velocity[11][0]);
+//  Serial.println(currPattern->velocity[12][0]);
+//  Serial.println(currPattern->velocity[13][0]);
+//  Serial.println(currPattern->velocity[14][0]);
+//  Serial.println(currPattern->velocity[15][0]);
+  
+//  mixer1.gain(0, currPattern->velocity[8][0]);
+//  mixer1.gain(1, currPattern->velocity[9][0]);
+//  mixer1.gain(2, currPattern->velocity[10][0]);
+//  mixer1.gain(3, currPattern->velocity[11][0]);
+//  mixer2.gain(0, currPattern->velocity[12][0]);
+//  mixer2.gain(1, currPattern->velocity[13][0]);
+//  mixer2.gain(2, currPattern->velocity[14][0]);
+//  mixer2.gain(3, currPattern->velocity[15][0]);
+
   //  mixer6.gain(0, currPattern->velocity[16][0]);
   //  mixer6.gain(1, currPattern->velocity[17][0]);
   //  mixer6.gain(2, currPattern->velocity[18][0]);
@@ -3680,29 +3547,184 @@ void endChords()
 }
 
 ///**************************************************************************************************
-// * Function getButtonOffset
+// * Function writeShiftRegisters()
 // * -------------------------------------------------------------------------------------------------
-// * Overview: gets the index of step you are editing when a step button is pressed, accounting for section of pattern you are in
-// *             i.e. 1-16, 17-32, 33-48 or 49-64.
+// * Overview: checks what chords need to be ended and ends them
 // * Input:
 // * Output: Nothing
 // **************************************************************************************************/
-int getButtonOffset(int buttNum, int pattOffset)
-{
-  int myInd = buttNum;
-  switch (pattOffset)
-  {
-  case 0:
-    break;
-  case 1:
-    myInd += 16;
-    break;
-  case 2:
-    myInd += 32;
-    break;
-  case 3:
-    myInd += 48;
-    break;
-  }
-  return myInd;
+void writeShiftRegisters(){
+//// grab LED states and pack them into 8-bit numbers to be sent out the shift registers
+//  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
+//                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
+//
+//  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
+//                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
+//
+//  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
+//                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
+//
+//  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
+//                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
+//
+//  // make two blank variables for the step LEDs, not necessary i could just define them below
+//  uint8_t sr4 = 0b00000000;
+//  uint8_t sr5 = 0b00000000;
+//
+//  // STEP LED STUFF
+//  switch (controlState) // determine what should be displayed on LEDs
+//  {
+//  case STEP_SEL: // display active steps and playhead
+//    ledDisplayState = DISP_STEPS;
+//    break;
+//  case PATTERN_SEL: // display current pattern on step LEDs
+//    ledDisplayState = DISP_PATTERNS;
+//    break;
+//  case SONG_SEL: // display current song on step LEDs
+//    ledDisplayState = DISP_SONGS;
+//    break;
+//  case INST_SEL:
+//    ledDisplayState = DISP_INST;
+//    break;
+//  case SONG_BANK_SEL:
+//    ledDisplayState = DISP_SONG_BANK;
+//    break;
+//  case INST_BANK_SEL:
+//    ledDisplayState = DISP_INST_BANK;
+//    break;
+//  case PATTERN_BANK_SEL:
+//    ledDisplayState = DISP_PATT_BANK;
+//    break;
+//  }
+//  switch (ledDisplayState)
+//  {
+//  case DISP_STEPS:
+//    for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
+//    {
+//      int myInd = i + 16 * patternPlaySection;
+//      stepLEDs[i] = currPattern->pattern[currInst][myInd];
+//    }
+//    if (currStep >= 0)
+//    {
+//      stepLEDs[currStep % 16] = 1; // light up the playhead/current step
+//    }
+//    break;
+//
+//  case DISP_PATTERNS: // display current pattern on step LEDs
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    stepLEDs[patternNum] = 1;
+//    break;
+//
+//  case DISP_SONGS:
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    if (playMode == PLAY_SONG)
+//    {
+//      stepLEDs[songNum] = 1;
+//    }
+//
+//    break;
+//  case DISP_INST:
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    stepLEDs[currInst % 16] = 1;
+//    break;
+//  case DISP_PATT_BANK:
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    stepLEDs[pattBankNum] = 1;
+//    break;
+//  case DISP_INST_BANK:
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    stepLEDs[instBankNum] = 1;
+//    break;
+//  case DISP_SONG_BANK:
+//    for (int i = 0; i < 16; i++)
+//    {
+//      stepLEDs[i] = 0;
+//    }
+//    stepLEDs[songBankNum] = 1;
+//    break;
+//  }
+//
+//  sr0LED[2] = 0;
+//  sr0LED[3] = 0;
+//  sr0LED[4] = 0;
+//  sr0LED[5] = 0;
+//  switch (patternPlaySection)
+//  {
+//  case 0:
+//    sr0LED[5] = 1;
+//    break;
+//  case 1:
+//    sr0LED[4] = 1;
+//    break;
+//  case 2:
+//    sr0LED[3] = 1;
+//    break;
+//  case 3:
+//    sr0LED[2] = 1;
+//    break;
+//  }
+//  // arrange step LED states we just defined into 8-bit numbers to send to shift registers
+//  sr4 = stepLEDs[0] | stepLEDs[1] << 1 | stepLEDs[2] << 2 | stepLEDs[3] << 3 |
+//        stepLEDs[8] << 4 | stepLEDs[9] << 5 | stepLEDs[10] << 6 | stepLEDs[11] << 7;
+//
+//  sr5 = stepLEDs[4] | stepLEDs[5] << 1 | stepLEDs[6] << 2 | stepLEDs[7] << 3 |
+//        stepLEDs[12] << 4 | stepLEDs[13] << 5 | stepLEDs[14] << 6 | stepLEDs[15] << 7;
+//
+//  // control mode LEDs
+//  sr3LED[3] = 0; // turn off song LED
+//  sr3LED[4] = 0; // turn off pattern LED
+//  sr3LED[6] = 0; // turn off step LED
+//  sr3LED[0] = 0; // turn off inst LED
+//  sr3LED[5] = 0; // turn off bank LED
+//  switch (controlState)
+//  {
+//  case STEP_SEL:
+//    sr3LED[6] = 1; // turn on step LED
+//    break;
+//  case SONG_SEL:
+//    sr3LED[3] = 1; // turn on song LED
+//    break;
+//  case SONG_WRITE:
+//    sr3LED[4] = 1; // turn on pattern LED
+//    break;
+//  case PATTERN_SEL:
+//    sr3LED[4] = 1; // turn on pattern LED
+//    break;
+//  case INST_SEL:
+//    sr3LED[0] = 1; // turn on inst LED
+//    break;
+//  case INST_BANK_SEL:
+//    sr3LED[5] = 1; // turn on bank LED
+//    break;
+//  case PATTERN_BANK_SEL:
+//    sr3LED[5] = 1; // turn on bank LED
+//    break;
+//  case SONG_BANK_SEL:
+//    sr3LED[5] = 1; // turn on bank LED
+//    break;
+//  }
+//  // send all shift register values out
+//  digitalWrite(ST_CP, LOW);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr5);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr4);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr3);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr2);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr1);
+//  shiftOut(DS, SH_CP, MSBFIRST, sr0);
+//  digitalWrite(ST_CP, HIGH);
 }
