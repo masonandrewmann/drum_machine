@@ -8,6 +8,7 @@
 #include "Song.h"
 #include <TeensyVariablePlayback.h>
 #include "flashloader.h"
+#include <MIDI.h>
 
 // #define DEMO 1
 
@@ -19,10 +20,10 @@
 #define LCD_RST 24
 
 #define GRANULAR_MEMORY_SIZE 12800 // enough for 290 ms at 44.1 kHz
-// #define AUDIO_BLOCK_LEN 10000000
-// #define AUDIO_OFFSET     5000000
 
 #define SDCARD_CS_PIN BUILTIN_SDCARD
+
+#define NUM_BANKS 2
 
 enum instruments
 {
@@ -111,8 +112,8 @@ enum playMode
 //------EXTERNAL QSPI RAM CHIP SECTION BEGIN------
 // EXTMEM char myAudioBlock[AUDIO_BLOCK_LEN]; // block of memory for audio
 //                         9099342
-EXTMEM Song SongStorage[1][16];
-EXTMEM Pattern PatternStorage[1][16];
+EXTMEM Song SongStorage[NUM_BANKS][16];
+EXTMEM Pattern PatternStorage[NUM_BANKS][16];
 EXTMEM int16_t granularMemory1[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
@@ -133,6 +134,10 @@ int patternQueueWriteIndex = 0;
 Song *currSong;
 int songNum = 0;
 int songWriteIndex = 0;
+
+//MIDI
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
+int midiChannel = 1;
 
 // bank A kit
 AudioPlayArrayResmp playSdRaw1; // xy=321,513
@@ -317,11 +322,11 @@ int cursorLoc = 0;
 bool paramSel = false;
 unsigned long tempoDispTimer = 0;
 
-bool sr0LED[8];
-bool sr1LED[8];
-bool sr2LED[8];
-bool sr3LED[8];
-bool stepLEDs[16];
+bool sr0LED[8] = {false, false, false, false, false, false, false, false};
+bool sr1LED[8] = {false, false, false, false, false, false, false, false};
+bool sr2LED[8] = {false, false, false, false, false, false, false, false};
+bool sr3LED[8] = {false, false, false, false, false, false, false, false};
+bool stepLEDs[16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
 // linked list for handling output pulse timing
 unsigned long outPulseTimes[16];
@@ -376,6 +381,11 @@ char chordQual[7][6] = {"maj", "min", "7", "maj7", "min7", "dim", "aug"};
 int chordCursorLoc = 0;
 int instChordTypes[3] = {0, 0, 0};
 
+//MIDI sync
+float midi24ppqMs = 20;
+float midi24ppqUs = 20000;
+unsigned long midiClockTimer = 0;
+
 void setup()
 {
   Serial.begin(115200); // start serial and give a welcome message :~)
@@ -419,24 +429,16 @@ void setup()
   sr0LED[5] = 1;
   sr3LED[7] = 1;
 
-  writeShiftRegisters();
-  // flash setup
+//   flash setup
   //----SD CARD setup
   if (!(SD.begin(SDCARD_CS_PIN)))
   {
     // stop here, but print a message repetitively
-    Serial.println("Unable to access the SD card, fix the problem and restart!");
+    Serial.println("SD fail!");
   }
-  //  //----FLASH CHIP Setup
-  //  if (!SerialFlash.begin(flashChipSelect)) {
-  //    Serial.println("Unable to access SPI Flash chip");
-  //  }
-  //    for(int i = 0; i < AUDIO_BLOCK_LEN;i++){
-  //      myAudioBlock[i] = 2;
-  //    }
-
+  
   // load patterns from SD Card ::: NOTE THIS TAKES LIKE 10 SEC TO LOAD ALL BANKS
-  for (int j = 0; j < 1; j++)
+  for (int j = 0; j < NUM_BANKS; j++)
   { // limit on j determines how many banks to load
     for (int i = 0; i < 16; i++)
     {
@@ -673,7 +675,11 @@ void setup()
 
   currSong = &SongStorage[0][0];
 
+  writeShiftRegisters();
+
   currStepTime = millis();
+  MIDI.begin();
+  
 }
 
 void loop()
@@ -682,6 +688,13 @@ void loop()
   {
     displayLCD(false);
     lcdTimeout = millis() + 100;
+//    Serial.println(midi24ppqUs);
+  }
+
+  if(micros() > midiClockTimer){
+//    Serial.println("Clock");
+    midiClockTimer = midiClockTimer + midi24ppqUs;
+    MIDI.sendRealTime(0xF8);
   }
 
 //  mixer1.gain(0, 1);
@@ -712,9 +725,10 @@ void loop()
         if (currStep == (int)currPattern->settings[2] - 1)
         {                                                                    // last step off pattern, time to move to the next one
           patternQueueIndex = (patternQueueIndex + 1) % patternQueueLen;     // step to the next pattern in sequence
-          currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]]; // actually grab the pattern from memory
           patternNum = patternQueue[patternQueueIndex];                      // store pattern number for reference
+          currPattern = &PatternStorage[patternNum/16][patternNum%16]; // actually grab the pattern from memory
         }
+        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
       }
       else if (playMode == PLAY_SONG)
       {
@@ -725,10 +739,13 @@ void loop()
           {
             songPlayStep = 0;
           }
-          currPattern = &PatternStorage[0][currSong->patterns[songPlayStep]]; // grab the next pattern from memory
+          patternNum = currSong->patterns[songPlayStep];
+          currPattern = &PatternStorage[patternNum/16][patternNum%16]; // grab the next pattern from memory
+          currStep = -1;
         }
+        currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
       }
-      currStep = (currStep + 1) % (int)currPattern->settings[2]; // move step pointer to next step
+      
       endChords();
 
       for (int i = 0; i < 24; i++)
@@ -1001,35 +1018,10 @@ void readMux(bool printEn)
           { // save PRESSED
             // grab LED states and pack them into 8-bit numbers to be sent out the shift registers
             sr3LED[1] = 1;
-            uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-                          sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-
-            uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-                          sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-
-            uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-                          sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-
-            uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-                          sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-
-            // make two blank variables for the step LEDs, not necessary i could just define them below
-            uint8_t sr4 = 0b00000000;
-            uint8_t sr5 = 0b00000000;
-
-            // send all shift register values out
-            digitalWrite(ST_CP, LOW);
-            shiftOut(DS, SH_CP, MSBFIRST, sr5);
-            shiftOut(DS, SH_CP, MSBFIRST, sr4);
-            shiftOut(DS, SH_CP, MSBFIRST, sr3);
-            shiftOut(DS, SH_CP, MSBFIRST, sr2);
-            shiftOut(DS, SH_CP, MSBFIRST, sr1);
-            shiftOut(DS, SH_CP, MSBFIRST, sr0);
-            digitalWrite(ST_CP, HIGH);
-
+            writeShiftRegisters();
             
             // load patterns from SD Card ::: NOTE THIS TAKES LIKE 10 SEC TO LOAD ALL BANKS
-            for (int j = 0; j < 1; j++)
+            for (int j = 0; j < NUM_BANKS; j++)
             { // limit on j determines how many banks to load
               for (int i = 0; i < 16; i++)
               {
@@ -1042,30 +1034,7 @@ void readMux(bool printEn)
             }
 
             sr3LED[1] = 0;
-            sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-                  sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-
-            sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-                  sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-
-            sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-                  sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-
-            sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-                  sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-
-            // make two blank variables for the step LEDs, not necessary i could just define them below
-            sr4 = 0b00000000;
-            sr5 = 0b00000000;
-            // send all shift register values out
-            digitalWrite(ST_CP, LOW);
-            shiftOut(DS, SH_CP, MSBFIRST, sr5);
-            shiftOut(DS, SH_CP, MSBFIRST, sr4);
-            shiftOut(DS, SH_CP, MSBFIRST, sr3);
-            shiftOut(DS, SH_CP, MSBFIRST, sr2);
-            shiftOut(DS, SH_CP, MSBFIRST, sr1);
-            shiftOut(DS, SH_CP, MSBFIRST, sr0);
-            digitalWrite(ST_CP, HIGH);
+            writeShiftRegisters();
           }
           else
           { // save RELEASED
@@ -1193,6 +1162,12 @@ void readMux(bool printEn)
               controlState = PATTERN_BANK_SEL;
               lcdState = LCD_PATT_BANK;
               break;
+            case SONG_WRITE:
+              prevControlState = controlState;
+              prevLcdState = lcdState;
+              controlState = PATTERN_BANK_SEL;
+              lcdState = LCD_PATT_BANK;
+              break;
             case SONG_SEL:
               prevControlState = controlState;
               prevLcdState = lcdState;
@@ -1258,17 +1233,20 @@ void readMux(bool printEn)
             if (transportState == PLAYING)
             {
               transportState = PAUSED;
+              MIDI.sendRealTime(0xFC); // midi start message
               sr1LED[1] = 0;
-              Serial.println("Paused!");
+//              Serial.println("Paused!");
               stopSamples(); // force stop playing all samples
+              midiClockTimer = micros();
             }
             else
             {
               transportState = PLAYING;
+              MIDI.sendRealTime(0xFA); // midi stop message
               sr1LED[2] = 0;
               sr1LED[1] = 1;
               currStepTime = millis();
-              Serial.println("Playing!");
+//              Serial.println("Playing!");
             }
           }
 
@@ -1278,6 +1256,7 @@ void readMux(bool printEn)
           if (controlButtons[i] == LOW)
           { // stop PRESSED
             // set play and stop LEDs
+            MIDI.sendRealTime(0xFC); // midi stop message
             sr1LED[2] = 1;
             sr1LED[1] = 0;
             songPlayStep = 0;
@@ -1288,16 +1267,16 @@ void readMux(bool printEn)
             if (playMode == PLAY_PATTERN)
             {
               patternQueueIndex = 0; // jump back to start of song
-              currPattern = &PatternStorage[0][patternQueue[patternQueueIndex]];
+              currPattern = &PatternStorage[patternQueue[patternQueueIndex] / 16][patternQueue[patternQueueIndex] % 16];
               patternNum = patternQueue[patternQueueIndex];
             }
             else if (playMode == PLAY_SONG)
             {
                 songPlayStep = 0;
-                currPattern = &PatternStorage[0][currSong->patterns[0]];
+                currPattern = &PatternStorage[currSong->patterns[0] / 16][currSong->patterns[0] % 16];
             }
             stopSamples(); // force stop playing all samples
-            Serial.println("Stopped!");
+//            Serial.println("Stopped!");
             currStep = -1; // jump back to start of pattern
           }
           else
@@ -1400,16 +1379,17 @@ void readMux(bool printEn)
           playMode = PLAY_PATTERN;
           if (transportState == PLAYING) // if playing, we wait for current pattern to end before switching over
           {
-            patternQueue[0] = i; // set pressed pattern to index 0
+            patternQueue[0] = i + 16 * pattBankNum; // set pressed pattern to index 0
             patternQueueLen = 1; // set length of queue to 2
           }
           else // if not playing we can jump to new pattern immediately
           {
             patternQueueIndex = 0;
             patternQueueLen = 1;                 // set length of queue to 2
-            currPattern = &PatternStorage[0][i]; // grab the new pattern from memory
-            patternQueue[0] = i;                 // put pattern num at the first place in queue
-            patternNum = i;                      // set pattern num to the one you pressed
+            patternNum = i + 16 * pattBankNum;                      // set pattern num to the one you pressed
+            patternQueue[0] = patternNum;                 // put pattern num at the first place in queue
+            
+            currPattern = &PatternStorage[patternNum/16][i%16]; // grab the new pattern from memory
           }
         }
       }
@@ -1420,33 +1400,30 @@ void readMux(bool printEn)
       {
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          currSong = &SongStorage[0][i];
+          int mySongIndex = i + songBankNum * 16;
+          currSong = &SongStorage[mySongIndex / 16][mySongIndex % 16];
           playMode = PLAY_SONG;
           currStep = -1;
-          if (currSong->patterns[0] == -1)
+          if (currSong->patterns[0] == -1) //if song is empty just grab pattern 0
           {
             currPattern = &PatternStorage[0][0];
           }
           else
           {
-            currPattern = &PatternStorage[0][currSong->patterns[0]];
+            currPattern = &PatternStorage[currSong->patterns[0] / 16][currSong->patterns[0] % 16];
           }
-          songNum = i;
+          songNum = mySongIndex;
         }
       }
 
-      break;
-
-    case BANK_SEL:
-      // INSERT CODE HERE FOR SELECTING BANKS
-      // WILL NEED TO WRITE SEPARATE CODE FOR INST BANKS VS PATTERN BANKS VS SONG BANKS + maybe some sort of sample bank idk
       break;
     case SONG_WRITE:
       for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
       {
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
-          currSong->patterns[songWriteIndex] = i;
+          int myPatternIndex = i + 16 * pattBankNum;
+          currSong->patterns[songWriteIndex] = myPatternIndex;
           songWriteIndex++;
           if (songWriteIndex > 63)
           {
@@ -1485,7 +1462,6 @@ void readMux(bool printEn)
         }
       }
       break;
-
     case PLAY_STEP_SEL:
       for (int i = 0; i < 16; i++) // loop through all 16 pattern buttons
       {
@@ -1503,206 +1479,9 @@ void readMux(bool printEn)
     mixer4.gain(1, (1023 - controlPots[3]) / 1023);         // set drum 2 gain from param pot
     mixer4.gain(2, (1023 - controlPots[5]) / 1023);         // set drum 3 gain from param pot
 
-    // print mux inputs
-    if (printEn)
-    {
-      for (int i = 0; i < 7; i++)
-      {
-        for (int j = 0; j < 8; j++)
-        {
-          Serial.print(inputs[i][j]);
-          Serial.print(" ");
-        }
-        Serial.println(" ");
-      }
-      Serial.println(" ");
-
-      // print control buttons
-      Serial.print("ctrl");
-      for (int i = 0; i < 16; i++)
-      {
-        Serial.print(controlButtons[i]);
-        Serial.print(" ");
-      }
-      Serial.println(" ");
-      Serial.println(" ");
-    }
   }
+  writeShiftRegisters();
 
-//  writeShiftRegisters();
-// grab LED states and pack them into 8-bit numbers to be sent out the shift registers
-  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-
-  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-
-  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-
-  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-
-  // make two blank variables for the step LEDs, not necessary i could just define them below
-  uint8_t sr4 = 0b00000000;
-  uint8_t sr5 = 0b00000000;
-
-  // STEP LED STUFF
-  switch (controlState) // determine what should be displayed on LEDs
-  {
-  case STEP_SEL: // display active steps and playhead
-    ledDisplayState = DISP_STEPS;
-    break;
-  case PATTERN_SEL: // display current pattern on step LEDs
-    ledDisplayState = DISP_PATTERNS;
-    break;
-  case SONG_SEL: // display current song on step LEDs
-    ledDisplayState = DISP_SONGS;
-    break;
-  case INST_SEL:
-    ledDisplayState = DISP_INST;
-    break;
-  case SONG_BANK_SEL:
-    ledDisplayState = DISP_SONG_BANK;
-    break;
-  case INST_BANK_SEL:
-    ledDisplayState = DISP_INST_BANK;
-    break;
-  case PATTERN_BANK_SEL:
-    ledDisplayState = DISP_PATT_BANK;
-    break;
-  }
-  switch (ledDisplayState)
-  {
-  case DISP_STEPS:
-    for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
-    {
-      int myInd = i + 16 * patternPlaySection;
-      stepLEDs[i] = currPattern->pattern[currInst][myInd];
-    }
-    if (currStep >= 0)
-    {
-      stepLEDs[currStep % 16] = 1; // light up the playhead/current step
-    }
-    break;
-
-  case DISP_PATTERNS: // display current pattern on step LEDs
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    stepLEDs[patternNum] = 1;
-    break;
-
-  case DISP_SONGS:
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    if (playMode == PLAY_SONG)
-    {
-      stepLEDs[songNum] = 1;
-    }
-
-    break;
-  case DISP_INST:
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    stepLEDs[currInst % 16] = 1;
-    break;
-  case DISP_PATT_BANK:
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    stepLEDs[pattBankNum] = 1;
-    break;
-  case DISP_INST_BANK:
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    stepLEDs[instBankNum] = 1;
-    break;
-  case DISP_SONG_BANK:
-    for (int i = 0; i < 16; i++)
-    {
-      stepLEDs[i] = 0;
-    }
-    stepLEDs[songBankNum] = 1;
-    break;
-  }
-
-  sr0LED[2] = 0;
-  sr0LED[3] = 0;
-  sr0LED[4] = 0;
-  sr0LED[5] = 0;
-  switch (patternPlaySection)
-  {
-  case 0:
-    sr0LED[5] = 1;
-    break;
-  case 1:
-    sr0LED[4] = 1;
-    break;
-  case 2:
-    sr0LED[3] = 1;
-    break;
-  case 3:
-    sr0LED[2] = 1;
-    break;
-  }
-  // arrange step LED states we just defined into 8-bit numbers to send to shift registers
-  sr4 = stepLEDs[0] | stepLEDs[1] << 1 | stepLEDs[2] << 2 | stepLEDs[3] << 3 |
-        stepLEDs[8] << 4 | stepLEDs[9] << 5 | stepLEDs[10] << 6 | stepLEDs[11] << 7;
-
-  sr5 = stepLEDs[4] | stepLEDs[5] << 1 | stepLEDs[6] << 2 | stepLEDs[7] << 3 |
-        stepLEDs[12] << 4 | stepLEDs[13] << 5 | stepLEDs[14] << 6 | stepLEDs[15] << 7;
-
-  // control mode LEDs
-  sr3LED[3] = 0; // turn off song LED
-  sr3LED[4] = 0; // turn off pattern LED
-  sr3LED[6] = 0; // turn off step LED
-  sr3LED[0] = 0; // turn off inst LED
-  sr3LED[5] = 0; // turn off bank LED
-  switch (controlState)
-  {
-  case STEP_SEL:
-    sr3LED[6] = 1; // turn on step LED
-    break;
-  case SONG_SEL:
-    sr3LED[3] = 1; // turn on song LED
-    break;
-  case SONG_WRITE:
-    sr3LED[4] = 1; // turn on pattern LED
-    break;
-  case PATTERN_SEL:
-    sr3LED[4] = 1; // turn on pattern LED
-    break;
-  case INST_SEL:
-    sr3LED[0] = 1; // turn on inst LED
-    break;
-  case INST_BANK_SEL:
-    sr3LED[5] = 1; // turn on bank LED
-    break;
-  case PATTERN_BANK_SEL:
-    sr3LED[5] = 1; // turn on bank LED
-    break;
-  case SONG_BANK_SEL:
-    sr3LED[5] = 1; // turn on bank LED
-    break;
-  }
-  // send all shift register values out
-  digitalWrite(ST_CP, LOW);
-  shiftOut(DS, SH_CP, MSBFIRST, sr5);
-  shiftOut(DS, SH_CP, MSBFIRST, sr4);
-  shiftOut(DS, SH_CP, MSBFIRST, sr3);
-  shiftOut(DS, SH_CP, MSBFIRST, sr2);
-  shiftOut(DS, SH_CP, MSBFIRST, sr1);
-  shiftOut(DS, SH_CP, MSBFIRST, sr0);
-  digitalWrite(ST_CP, HIGH);
 }
 
 ///**************************************************************************************************
@@ -1720,6 +1499,9 @@ void changeTempo(float newTempo)
   float quarterLen = (60.0 / tempo) * 1000;  // subdivide to quarter notes
   float eigthLen = quarterLen / 2;           // subdivide to eighth notes
   float sixteenthLen = quarterLen / 4;       // subdivide to sixteenth notes
+  midi24ppqMs = quarterLen / 24.0;// subdivide to 24ppq
+  midi24ppqUs = midi24ppqMs * 1000;
+  
   stepLen = sixteenthLen;                    // use sixteenth notes as our step length
   playSdRaw9.setPlaybackRate(tempo / 175.0); // shift breakbeat to match new tempo
 }
@@ -1755,11 +1537,14 @@ void selectMuxPin(int pin)
 // **************************************************************************************************/
 void trigNote(int instNum, int instParam)
 {
+  
   // send pulse voltage out
   int pulseLen = 10;
   switch (instNum)
   {
   case INST_BD: // BD
+//    MIDI.sendNoteOn(50, 100, 1);
+//    Serial.println("kick triggered");
     sr3LED[7] = 0;
     pulseLen = 10;
     break;
@@ -1843,10 +1628,11 @@ void trigNote(int instNum, int instParam)
     pulseLen = playSdRaw8.lengthMillis() * (currPattern->parameter[21][0] / 100.0) / currPattern->parameter[20][0];
     playSdRaw8.playRaw(kitSamples[(int)currPattern->settings[1]][7]->sampledata, kitSamples[(int)currPattern->settings[1]][7]->samplesize / 2, 1);
     break;
-
+                
   case INST_ORGAN_CHORDS:
     if (currStep >= 0)
     {
+      mixer6.gain(0, currPattern->velocity[16][0]);
       playSdRaw10.playRaw(chordSamples[0][(int)currPattern->parameter[22][currStep]]->sampledata, chordSamples[0][(int)currPattern->parameter[22][currStep]]->samplesize / 2, 1);
       float mySpeed = pow(2, (currPattern->pattern[16][currStep] - 1) / 12.0);
       granular2.setSpeed(mySpeed);
@@ -1856,6 +1642,7 @@ void trigNote(int instNum, int instParam)
   case INST_GUITAR_CHORDS:
     if (currStep >= 0)
     {
+      mixer6.gain(1, currPattern->velocity[17][0]);
       playSdRaw11.playRaw(chordSamples[1][(int)currPattern->parameter[24][currStep]]->sampledata, chordSamples[1][(int)currPattern->parameter[24][currStep]]->samplesize / 2, 1);
       float mySpeed = pow(2, (currPattern->pattern[17][currStep] - 1) / 12.0);
       granular3.setSpeed(mySpeed);
@@ -1865,6 +1652,7 @@ void trigNote(int instNum, int instParam)
   case INST_GUITAR_ONE:
     if (currStep >= 0)
     {
+      mixer6.gain(2, currPattern->velocity[18][0]);
       playSdRaw12.playRaw(chordSamples[2][(int)currPattern->parameter[26][currStep]]->sampledata, chordSamples[2][(int)currPattern->parameter[26][currStep]]->samplesize / 2, 1);
       float mySpeed = pow(2, (currPattern->pattern[18][currStep] - 1) / 12.0);
       granular4.setSpeed(mySpeed);
@@ -1874,6 +1662,7 @@ void trigNote(int instNum, int instParam)
   case INST_ORGAN_NOTES:
     if (currStep >= 0)
     {
+      mixer7.gain(0, currPattern->velocity[19][0]);
       float mySpeed = pow(2, (currPattern->pattern[19][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[28][currStep];
       if (myOct > 0)
@@ -1892,6 +1681,7 @@ void trigNote(int instNum, int instParam)
   case INST_ORGAN_NOTES_2:
     if (currStep >= 0)
     {
+      mixer7.gain(1, currPattern->velocity[20][0]);
       float mySpeed = pow(2, (currPattern->pattern[20][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[30][currStep];
       if (myOct > 0)
@@ -1910,6 +1700,7 @@ void trigNote(int instNum, int instParam)
   case INST_ORGAN_NOTES_3:
     if (currStep >= 0)
     {
+      mixer7.gain(2, currPattern->velocity[21][0]);
       float mySpeed = pow(2, (currPattern->pattern[21][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[32][currStep];
       if (myOct > 0)
@@ -1928,6 +1719,7 @@ void trigNote(int instNum, int instParam)
   case INST_ORGAN_NOTES_4:
     if (currStep >= 0)
     {
+      mixer7.gain(3, currPattern->velocity[22][0]);
       float mySpeed = pow(2, (currPattern->pattern[22][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[34][currStep];
       if (myOct > 0)
@@ -1946,6 +1738,7 @@ void trigNote(int instNum, int instParam)
   case INST_ORGAN_NOTES_5:
     if (currStep >= 0)
     {
+      mixer8.gain(0, currPattern->velocity[23][0]);
       float mySpeed = pow(2, (currPattern->pattern[23][currStep] - 1) / 12.0);
       float myOct = currPattern->parameter[36][currStep];
       if (myOct > 0)
@@ -2021,30 +1814,6 @@ void displayLCD(bool demoMode)
 
   switch (lcdState) // determine what we want to display on the LCD
   {
-  case LCD_DEMO: // Demo mode! show a cute little animation
-                 //    if (millis() > LCDFrameTimer + 500) // only swap frames every half second
-                 //    {
-                 //      u8g2.clearBuffer();      // clear the internal memory
-                 //      switch (starsFrameCount) // which frame are we on?
-                 //      {
-                 //      case 0:
-                 //        u8g2.drawXBMP(0, 0, 84, 48, frame1); // display first frame
-                 //        starsFrameCount = 1;                 // move to the other frame
-                 //        break;
-                 //      case 1:
-                 //        u8g2.drawXBMP(0, 0, 84, 48, frame2); // display second frame
-                 //        starsFrameCount = 0;                 // move to the other frame
-                 //        break;
-                 //      }
-                 //      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-                 //                                          //     u8g2.drawStr(0,11,"Hello Worldo!");  // write something to the internal memory
-                 //      u8g2.drawStr(20, 30, " <3");        // write something to the internal memory
-                 //      u8g2.drawStr(40, 44, "drums!");     // write something to the internal memory
-                 //      u8g2.sendBuffer();                  // transfer internal memory to the display
-                 //      LCDFrameTimer = millis();
-                 //    }
-    break;
-
   case LCD_INST_PROP: // mode for displaying paramter of selected instrument, and allows you to edit them
     if (millis() > LCDFrameTimer + 10)
     {
@@ -2132,8 +1901,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_CHORDS:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ chords");
@@ -2160,8 +1927,6 @@ void displayLCD(bool demoMode)
       case INST_GUITAR_CHORDS:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Guitar chords");
@@ -2188,8 +1953,6 @@ void displayLCD(bool demoMode)
       case INST_GUITAR_ONE:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Guitar oneshots");
@@ -2216,8 +1979,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_NOTES:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ notes");
@@ -2246,8 +2007,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_NOTES_2:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ notes 2");
@@ -2276,8 +2035,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_NOTES_3:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ notes 3");
@@ -2306,8 +2063,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_NOTES_4:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ notes 4");
@@ -2336,8 +2091,6 @@ void displayLCD(bool demoMode)
       case INST_ORGAN_NOTES_5:
         if (stepEditIndex < 0 || stepEditIndex > 63)
         {
-          Serial.print("stepEditIndex is out of bounds");
-          Serial.println(stepEditIndex);
           stepEditIndex = 0;
         }
         u8g2.drawStr(0, 11, "Organ notes 5");
@@ -3543,6 +3296,9 @@ void endChords()
     {
       playSdRaw11.stop();
     }
+    if (currPattern->pattern[22][currStep] <= 0){
+      playSdRaw17.stop();
+    }
   }
 }
 
@@ -3554,177 +3310,174 @@ void endChords()
 // * Output: Nothing
 // **************************************************************************************************/
 void writeShiftRegisters(){
-//// grab LED states and pack them into 8-bit numbers to be sent out the shift registers
-//  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
-//                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
-//
-//  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
-//                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
-//
-//  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
-//                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
-//
-//  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
-//                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
-//
-//  // make two blank variables for the step LEDs, not necessary i could just define them below
-//  uint8_t sr4 = 0b00000000;
-//  uint8_t sr5 = 0b00000000;
-//
-//  // STEP LED STUFF
-//  switch (controlState) // determine what should be displayed on LEDs
-//  {
-//  case STEP_SEL: // display active steps and playhead
-//    ledDisplayState = DISP_STEPS;
-//    break;
-//  case PATTERN_SEL: // display current pattern on step LEDs
-//    ledDisplayState = DISP_PATTERNS;
-//    break;
-//  case SONG_SEL: // display current song on step LEDs
-//    ledDisplayState = DISP_SONGS;
-//    break;
-//  case INST_SEL:
-//    ledDisplayState = DISP_INST;
-//    break;
-//  case SONG_BANK_SEL:
-//    ledDisplayState = DISP_SONG_BANK;
-//    break;
-//  case INST_BANK_SEL:
-//    ledDisplayState = DISP_INST_BANK;
-//    break;
-//  case PATTERN_BANK_SEL:
-//    ledDisplayState = DISP_PATT_BANK;
-//    break;
-//  }
-//  switch (ledDisplayState)
-//  {
-//  case DISP_STEPS:
-//    for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
-//    {
-//      int myInd = i + 16 * patternPlaySection;
-//      stepLEDs[i] = currPattern->pattern[currInst][myInd];
-//    }
-//    if (currStep >= 0)
-//    {
-//      stepLEDs[currStep % 16] = 1; // light up the playhead/current step
-//    }
-//    break;
-//
-//  case DISP_PATTERNS: // display current pattern on step LEDs
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    stepLEDs[patternNum] = 1;
-//    break;
-//
-//  case DISP_SONGS:
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    if (playMode == PLAY_SONG)
-//    {
-//      stepLEDs[songNum] = 1;
-//    }
-//
-//    break;
-//  case DISP_INST:
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    stepLEDs[currInst % 16] = 1;
-//    break;
-//  case DISP_PATT_BANK:
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    stepLEDs[pattBankNum] = 1;
-//    break;
-//  case DISP_INST_BANK:
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    stepLEDs[instBankNum] = 1;
-//    break;
-//  case DISP_SONG_BANK:
-//    for (int i = 0; i < 16; i++)
-//    {
-//      stepLEDs[i] = 0;
-//    }
-//    stepLEDs[songBankNum] = 1;
-//    break;
-//  }
-//
-//  sr0LED[2] = 0;
-//  sr0LED[3] = 0;
-//  sr0LED[4] = 0;
-//  sr0LED[5] = 0;
-//  switch (patternPlaySection)
-//  {
-//  case 0:
-//    sr0LED[5] = 1;
-//    break;
-//  case 1:
-//    sr0LED[4] = 1;
-//    break;
-//  case 2:
-//    sr0LED[3] = 1;
-//    break;
-//  case 3:
-//    sr0LED[2] = 1;
-//    break;
-//  }
-//  // arrange step LED states we just defined into 8-bit numbers to send to shift registers
-//  sr4 = stepLEDs[0] | stepLEDs[1] << 1 | stepLEDs[2] << 2 | stepLEDs[3] << 3 |
-//        stepLEDs[8] << 4 | stepLEDs[9] << 5 | stepLEDs[10] << 6 | stepLEDs[11] << 7;
-//
-//  sr5 = stepLEDs[4] | stepLEDs[5] << 1 | stepLEDs[6] << 2 | stepLEDs[7] << 3 |
-//        stepLEDs[12] << 4 | stepLEDs[13] << 5 | stepLEDs[14] << 6 | stepLEDs[15] << 7;
-//
-//  // control mode LEDs
-//  sr3LED[3] = 0; // turn off song LED
-//  sr3LED[4] = 0; // turn off pattern LED
-//  sr3LED[6] = 0; // turn off step LED
-//  sr3LED[0] = 0; // turn off inst LED
-//  sr3LED[5] = 0; // turn off bank LED
-//  switch (controlState)
-//  {
-//  case STEP_SEL:
-//    sr3LED[6] = 1; // turn on step LED
-//    break;
-//  case SONG_SEL:
-//    sr3LED[3] = 1; // turn on song LED
-//    break;
-//  case SONG_WRITE:
-//    sr3LED[4] = 1; // turn on pattern LED
-//    break;
-//  case PATTERN_SEL:
-//    sr3LED[4] = 1; // turn on pattern LED
-//    break;
-//  case INST_SEL:
-//    sr3LED[0] = 1; // turn on inst LED
-//    break;
-//  case INST_BANK_SEL:
-//    sr3LED[5] = 1; // turn on bank LED
-//    break;
-//  case PATTERN_BANK_SEL:
-//    sr3LED[5] = 1; // turn on bank LED
-//    break;
-//  case SONG_BANK_SEL:
-//    sr3LED[5] = 1; // turn on bank LED
-//    break;
-//  }
-//  // send all shift register values out
-//  digitalWrite(ST_CP, LOW);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr5);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr4);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr3);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr2);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr1);
-//  shiftOut(DS, SH_CP, MSBFIRST, sr0);
-//  digitalWrite(ST_CP, HIGH);
+// grab LED states and pack them into 8-bit numbers to be sent out the shift registers
+  uint8_t sr0 = sr0LED[0] | sr0LED[1] << 1 | sr0LED[2] << 2 | sr0LED[3] << 3 |
+                sr0LED[4] << 4 | sr0LED[5] << 5 | sr0LED[6] << 6 | sr0LED[7] << 7;
+
+  uint8_t sr1 = sr1LED[0] | sr1LED[1] << 1 | sr1LED[2] << 2 | sr1LED[3] << 3 |
+                sr1LED[4] << 4 | sr1LED[5] << 5 | sr1LED[6] << 6 | sr1LED[7] << 7;
+
+  uint8_t sr2 = sr2LED[0] | sr2LED[1] << 1 | sr2LED[2] << 2 | sr2LED[3] << 3 |
+                sr2LED[4] << 4 | sr2LED[5] << 5 | sr2LED[6] << 6 | sr2LED[7] << 7;
+
+  uint8_t sr3 = sr3LED[0] | sr3LED[1] << 1 | sr3LED[2] << 2 | sr3LED[3] << 3 |
+                sr3LED[4] << 4 | sr3LED[5] << 5 | sr3LED[6] << 6 | sr3LED[7] << 7;
+  // STEP LED STUFF
+  switch (controlState) // determine what should be displayed on LEDs
+  {
+  case STEP_SEL: // display active steps and playhead
+    ledDisplayState = DISP_STEPS;
+    break;
+  case PATTERN_SEL: // display current pattern on step LEDs
+    ledDisplayState = DISP_PATTERNS;
+    break;
+  case SONG_SEL: // display current song on step LEDs
+    ledDisplayState = DISP_SONGS;
+    break;
+  case INST_SEL:
+    ledDisplayState = DISP_INST;
+    break;
+  case SONG_BANK_SEL:
+    ledDisplayState = DISP_SONG_BANK;
+    break;
+  case INST_BANK_SEL:
+    ledDisplayState = DISP_INST_BANK;
+    break;
+  case PATTERN_BANK_SEL:
+    ledDisplayState = DISP_PATT_BANK;
+    break;
+  }
+  
+  switch (ledDisplayState)
+  {
+  case DISP_STEPS:
+    for (int i = 0; i < 16; i++) // light up which stepss are on for current instrument
+    {
+      int myInd = i + 16 * patternPlaySection;
+      stepLEDs[i] = currPattern->pattern[currInst][myInd];
+    }
+    if (currStep >= 0)
+    {
+      stepLEDs[currStep % 16] = 1; // light up the playhead/current step
+    }
+    break;
+
+  case DISP_PATTERNS: // display current pattern on step LEDs
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    stepLEDs[patternNum % 16] = 1;
+    break;
+
+  case DISP_SONGS:
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    if (playMode == PLAY_SONG)
+    {
+      stepLEDs[songNum % 16] = 1;
+    }
+
+    break;
+  case DISP_INST:
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    stepLEDs[currInst % 16] = 1;
+    break;
+  case DISP_PATT_BANK:
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    stepLEDs[pattBankNum] = 1;
+    break;
+  case DISP_INST_BANK:
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    stepLEDs[instBankNum] = 1;
+    break;
+  case DISP_SONG_BANK:
+    for (int i = 0; i < 16; i++)
+    {
+      stepLEDs[i] = 0;
+    }
+    stepLEDs[songBankNum] = 1;
+    break;
+  }
+  
+  sr0LED[2] = 0;
+  sr0LED[3] = 0;
+  sr0LED[4] = 0;
+  sr0LED[5] = 0;
+  switch (patternPlaySection)
+  {
+  case 0:
+    sr0LED[5] = 1;
+    break;
+  case 1:
+    sr0LED[4] = 1;
+    break;
+  case 2:
+    sr0LED[3] = 1;
+    break;
+  case 3:
+    sr0LED[2] = 1;
+    break;
+  }
+
+  // arrange step LED states we just defined into 8-bit numbers to send to shift registers
+  uint8_t sr4 = stepLEDs[0] | stepLEDs[1] << 1 | stepLEDs[2] << 2 | stepLEDs[3] << 3 |
+        stepLEDs[8] << 4 | stepLEDs[9] << 5 | stepLEDs[10] << 6 | stepLEDs[11] << 7;
+
+  uint8_t sr5 = stepLEDs[4] | stepLEDs[5] << 1 | stepLEDs[6] << 2 | stepLEDs[7] << 3 |
+        stepLEDs[12] << 4 | stepLEDs[13] << 5 | stepLEDs[14] << 6 | stepLEDs[15] << 7;
+
+  // control mode LEDs
+  sr3LED[3] = 0; // turn off song LED
+  sr3LED[4] = 0; // turn off pattern LED
+  sr3LED[6] = 0; // turn off step LED
+  sr3LED[0] = 0; // turn off inst LED
+  sr3LED[5] = 0; // turn off bank LED
+  switch (controlState)
+  {
+  case STEP_SEL:
+    sr3LED[6] = 1; // turn on step LED
+    break;
+  case SONG_SEL:
+    sr3LED[3] = 1; // turn on song LED
+    break;
+  case SONG_WRITE:
+    sr3LED[4] = 1; // turn on pattern LED
+    break;
+  case PATTERN_SEL:
+    sr3LED[4] = 1; // turn on pattern LED
+    break;
+  case INST_SEL:
+    sr3LED[0] = 1; // turn on inst LED
+    break;
+  case INST_BANK_SEL:
+    sr3LED[5] = 1; // turn on bank LED
+    break;
+  case PATTERN_BANK_SEL:
+    sr3LED[5] = 1; // turn on bank LED
+    break;
+  case SONG_BANK_SEL:
+    sr3LED[5] = 1; // turn on bank LED
+    break;
+  }
+  // send all shift register values out
+  digitalWrite(ST_CP, LOW);
+  shiftOut(DS, SH_CP, MSBFIRST, sr5);
+  shiftOut(DS, SH_CP, MSBFIRST, sr4);
+  shiftOut(DS, SH_CP, MSBFIRST, sr3);
+  shiftOut(DS, SH_CP, MSBFIRST, sr2);
+  shiftOut(DS, SH_CP, MSBFIRST, sr1);
+  shiftOut(DS, SH_CP, MSBFIRST, sr0);
+  digitalWrite(ST_CP, HIGH);
 }
