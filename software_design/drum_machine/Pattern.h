@@ -536,13 +536,25 @@ public:
       for (int j = 0; j < 24; j++)
       {
         pattern[j][i] = 0;
-        velocity[j][i] = 0;
+        velocity[j][i] = 1;
       }
 
       for (int j = 0; j < 38; j++)
       {
-        parameter[j][i] = 0;
+        parameter[j][i] = 1;
       }
+      parameter[7][i] = 100; // setting sample lengths to 100
+      parameter[9][i] = 100;
+      parameter[11][i] = 100;
+      parameter[13][i] = 100;
+      parameter[15][i] = 100;
+      parameter[17][i] = 100;
+      parameter[19][i] = 100;
+      parameter[21][i] = 100;
+      parameter[22][i] = 0; // setting chord types to major
+      parameter[24][i] = 0;
+      parameter[26][i] = 0;
+      
       settings[i] = 0;
     }
     settings[0] = 120; // set tempo to 120 BPM

@@ -25,6 +25,8 @@
 
 #define NUM_BANKS 2
 
+#define CHAR_BUFF_SIZE 4
+
 enum instruments
 {
   INST_BD,
@@ -66,7 +68,8 @@ enum lcdStates
   LCD_INST_BANK,
   LCD_PATT_BANK,
   LCD_SONG_BANK,
-  LCD_LENGTH_SEL
+  LCD_LENGTH_SEL,
+  LCD_PATTERN_WRITE
 };
 
 enum transportStates
@@ -89,7 +92,8 @@ enum controlStates
   PATTERN_BANK_SEL,
   SONG_BANK_SEL,
   LENGTH_SEL,
-  PLAY_STEP_SEL
+  PLAY_STEP_SEL,
+  PATTERN_WRITE
 };
 
 enum ledDisplayStates
@@ -129,6 +133,7 @@ int patternQueue[16];
 int patternQueueLen = 1;
 int patternQueueIndex = 0;
 int patternQueueWriteIndex = 0;
+Pattern *myCopiedPattern;
 
 // Song Variables
 Song *currSong;
@@ -170,7 +175,19 @@ AudioPlayArrayResmp playSdRaw23; // xy=321,513
 AudioPlayArrayResmp playSdRaw24; // xy=321,513
 AudioPlayArrayResmp playSdRaw25; // xy=321,513
 
-newdigate::audiosample *kitSamples[3][8]; // samples for bank A kits
+newdigate::audiosample *kitSamples[9][8]; // samples for bank A kits
+
+const char *kitNames[9][8] = {
+    {"KICK","SNARE","CHH", "OHH", "LO CB", "HI CB", "LO TOM", "HI TOM"}, // casio
+    {"KICK","SNARE","CHH", "OHH", "CYM", "REV CYM", "Clave", "CB"},      //808
+    {"KICK","KICK2","SNARE", "CLAP", "CHH", "OHH", "Ride", "Crash"},     // happy hardcore
+    {"KICK","SNARE","CHH", "OHH", "HI TOM", "LO TOM", "CRASH", "SPLASH"}, // akai amb
+    {"KICK","SNARE","CHH", "OHH", "HI TOM", "MID TOM", "LO TOM", "STICK"}, // akai bedroom
+    {"KICK","SNARE","CHH", "OHH", "BIGKICK", "COWKICK", "CHH2", "CRASH"}, // akai garage
+    {"KICK","SNARE","CHH", "OHH", "HAT2", "CB", "BLOCK", "SHAKER"}, // emu mophat clear
+    {"KICK","SNARE","CHH", "OHH", "HI SNARE", "CLAP", "REV", "BOOM"}, // emu mophat dark
+    {"KICK","SNARE","CHH", "OHH", "RIM", "HALFHAT", "SHAKER", "TAMB"}  // alesis hr16
+  };
 
 newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
                                             // 0 - Cmaj
@@ -368,6 +385,7 @@ int prevLcdState = LCD_INST_PROP;
 int instBankNum = 0;
 int pattBankNum = 0;
 int songBankNum = 0;
+int pattWriteSel = 0;
 
 // playback stuff
 int playMode = PLAY_PATTERN;
@@ -375,9 +393,9 @@ int songPlayStep = 0;
 int patternPlaySection = 0;
 
 // chord playback
-long stepEditIndex = 0;
-char rootNotes[12][6] = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
-char chordQual[7][6] = {"maj", "min", "7", "maj7", "min7", "dim", "aug"};
+int stepEditIndex = 0;
+const char rootNotes[12][6] = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
+const char chordQual[7][6] = {"maj", "min", "7", "maj7", "min7", "dim", "aug"};
 int chordCursorLoc = 0;
 int instChordTypes[3] = {0, 0, 0};
 
@@ -385,6 +403,8 @@ int instChordTypes[3] = {0, 0, 0};
 float midi24ppqMs = 20;
 float midi24ppqUs = 20000;
 unsigned long midiClockTimer = 0;
+
+volatile int s;
 
 void setup()
 {
@@ -553,6 +573,60 @@ void setup()
   kitSamples[2][6] = loader.loadSample("DRUMS/HPYHXC/RIDE.RAW");
   kitSamples[2][7] = loader.loadSample("DRUMS/HPYHXC/CRASH.RAW");
 
+  kitSamples[3][0] = loader.loadSample("DRUMS/AKAI_AMB/KICK.RAW");
+  kitSamples[3][1] = loader.loadSample("DRUMS/AKAI_AMB/SNARE.RAW");
+  kitSamples[3][2] = loader.loadSample("DRUMS/AKAI_AMB/CHH.RAW");
+  kitSamples[3][3] = loader.loadSample("DRUMS/AKAI_AMB/OHH.RAW");
+  kitSamples[3][4] = loader.loadSample("DRUMS/AKAI_AMB/HITOM.RAW");
+  kitSamples[3][5] = loader.loadSample("DRUMS/AKAI_AMB/MIDTOM.RAW");
+  kitSamples[3][6] = loader.loadSample("DRUMS/AKAI_AMB/CRASH.RAW");
+  kitSamples[3][7] = loader.loadSample("DRUMS/AKAI_AMB/SPLASH.RAW");
+
+  kitSamples[4][0] = loader.loadSample("DRUMS/AKAI_BDRM/KICK.RAW");
+  kitSamples[4][1] = loader.loadSample("DRUMS/AKAI_BDRM/SNARE.RAW");
+  kitSamples[4][2] = loader.loadSample("DRUMS/AKAI_BDRM/CHH.RAW");
+  kitSamples[4][3] = loader.loadSample("DRUMS/AKAI_BDRM/OHH.RAW");
+  kitSamples[4][4] = loader.loadSample("DRUMS/AKAI_BDRM/HITOM.RAW");
+  kitSamples[4][5] = loader.loadSample("DRUMS/AKAI_BDRM/MIDTOM.RAW");
+  kitSamples[4][6] = loader.loadSample("DRUMS/AKAI_BDRM/LOTOM.RAW");
+  kitSamples[4][7] = loader.loadSample("DRUMS/AKAI_BDRM/STICK.RAW");
+
+  kitSamples[5][0] = loader.loadSample("DRUMS/AKAI_GARAGE/KICK.RAW");
+  kitSamples[5][1] = loader.loadSample("DRUMS/AKAI_GARAGE/SNARE.RAW");
+  kitSamples[5][2] = loader.loadSample("DRUMS/AKAI_GARAGE/CHH.RAW");
+  kitSamples[5][3] = loader.loadSample("DRUMS/AKAI_GARAGE/OHH.RAW");
+  kitSamples[5][4] = loader.loadSample("DRUMS/AKAI_GARAGE/BIGKICK.RAW");
+  kitSamples[5][5] = loader.loadSample("DRUMS/AKAI_GARAGE/COWKICK.RAW");
+  kitSamples[5][6] = loader.loadSample("DRUMS/AKAI_GARAGE/CHH2.RAW");
+  kitSamples[5][7] = loader.loadSample("DRUMS/AKAI_GARAGE/CRASH.RAW");
+
+  kitSamples[6][0] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/KICK.RAW");
+  kitSamples[6][1] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/SNARE.RAW");
+  kitSamples[6][2] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/CHH.RAW");
+  kitSamples[6][3] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/OHH.RAW");
+  kitSamples[6][4] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/HAT2.RAW");
+  kitSamples[6][5] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/CB.RAW");
+  kitSamples[6][6] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/BLOCK.RAW");
+  kitSamples[6][7] = loader.loadSample("DRUMS/EMU_MOPHAT_CLEAR/SHAKER.RAW");
+
+  kitSamples[7][0] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/KICK.RAW");
+  kitSamples[7][1] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/LOSNARE.RAW");
+  kitSamples[7][2] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/CHH.RAW");
+  kitSamples[7][3] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/OHH.RAW");
+  kitSamples[7][4] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/HISNARE.RAW");
+  kitSamples[7][5] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/CLAP.RAW");
+  kitSamples[7][6] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/REV.RAW");
+  kitSamples[7][7] = loader.loadSample("DRUMS/EMU_MOPHAT_DARK/BOOM.RAW");
+
+  kitSamples[8][0] = loader.loadSample("DRUMS/ALESIS_HR16/KICK.RAW");
+  kitSamples[8][1] = loader.loadSample("DRUMS/ALESIS_HR16/SNARE.RAW");
+  kitSamples[8][2] = loader.loadSample("DRUMS/ALESIS_HR16/CHH.RAW");
+  kitSamples[8][3] = loader.loadSample("DRUMS/ALESIS_HR16/OHH.RAW");
+  kitSamples[8][4] = loader.loadSample("DRUMS/ALESIS_HR16/RIM.RAW");
+  kitSamples[8][5] = loader.loadSample("DRUMS/ALESIS_HR16/HALFHAT.RAW");
+  kitSamples[8][6] = loader.loadSample("DRUMS/ALESIS_HR16/SHAKER.RAW");
+  kitSamples[8][7] = loader.loadSample("DRUMS/ALESIS_HR16/TAMB.RAW");
+
   sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
 
   chordSamples[0][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
@@ -646,13 +720,13 @@ void setup()
   bitcrusher2.sampleRate(44100);
 
   // initialize MUX address pins
-  for (int i = 0; i < sizeof(muxAddressPins) / sizeof(muxAddressPins[0]); i++)
+  for (unsigned int i = 0; i < sizeof(muxAddressPins) / sizeof(muxAddressPins[0]); i++)
   {
     pinMode(muxAddressPins[i], OUTPUT);
   }
 
   // initialize MUX data pins
-  for (int i = 0; i < sizeof(muxDataPins) / sizeof(muxDataPins[0]); i++)
+  for (unsigned int i = 0; i < sizeof(muxDataPins) / sizeof(muxDataPins[0]); i++)
   {
     pinMode(muxDataPins[i], INPUT);
   }
@@ -671,6 +745,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(dataEncBPin), ISRdataEncBChange, CHANGE);
 
   currPattern = &PatternStorage[0][0];
+  myCopiedPattern = currPattern;
   patternNum = 0;
 
   currSong = &SongStorage[0][0];
@@ -1003,12 +1078,14 @@ void readMux(bool printEn)
           if (controlButtons[i] == LOW) // inst sel PRESSED
           {
             controlState = INST_SEL;
+            lcdState = LCD_INST_PROP;
           }
           else // inst sel RELEASED
           {
             if (controlState != KIT_SEL)
             {
               controlState = STEP_SEL;
+              lcdState = LCD_INST_PROP;
             }
           }
           break;
@@ -1066,6 +1143,12 @@ void readMux(bool printEn)
               songWriteIndex = 0;
               controlState = SONG_SEL;
               lcdState = LCD_SONG_SEL;
+            } else if (controlState == PATTERN_SEL){
+              controlState = PATTERN_WRITE;
+              lcdState = LCD_PATTERN_WRITE;
+            } else if (controlState == PATTERN_WRITE){
+              controlState = PATTERN_SEL;
+              lcdState = LCD_PATT_SEL;
             }
           }
           else
@@ -1130,6 +1213,31 @@ void readMux(bool printEn)
             {
               controlState = STEP_SEL;
               lcdState = LCD_INST_PROP;
+            } else if (controlState == PATTERN_WRITE){
+              switch(pattWriteSel){
+                case 0: // clear pattern
+                   currPattern->clearPattern();
+                  break;
+                case 1: // copy pattern
+                  myCopiedPattern = currPattern;
+                  break;
+                case 2: // paste pattern
+                  for(int i = 0; i < 64; i++){ // loop through all steps
+                    for(int j = 0; j < 24; j++){
+                      currPattern->pattern[j][i] = myCopiedPattern->pattern[j][i];
+                      currPattern->velocity[j][i] = myCopiedPattern->velocity[j][i];
+                    }
+
+                    for(int j = 0; j < 38; j++){
+                      currPattern->parameter[j][i] = myCopiedPattern->parameter[j][i];
+                    }
+
+                    currPattern->settings[i] = myCopiedPattern->settings[i];
+                  }
+                  break;
+              }
+              controlState = PATTERN_SEL;
+              lcdState = LCD_PATT_SEL;
             }
             else // if in paramter selection mode, swap between menu navigation and data entry
             {
@@ -1365,8 +1473,8 @@ void readMux(bool printEn)
         if (stepButtons[i] != stepButtonsPrev[i] && !stepButtons[i]) // if button state changed and is pressed down
         {
           currInst = i + 16 * instBankNum; // set current instrument to the one that was pressed offsetting by 16 for each bank
-          controlState = STEP_SEL;
-          lcdState = LCD_INST_PROP;                                                                                                                                                                                                                                                                                                                          
+//          controlState = STEP_SEL;
+//          lcdState = LCD_INST_PROP;                                                                                                                                                                                                                                                                                                                          
         }
       }
       break;
@@ -1497,7 +1605,7 @@ void changeTempo(float newTempo)
   currPattern->settings[0] = newTempo;
   tempo = newTempo;                          // set this global tempo variable to the specified tempo though i don't think I'm really using this variable anyway
   float quarterLen = (60.0 / tempo) * 1000;  // subdivide to quarter notes
-  float eigthLen = quarterLen / 2;           // subdivide to eighth notes
+//  float eigthLen = quarterLen / 2;           // subdivide to eighth notes
   float sixteenthLen = quarterLen / 4;       // subdivide to sixteenth notes
   midi24ppqMs = quarterLen / 24.0;// subdivide to 24ppq
   midi24ppqUs = midi24ppqMs * 1000;
@@ -1811,7 +1919,6 @@ void displayLCD(bool demoMode)
       lcdState = LCD_TEMPO;    // moves over to tempo display mode
     }
   }
-
   switch (lcdState) // determine what we want to display on the LCD
   {
   case LCD_INST_PROP: // mode for displaying paramter of selected instrument, and allows you to edit them
@@ -1819,11 +1926,11 @@ void displayLCD(bool demoMode)
     {
       u8g2.clearBuffer();                 // clear the internal memory
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
-      char paramStr[30];                  // char array for parameter value
-      char volStr[30];                    // char array for volume value
-      char envStr[30];                    // char array for envelope value
+      char* paramStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
+      char* volStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
+      char* envStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
+      char stepNumStr[CHAR_BUFF_SIZE]; // display num of curr edit step
       int32_t myRootNote;
-      char stepNumStr[30]; // display num of curr edit step
       switch (currInst)    // set name string and parameters, these are unique to each instrument so i have this dumb huge switch statement :~(
       {
       case INST_BD:
@@ -1851,52 +1958,68 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 11, "DigiDrum #3");
         break;
       case INST_SMP1:
-        u8g2.drawStr(0, 11, "Casio Kick");
-        sprintf(paramStr, "%.02f", currPattern->parameter[6][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[8][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[7][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][0]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[6][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[8][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[7][0]);
+        paramStr = _float_to_char(currPattern->parameter[6][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[8][0], volStr);
         break;
       case INST_SMP2:
-        u8g2.drawStr(0, 11, "Casio Snare");
-        sprintf(paramStr, "%.02f", currPattern->parameter[8][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[9][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[9][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][1]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[8][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[9][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[9][0]);
+        paramStr = _float_to_char(currPattern->parameter[8][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[9][0], volStr);
         break;
       case INST_SMP3:
-        u8g2.drawStr(0, 11, "Casio CHH");
-        sprintf(paramStr, "%.02f", currPattern->parameter[10][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[10][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[11][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][2]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[10][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[10][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[11][0]);
+        paramStr = _float_to_char(currPattern->parameter[10][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[10][0], volStr);
         break;
       case INST_SMP4:
-        u8g2.drawStr(0, 11, "Casio OHH");
-        sprintf(paramStr, "%.02f", currPattern->parameter[12][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[11][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[13][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][3]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[12][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[11][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[13][0]);
+        paramStr = _float_to_char(currPattern->parameter[12][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[11][0], volStr);
         break;
       case INST_SMP5:
-        u8g2.drawStr(0, 11, "Casio Lo Cowbell");
-        sprintf(paramStr, "%.02f", currPattern->parameter[14][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[12][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[15][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][4]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[14][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[12][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[15][0]);
+        paramStr = _float_to_char(currPattern->parameter[14][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[12][0], volStr);
         break;
       case INST_SMP6:
-        u8g2.drawStr(0, 11, "Casio Hi Cowbell");
-        sprintf(paramStr, "%.02f", currPattern->parameter[16][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[13][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[17][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][5]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[16][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[13][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[17][0]);
+        paramStr = _float_to_char(currPattern->parameter[16][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[13][0], volStr);
         break;
       case INST_SMP7:
-        u8g2.drawStr(0, 11, "Casio Lo Tom");
-        sprintf(paramStr, "%.02f", currPattern->parameter[18][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[14][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[19][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][6]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[18][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[14][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[19][0]);
+        paramStr = _float_to_char(currPattern->parameter[18][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[14][0], volStr);
         break;
       case INST_SMP8:
-        u8g2.drawStr(0, 11, "Casio Hi Tom");
-        sprintf(paramStr, "%.02f", currPattern->parameter[20][0]); // grab parameters from pattern object
-        sprintf(volStr, "%.02f", currPattern->velocity[15][0]);
-        sprintf(envStr, "%.01f", currPattern->parameter[21][0]);
+        u8g2.drawStr(0, 11, kitNames[kitSel][7]);
+//        sprintf(paramStr, "%.02f", currPattern->parameter[20][0]); // grab parameters from pattern object
+//        sprintf(volStr, "%.02f", currPattern->velocity[15][0]);
+        sprintf(envStr, "%i", (int)currPattern->parameter[21][0]);
+        paramStr = _float_to_char(currPattern->parameter[20][0], paramStr);
+        volStr = _float_to_char(currPattern->velocity[15][0], volStr);
         break;
       case INST_ORGAN_CHORDS:
         if (stepEditIndex < 0 || stepEditIndex > 63)
@@ -1908,7 +2031,8 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "chord:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[16][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[16][0]);
+        volStr = _float_to_char(currPattern->velocity[16][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
@@ -1934,7 +2058,8 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "chord:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[17][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[17][0]);
+        volStr = _float_to_char(currPattern->velocity[17][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
@@ -1960,7 +2085,8 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "chord:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[18][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[18][0]);
+        volStr = _float_to_char(currPattern->velocity[18][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
@@ -1986,13 +2112,14 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[19][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[19][0]);
+        volStr = _float_to_char(currPattern->velocity[19][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
           u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
-          float myChordQual = currPattern->parameter[28][stepEditIndex];
-          sprintf(paramStr, "%.02f", myChordQual);
+          int myChordQual = (int)currPattern->parameter[28][stepEditIndex];
+          sprintf(paramStr, "%i", myChordQual);
 
           u8g2.drawStr(40, 34, paramStr);
         }
@@ -2014,13 +2141,14 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[20][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[20][0]);
+        volStr = _float_to_char(currPattern->velocity[20][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
           u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
-          float myChordQual = currPattern->parameter[30][stepEditIndex];
-          sprintf(paramStr, "%.02f", myChordQual);
+          int myChordQual = (int)currPattern->parameter[30][stepEditIndex];
+          sprintf(paramStr, "%i", myChordQual);
 
           u8g2.drawStr(40, 34, paramStr);
         }
@@ -2042,13 +2170,14 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[21][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[21][0]);
+        volStr = _float_to_char(currPattern->velocity[21][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
           u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
-          float myChordQual = currPattern->parameter[32][stepEditIndex];
-          sprintf(paramStr, "%.02f", myChordQual);
+          int myChordQual = (int)currPattern->parameter[32][stepEditIndex];
+          sprintf(paramStr, "%i", myChordQual);
 
           u8g2.drawStr(40, 34, paramStr);
         }
@@ -2070,13 +2199,14 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[22][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[22][0]);
+        volStr = _float_to_char(currPattern->velocity[22][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
           u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
-          float myChordQual = currPattern->parameter[34][stepEditIndex];
-          sprintf(paramStr, "%.02f", myChordQual);
+          int myChordQual = (int)currPattern->parameter[34][stepEditIndex];
+          sprintf(paramStr, "%i", myChordQual);
 
           u8g2.drawStr(40, 34, paramStr);
         }
@@ -2098,13 +2228,14 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 24, "root:");
         u8g2.drawStr(0, 34, "oct:");
         u8g2.drawStr(0, 44, "vol: ");
-        sprintf(volStr, "%.02f", currPattern->velocity[23][0]);
+//        sprintf(volStr, "%.02f", currPattern->velocity[23][0]);
+        volStr = _float_to_char(currPattern->velocity[23][0], volStr);
         u8g2.drawStr(30, 44, volStr);
         if (myRootNote > 0)
         {
           u8g2.drawStr(40, 24, rootNotes[myRootNote - 1]);
-          float myChordQual = currPattern->parameter[36][stepEditIndex];
-          sprintf(paramStr, "%.02f", myChordQual);
+          int myChordQual = (int)currPattern->parameter[36][stepEditIndex];
+          sprintf(paramStr, "%i", myChordQual);
 
           u8g2.drawStr(40, 34, paramStr);
         }
@@ -2116,6 +2247,8 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(70, 35, stepNumStr);
         break;
       }
+
+  
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       char instNumStr[30]; // display num of curr inst
@@ -2180,6 +2313,9 @@ void displayLCD(bool demoMode)
         }
       }
       u8g2.sendBuffer();        // transfer internal memory to the display
+      free(paramStr);
+      free(envStr);
+      free(volStr);
       LCDFrameTimer = millis(); // timer for next frame
     }
     break;
@@ -2190,7 +2326,7 @@ void displayLCD(bool demoMode)
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.drawStr(10, 10, "BPM");
       char tempoStr[30];
-      sprintf(tempoStr, "%.01f", tempo);
+      sprintf(tempoStr, "%i", (int)tempo);
       u8g2.drawStr(30, 30, tempoStr);
       u8g2.sendBuffer();
       LCDFrameTimer = millis();
@@ -2203,11 +2339,22 @@ void displayLCD(bool demoMode)
       u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
-      u8g2.drawStr(0, 14, "Casio SK-1"); // draw kit names
-      u8g2.drawStr(0, 24, "808");
-      u8g2.drawStr(0, 34, "Happy Hxc");
+      if(kitSel == 0 || kitSel == 1 || kitSel == 2){
+        u8g2.drawStr(0, 14, "Casio SK-1"); // draw kit names
+        u8g2.drawStr(0, 24, "808");
+        u8g2.drawStr(0, 34, "Happy Hxc");
+      } else if (kitSel == 3 || kitSel == 4 || kitSel == 5){
+        u8g2.drawStr(0, 14, "AKAI AMB"); // draw kit names
+        u8g2.drawStr(0, 24, "AKAI BDRM");
+        u8g2.drawStr(0, 34, "AKAI GARAGE");
+      } else if (kitSel == 6 || kitSel == 7 || kitSel == 8){
+        u8g2.drawStr(0, 14, "EMU MP CLEAR"); // draw kit names
+        u8g2.drawStr(0, 24, "EMU MP DARK");
+        u8g2.drawStr(0, 34, "ALESIS HR16");
+      }
+
       u8g2.setDrawColor(2);
-      u8g2.drawBox(0, 5 + 10 * kitSel, 80, 11); // draw selection box
+      u8g2.drawBox(0, 5 + 10 * (kitSel%3), 80, 11); // draw selection box
       u8g2.sendBuffer();
       LCDFrameTimer = millis();
     }
@@ -2334,6 +2481,21 @@ void displayLCD(bool demoMode)
       u8g2.sendBuffer();
     }
     break;
+
+  case LCD_PATTERN_WRITE:
+    if (millis() > LCDFrameTimer + 10)
+    {
+      u8g2.clearBuffer();                 // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+      u8g2.setFontMode(0);
+      u8g2.setDrawColor(1);
+      u8g2.drawStr(0, 14, "Clear Patt?");
+      u8g2.drawStr(0, 24, "Copy");
+      u8g2.drawStr(0, 34, "Paste");
+      u8g2.setDrawColor(2);
+      u8g2.drawBox(0, 6 + 10 * (pattWriteSel%3), 80, 10); // draw selection box
+      u8g2.sendBuffer();
+    }
   }
 }
 
@@ -2546,8 +2708,13 @@ void UpdateDataEnc()
         if (controlState == KIT_SEL) // navigate kit selection menu
         {
           kitSel = (kitSel + 1);
-          if (kitSel > 2)
-            kitSel = 2;
+          if (kitSel > 8)
+            kitSel = 8;
+        } else if( controlState == PATTERN_WRITE){
+          pattWriteSel += 1;
+          if (pattWriteSel > 2){
+            pattWriteSel = 2;
+          }
         }
         else if (controlState == LENGTH_SEL)
         {
@@ -2873,8 +3040,12 @@ void UpdateDataEnc()
           {
             currPattern->settings[2] = 1;
           }
-        }
-        else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
+        } else if( controlState == PATTERN_WRITE){
+          pattWriteSel -= 1;
+          if (pattWriteSel < 0){
+            pattWriteSel = 0;
+          }
+        } else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
           if (paramSel) // if cursor is modifying parameter
           {
@@ -3047,11 +3218,16 @@ void UpdateDataEnc()
                 }
                 break;
               case INST_ORGAN_NOTES:
+//                Serial.println(currPattern->parameter[28][stepEditIndex]);
                 currPattern->parameter[28][stepEditIndex] = currPattern->parameter[28][stepEditIndex] - 1; // increment chord type
+//                Serial.println(currPattern->parameter[28][stepEditIndex]);
                 if (currPattern->parameter[28][stepEditIndex] < -3)
                 { // cycle back to beginning of list
                   currPattern->parameter[28][stepEditIndex] = -3;
                 }
+//                Serial.println("beep");
+//                Serial.println(currPattern->parameter[28][stepEditIndex]);
+//                Serial.println(" ");
                 break;
               case INST_ORGAN_NOTES_2:
                 currPattern->parameter[30][stepEditIndex] = currPattern->parameter[30][stepEditIndex] - 1; // increment chord type
@@ -3480,4 +3656,32 @@ void writeShiftRegisters(){
   shiftOut(DS, SH_CP, MSBFIRST, sr1);
   shiftOut(DS, SH_CP, MSBFIRST, sr0);
   digitalWrite(ST_CP, HIGH);
+}
+
+
+// from https://stackoverflow.com/questions/23191203/convert-float-to-string-without-sprintf
+static char * _float_to_char(float x, char *p) {
+    char *s = p + CHAR_BUFF_SIZE; // go to end of buffer
+    uint16_t decimals;  // variable to store the decimals
+    int units;  // variable to store the units (part to left of decimal place)
+    if (x < 0) { // take care of negative numbers
+        decimals = (int)(x * -100) % 100; // make 1000 for 3 decimals etc.
+        units = (int)(-1 * x);
+    } else { // positive numbers
+        decimals = (int)(x * 100) % 100;
+        units = (int)x;
+    }
+
+    *--s = (decimals % 10) + '0';
+    decimals /= 10; // repeat for as many decimal places as you need
+    *--s = (decimals % 10) + '0';
+    *--s = '.';
+
+    do {
+        *--s = (units % 10) + '0';
+        units /= 10;
+    } while (units > 0);
+    
+    if (x < 0) *--s = '-'; // unary minus sign for negative numbers
+    return s;
 }
