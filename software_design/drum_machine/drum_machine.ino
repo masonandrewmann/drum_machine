@@ -27,6 +27,8 @@
 
 #define CHAR_BUFF_SIZE 4
 
+#define NUM_KITS 11
+
 enum instruments
 {
   INST_BD,
@@ -123,6 +125,7 @@ EXTMEM int16_t granularMemory2[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory3[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory4[GRANULAR_MEMORY_SIZE];
 EXTMEM int16_t granularMemory5[GRANULAR_MEMORY_SIZE];
+newdigate::audiosample *kitSamples[NUM_KITS][8]; // samples for bank A kits
 //------EXTERNAL QSPI RAM CHIP SECTION END------
 
 // Pattern variables
@@ -175,9 +178,9 @@ AudioPlayArrayResmp playSdRaw23; // xy=321,513
 AudioPlayArrayResmp playSdRaw24; // xy=321,513
 AudioPlayArrayResmp playSdRaw25; // xy=321,513
 
-newdigate::audiosample *kitSamples[9][8]; // samples for bank A kits
 
-const char *kitNames[9][8] = {
+
+const char *kitNames[NUM_KITS][8] = {
     {"KICK","SNARE","CHH", "OHH", "LO CB", "HI CB", "LO TOM", "HI TOM"}, // casio
     {"KICK","SNARE","CHH", "OHH", "CYM", "REV CYM", "Clave", "CB"},      //808
     {"KICK","KICK2","SNARE", "CLAP", "CHH", "OHH", "Ride", "Crash"},     // happy hardcore
@@ -186,9 +189,12 @@ const char *kitNames[9][8] = {
     {"KICK","SNARE","CHH", "OHH", "BIGKICK", "COWKICK", "CHH2", "CRASH"}, // akai garage
     {"KICK","SNARE","CHH", "OHH", "HAT2", "CB", "BLOCK", "SHAKER"}, // emu mophat clear
     {"KICK","SNARE","CHH", "OHH", "HI SNARE", "CLAP", "REV", "BOOM"}, // emu mophat dark
-    {"KICK","SNARE","CHH", "OHH", "RIM", "HALFHAT", "SHAKER", "TAMB"}  // alesis hr16
+    {"KICK","SNARE","CHH", "OHH", "RIM", "HALFHAT", "SHAKER", "TAMB"},  // alesis hr16
+    {"KICK","SNARE","CHH", "OHH", "SNARE 2", "DING", "CLANG", "TOM"}, // elektron clean
+    {"KICK","SNARE","CHH", "OHH", "SNARE 2", "CLICK", "CRUNCH", "CLANG"} // elektron crush
+//    {"KICK","SNARE","CHH", "OHH", "SNARE 2", "RATTLE", "MECH", "CLANG"}  // elektron noisy
   };
-
+  
 newdigate::audiosample *chordSamples[3][7]; // samples for organ and guitar chords
                                             // 0 - Cmaj
                                             // 1 - Cmin
@@ -405,6 +411,9 @@ float midi24ppqUs = 20000;
 unsigned long midiClockTimer = 0;
 
 volatile int s;
+
+unsigned long pauseBlinkTimer = 0;
+bool pauseLedState = true;
 
 void setup()
 {
@@ -627,6 +636,33 @@ void setup()
   kitSamples[8][6] = loader.loadSample("DRUMS/ALESIS_HR16/SHAKER.RAW");
   kitSamples[8][7] = loader.loadSample("DRUMS/ALESIS_HR16/TAMB.RAW");
 
+  kitSamples[9][0] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/KICK.RAW");
+  kitSamples[9][1] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/SNARE.RAW");
+  kitSamples[9][2] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/CHH.RAW");
+  kitSamples[9][3] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/OHH.RAW");
+  kitSamples[9][4] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/SNARE2.RAW");
+  kitSamples[9][5] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/DING.RAW");
+  kitSamples[9][6] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/CLANG.RAW");
+  kitSamples[9][7] = loader.loadSample("DRUMS/ELEKTRON_CLEAN/TOM.RAW");
+
+  kitSamples[10][0] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/KICK.RAW");
+  kitSamples[10][1] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/SNARE.RAW");
+  kitSamples[10][2] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/CHH.RAW");
+  kitSamples[10][3] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/OHH.RAW");
+  kitSamples[10][4] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/SNARE2.RAW");
+  kitSamples[10][5] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/LOCLICK.RAW");
+  kitSamples[10][6] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/CRUNCH.RAW");
+  kitSamples[10][7] = loader.loadSample("DRUMS/ELEKTRON_CRUSH/CLANG.RAW");
+//
+//  kitSamples[11][0] = loader.loadSample("DRUMS/ELEKTRON_NOISY/SNARE.RAW");
+//  kitSamples[11][1] = loader.loadSample("DRUMS/ELEKTRON_NOISY/SNARE.RAW");
+//  kitSamples[11][2] = loader.loadSample("DRUMS/ELEKTRON_NOISY/CHH.RAW");
+//  kitSamples[11][3] = loader.loadSample("DRUMS/ELEKTRON_NOISY/OHH.RAW");
+//  kitSamples[11][4] = loader.loadSample("DRUMS/ELEKTRON_NOISY/SNARE2.RAW");
+//  kitSamples[11][5] = loader.loadSample("DRUMS/ELEKTRON_NOISY/RATTLE.RAW");
+//  kitSamples[11][6] = loader.loadSample("DRUMS/ELEKTRON_NOISY/MECH.RAW");
+//  kitSamples[11][7] = loader.loadSample("DRUMS/ELEKTRON_NOISY/CLANG.RAW");
+
   sample9 = loader.loadSample("BREAKS/AMEN175.RAW");
 
   chordSamples[0][0] = loader.loadSample("SAMPLES/ORGAN/CMAJ.RAW");
@@ -762,7 +798,7 @@ void loop()
   if (millis() > lcdTimeout) // LCD framerate limiter
   {
     displayLCD(false);
-    lcdTimeout = millis() + 100;
+    lcdTimeout = millis() + 200;
 //    Serial.println(midi24ppqUs);
   }
 
@@ -771,6 +807,8 @@ void loop()
     midiClockTimer = midiClockTimer + midi24ppqUs;
     MIDI.sendRealTime(0xF8);
   }
+
+
 
 //  mixer1.gain(0, 1);
 //  mixer1.gain(1, 1);
@@ -2351,6 +2389,10 @@ void displayLCD(bool demoMode)
         u8g2.drawStr(0, 14, "EMU MP CLEAR"); // draw kit names
         u8g2.drawStr(0, 24, "EMU MP DARK");
         u8g2.drawStr(0, 34, "ALESIS HR16");
+      } else if (kitSel == 9 || kitSel == 10 || kitSel == 11){
+        u8g2.drawStr(0, 14, "ELEK CLEAN"); // draw kit names
+        u8g2.drawStr(0, 24, "ELEK CRUSH");
+//        u8g2.drawStr(0, 34, "ELEK NOISY");
       }
 
       u8g2.setDrawColor(2);
@@ -2708,8 +2750,8 @@ void UpdateDataEnc()
         if (controlState == KIT_SEL) // navigate kit selection menu
         {
           kitSel = (kitSel + 1);
-          if (kitSel > 8)
-            kitSel = 8;
+          if (kitSel > NUM_KITS - 1)
+            kitSel = NUM_KITS - 1;
         } else if( controlState == PATTERN_WRITE){
           pattWriteSel += 1;
           if (pattWriteSel > 2){
@@ -3383,28 +3425,15 @@ void UpdateDataEnc()
 // **************************************************************************************************/
 void recallParameters()
 {
-//  Serial.println(currPattern->velocity[8][0]);
-//  Serial.println(currPattern->velocity[9][0]);
-//  Serial.println(currPattern->velocity[10][0]);
-//  Serial.println(currPattern->velocity[11][0]);
-//  Serial.println(currPattern->velocity[12][0]);
-//  Serial.println(currPattern->velocity[13][0]);
-//  Serial.println(currPattern->velocity[14][0]);
-//  Serial.println(currPattern->velocity[15][0]);
-  
-//  mixer1.gain(0, currPattern->velocity[8][0]);
-//  mixer1.gain(1, currPattern->velocity[9][0]);
-//  mixer1.gain(2, currPattern->velocity[10][0]);
-//  mixer1.gain(3, currPattern->velocity[11][0]);
-//  mixer2.gain(0, currPattern->velocity[12][0]);
-//  mixer2.gain(1, currPattern->velocity[13][0]);
-//  mixer2.gain(2, currPattern->velocity[14][0]);
-//  mixer2.gain(3, currPattern->velocity[15][0]);
+  mixer1.gain(0, currPattern->velocity[8][0]);
+  mixer1.gain(1, currPattern->velocity[9][0]);
+  mixer1.gain(2, currPattern->velocity[10][0]);
+  mixer1.gain(3, currPattern->velocity[11][0]);
+  mixer2.gain(0, currPattern->velocity[12][0]);
+  mixer2.gain(1, currPattern->velocity[13][0]);
+  mixer2.gain(2, currPattern->velocity[14][0]);
+  mixer2.gain(3, currPattern->velocity[15][0]);
 
-  //  mixer6.gain(0, currPattern->velocity[16][0]);
-  //  mixer6.gain(1, currPattern->velocity[17][0]);
-  //  mixer6.gain(2, currPattern->velocity[18][0]);
-  //  mixer7.gain(0, currPattern->velocity[18][0]);
   playSdRaw1.setPlaybackRate(currPattern->parameter[6][0]);
   playSdRaw2.setPlaybackRate(currPattern->parameter[8][0]);
   playSdRaw3.setPlaybackRate(currPattern->parameter[10][0]);
@@ -3647,6 +3676,15 @@ void writeShiftRegisters(){
     sr3LED[5] = 1; // turn on bank LED
     break;
   }
+
+  if(transportState == PAUSED){ //blink playpause led if paused
+    if (millis() > pauseBlinkTimer){
+      sr1LED[1] = pauseLedState;
+      pauseLedState = !pauseLedState;
+      pauseBlinkTimer += 500;
+    }
+  }
+
   // send all shift register values out
   digitalWrite(ST_CP, LOW);
   shiftOut(DS, SH_CP, MSBFIRST, sr5);
