@@ -11,6 +11,11 @@ public:
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+  //...
+  // [48-63] pattern name in ascii
+
+  char name[17] = "                \0";
+
 
   const int sdChipSelect = BUILTIN_SDCARD;
   const int flashChipSelect = 6;
@@ -37,6 +42,21 @@ public:
     {
       memcpy(patterns, (int32_t *)cp["patt"], 260);
       memcpy(settings, (float *)cp["sett"], 260);
+      
+      int ind = 0;
+      for (int i = 48; i < 64; i++){
+        if (settings[i] == 0){
+          name[ind] = ' ';
+        } else {
+          name[ind] = settings[i];
+        }
+
+        ind += 1;
+      }
+//      name[0] = 'k';
+      name[16] = '\0';
+//      Serial.println(name);
+      
     }
   }
 
@@ -50,6 +70,7 @@ public:
   void printPattern()
   { // PRINTS PATTERN TO SERIAL MONITOR
     //      //print out the pattern
+    Serial.println(name);
     for (int i = 0; i < 64; i++){
       if (patterns[i] == -1) break;
       Serial.print(patterns[i]);
@@ -68,6 +89,17 @@ public:
   // **************************************************************************************************/
   void writeSongToSD(const char *path)
   {
+    //move name to settings array
+    int ind = 0;
+      for (int i = 48; i < 64; i++){
+        if(name[ind] == ' '){
+          settings[i] = 0;
+        } else {
+          settings[i] = name[ind];
+        }
+        ind += 1;
+      }
+      
     // clear out old data file
     if (SD.exists(path))
     {

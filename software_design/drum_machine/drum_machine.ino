@@ -95,7 +95,8 @@ enum controlStates
   SONG_BANK_SEL,
   LENGTH_SEL,
   PLAY_STEP_SEL,
-  PATTERN_WRITE
+  PATTERN_WRITE,
+  PATTERN_NAME_WRITE
 };
 
 enum ledDisplayStates
@@ -137,11 +138,15 @@ int patternQueueLen = 1;
 int patternQueueIndex = 0;
 int patternQueueWriteIndex = 0;
 Pattern *myCopiedPattern;
+int patternNameIndex = 0;
+bool pattNameEdit = false;
 
 // Song Variables
 Song *currSong;
 int songNum = 0;
 int songWriteIndex = 0;
+int songNameIndex = 0;
+bool songNameEdit = false;
 
 //MIDI
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
@@ -421,6 +426,7 @@ void setup()
   Serial.print("Hellooo: ");
 
   u8g2.begin();           // start communication with LCD
+  u8g2.setFont(u8g2_font_profont12_mr);
   AudioMemory(20);        // THIS IS REALLY IMPORTANTT!! CHECK THAT MEMORY USAGE
   sgtl5000_1.enable();    // enable the output
   sgtl5000_1.volume(0.5); // set master volume on output
@@ -1276,6 +1282,10 @@ void readMux(bool printEn)
               }
               controlState = PATTERN_SEL;
               lcdState = LCD_PATT_SEL;
+            } else if (controlState == PATTERN_SEL){
+              pattNameEdit = !pattNameEdit;
+            } else if (controlState == SONG_SEL){
+              songNameEdit = !songNameEdit;
             }
             else // if in paramter selection mode, swap between menu navigation and data entry
             {
@@ -1962,8 +1972,7 @@ void displayLCD(bool demoMode)
   case LCD_INST_PROP: // mode for displaying paramter of selected instrument, and allows you to edit them
     if (millis() > LCDFrameTimer + 10)
     {
-      u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
+      u8g2.clearBuffer();                 // clear the internal memory      
       char* paramStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
       char* volStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
       char* envStr = (char*)calloc(sizeof(char) * CHAR_BUFF_SIZE, sizeof(char));
@@ -2361,7 +2370,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.drawStr(10, 10, "BPM");
       char tempoStr[30];
       sprintf(tempoStr, "%i", (int)tempo);
@@ -2374,7 +2382,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       if(kitSel == 0 || kitSel == 1 || kitSel == 2){
@@ -2405,7 +2412,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Writing pattern"); // draw kit names
@@ -2419,15 +2425,26 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       if (playMode == PLAY_SONG)
       {
         u8g2.drawStr(0, 14, "Song number");
         char songNumStr[30];
-        sprintf(songNumStr, "%i", songNum + 1);
-        u8g2.drawStr(30, 34, songNumStr);
+        char sbStr[30];
+        sprintf(songNumStr, "%i", (songNum % 16) + 1);
+        sprintf(sbStr, "%i", songBankNum + 1);
+//        u8g2.drawStr(30, 34, songNumStr);
+        if(songBankNum + 1 < 10){
+          u8g2.drawStr(6, 30, sbStr);
+        } else {
+          u8g2.drawStr(0, 30, sbStr);
+        }
+        
+        u8g2.drawStr(11, 30, "-");
+        u8g2.drawStr(17, 30, songNumStr);
+      u8g2.drawStr(0, 42, currSong->name);
+      u8g2.drawLine(songNameIndex * 6, 44 - songNameEdit * 11, songNameIndex * 6 + 5, 44 - songNameEdit * 11);
       }
       else
       {
@@ -2441,13 +2458,23 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Pattern number"); // draw kit names
       char pattNumStr[30];
-      sprintf(pattNumStr, "%i", patternNum + 1);
-      u8g2.drawStr(30, 34, pattNumStr);
+      char bankNumStr[30];
+      sprintf(pattNumStr, "%i", (patternNum % 16)+1);
+      sprintf(bankNumStr, "%i", pattBankNum + 1);
+      if(pattBankNum + 1 < 10){
+        u8g2.drawStr(6, 30, bankNumStr);
+      } else {
+        u8g2.drawStr(0, 30, bankNumStr);
+      }
+      
+      u8g2.drawStr(11, 30, "-");
+      u8g2.drawStr(17, 30, pattNumStr);
+      u8g2.drawStr(0, 42, currPattern->name);
+      u8g2.drawLine(patternNameIndex * 6, 44 - pattNameEdit * 11, patternNameIndex * 6 + 5, 44 - pattNameEdit * 11);
       u8g2.sendBuffer();
     }
     break;
@@ -2455,7 +2482,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Pattern bank sel"); // draw kit names
@@ -2469,7 +2495,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Inst bank sel"); // draw kit names
@@ -2483,7 +2508,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Song bank sel");
@@ -2498,7 +2522,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Pattern Length");
@@ -2528,7 +2551,6 @@ void displayLCD(bool demoMode)
     if (millis() > LCDFrameTimer + 10)
     {
       u8g2.clearBuffer();                 // clear the internal memory
-      u8g2.setFont(u8g2_font_ncenB08_tr); // choose a suitable font
       u8g2.setFontMode(0);
       u8g2.setDrawColor(1);
       u8g2.drawStr(0, 14, "Clear Patt?");
@@ -2764,6 +2786,38 @@ void UpdateDataEnc()
           if (currPattern->settings[2] > 64)
           {
             currPattern->settings[2] = 64;
+          }
+        } else if (controlState == PATTERN_SEL){
+          if (pattNameEdit){
+            currPattern->name[patternNameIndex] = currPattern->name[patternNameIndex] + 1; // move up ascii table
+            if(currPattern->name[patternNameIndex] > 122){ // clip at top of lowercase letters
+              currPattern->name[patternNameIndex] = 122;
+            } else if (currPattern->name[patternNameIndex] == 58){ //jump from end of numbers to beginning of letters
+              currPattern->name[patternNameIndex] = 97;
+            } else if (currPattern->name[patternNameIndex] < 48){ //set out of bounds to 0
+              currPattern->name[patternNameIndex] = 48;
+            }
+          } else {
+            patternNameIndex++;
+            if (patternNameIndex > 13){
+              patternNameIndex = 13;
+            }
+          }
+        } else if (controlState == SONG_SEL){
+          if (songNameEdit){
+            currSong->name[songNameIndex] = currSong->name[songNameIndex] + 1; // move up ascii table
+            if(currSong->name[songNameIndex] > 122){ // clip at top of lowercase letters
+              currSong->name[songNameIndex] = 122;
+            } else if (currSong->name[songNameIndex] == 58){ //jump from end of numbers to beginning of letters
+              currSong->name[songNameIndex] = 97;
+            } else if (currSong->name[songNameIndex] < 48){ //set out of bounds to 0
+              currSong->name[songNameIndex] = 48;
+            }
+          } else {
+            songNameIndex++;
+            if (songNameIndex > 13){
+              songNameIndex = 13;
+            }
           }
         }
         else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
@@ -3087,7 +3141,36 @@ void UpdateDataEnc()
           if (pattWriteSel < 0){
             pattWriteSel = 0;
           }
-        } else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
+        } else if (controlState == PATTERN_SEL){
+          if (pattNameEdit){
+            currPattern->name[patternNameIndex] = currPattern->name[patternNameIndex] - 1;
+            if ( currPattern->name[patternNameIndex] < 48){ // jump from bottom of numbers to space
+              currPattern->name[patternNameIndex] = 32;
+            } else if (currPattern->name[patternNameIndex] == 96){ //jump from bottom of letters to top of numbers
+              currPattern->name[patternNameIndex] = 57;
+            }
+          } else {
+            patternNameIndex--;
+            if (patternNameIndex < 0){
+              patternNameIndex = 0;
+            }
+          }
+        } else if (controlState == SONG_SEL){
+          if (songNameEdit){
+            currSong->name[songNameIndex] = currSong->name[songNameIndex] - 1;
+            if ( currSong->name[songNameIndex] < 48){ // jump from bottom of numbers to space
+              currSong->name[songNameIndex] = 32;
+            } else if (currSong->name[songNameIndex] == 96){ //jump from bottom of letters to top of numbers
+              currSong->name[songNameIndex] = 57;
+            }
+          } else {
+            songNameIndex--;
+            if (songNameIndex < 0){
+              songNameIndex = 0;
+            }
+          }
+        }
+        else // SHOULD MAKE THIS MORE ROBUST WITH A SWITCH STATEMENT. We assume we're in parameter selection mode if not in KIT_SEL
         {
           if (paramSel) // if cursor is modifying parameter
           {
